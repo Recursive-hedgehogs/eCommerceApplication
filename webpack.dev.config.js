@@ -1,9 +1,16 @@
-import { resolve } from 'path';
+const path = require('path');
 
-export const mode = 'development';
-export const devtool = 'inline-source-map';
-export const devServer = {
-    contentBase: resolve(__dirname, '../eCommerceApplication'),
-    hot: true,
-    liveReload: true,
+module.exports = {
+    mode: 'development',
+    devtool: 'inline-source-map',
+    devServer: {
+        static: {
+            directory: path.resolve(__dirname, '../dist'),
+        },
+        open: {
+            app: {
+                name: 'google chrome',
+            },
+        },
+    },
 };

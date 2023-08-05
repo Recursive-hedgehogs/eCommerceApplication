@@ -4,7 +4,6 @@ const { resolve: _resolve } = require('path');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const EslintPlugin = require('eslint-webpack-plugin');
 
 const baseConfig = {
     entry: _resolve(__dirname, './src/index'),
@@ -12,8 +11,12 @@ const baseConfig = {
     module: {
         rules: [
             {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
+                test: /\.s[ac]ss$/i,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
             },
             {
                 test: /\.ts$/i,
@@ -34,23 +37,11 @@ const baseConfig = {
             filename: 'index.html',
         }),
         new CleanWebpackPlugin(),
-        new EslintPlugin({ extensions: 'ts' }),
     ],
 };
 
-module.exports = (env) => {
-    const isProductionMode = env && env.mode === 'prod';
+module.exports = ({ mode }) => {
+    const isProductionMode = mode === 'prod';
     const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
-    const mergedConfig = merge(baseConfig, envConfig);
-
-    if (!isProductionMode) {
-        mergedConfig.devServer = {
-            static: {
-                directory: _resolve(__dirname, './dist'),
-            },
-            open: true,
-        };
-    }
-
-    return mergedConfig;
+    return merge(baseConfig, envConfig);
 };
