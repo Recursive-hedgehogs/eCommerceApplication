@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 test('Husky is configured in package.json', () => {
     const packageJson = require('../../package.json');
     expect(packageJson.husky).toBeDefined();

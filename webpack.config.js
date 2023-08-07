@@ -1,4 +1,3 @@
-require('@babel/register');
 require('dotenv').config();
 const { resolve: _resolve } = require('path');
 const { merge } = require('webpack-merge');
@@ -10,6 +9,27 @@ const baseConfig = {
     mode: 'development',
     module: {
         rules: [
+            {
+                test: /\.html$/i,
+                loader: "html-loader",
+                options: {
+                    sources: {
+                        list: [
+                            {
+                                attribute: "src",
+                                type: "src",
+                                filter: (tag) => {
+                                    return tag.toLowerCase() === "img";
+                                },
+                            },
+                            {
+                                attribute: "href",
+                                type: "src",
+                            },
+                        ],
+                    },
+                },
+            },
             {
                 test: /\.s[ac]ss$/i,
                 use: ['style-loader', 'css-loader', 'sass-loader'],
