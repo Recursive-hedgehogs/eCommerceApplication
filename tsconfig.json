@@ -6,6 +6,8 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
   },
   "include": [
     "src/**/*.ts"
