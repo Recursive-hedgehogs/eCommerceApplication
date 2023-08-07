@@ -23,6 +23,10 @@
   "bugs": {
     "url": "https://github.com/Olitera/eCommerceApplication/issues"
   },
+  "dependencies": {
+    "@commercetools/sdk-client-v2": "^2.2.0",
+    "node-fetch": "^3.3.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.22.5",
     "@babel/node": "^7.22.5",
@@ -57,9 +61,5 @@
     "hooks": {
       "pre-commit": "lint"
     }
-  },
-  "dependencies": {
-    "@commercetools/sdk-client-v2": "^2.2.0",
-    "node-fetch": "^3.3.2"
   }
 }
