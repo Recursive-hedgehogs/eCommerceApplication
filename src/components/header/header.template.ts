@@ -1,4 +1,4 @@
-export const getTemplate = () => {
+export const getTemplate = (): string => {
     return `<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
             <div class="container-fluid">
               <a class="navbar-brand" href="#">MainLogo</a>
