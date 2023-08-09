@@ -1,5 +1,6 @@
 import Header from '../components/header/header';
 import { IApp, IView } from '../models/interfaces/interface';
+import LoginPage from '../pages/login-page/login-page';
 import ElementCreator from '../utils/template-creation';
 
 class View implements IView {
@@ -15,7 +16,8 @@ class View implements IView {
 
     public build(): void {
         const header = new Header().getElement();
-        document.body.append(header);
+        const loginPage = new LoginPage().getElement();
+        document.body.append(header, loginPage);
     }
 }
 
