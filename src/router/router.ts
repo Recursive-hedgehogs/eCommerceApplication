@@ -6,12 +6,8 @@ export class Router {
     }
 
     setCurrentPage(): void {
-        const location = window.location.pathname.slice(1) as ROUTE;
-        if (Object.values(ROUTE).includes(location)) {
-            history.pushState({ page: location }, 'title', location);
-        } else {
-            history.pushState({ page: ROUTE.NOT_FOUND }, 'title', ROUTE.NOT_FOUND);
-        }
+        const location: ROUTE = window.location.pathname.slice(1) as ROUTE;
+        history.pushState({ page: location }, 'title', location);
     }
 
     navigate(): void {
