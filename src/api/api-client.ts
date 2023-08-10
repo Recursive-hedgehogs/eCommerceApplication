@@ -1,5 +1,10 @@
 import fetch from 'node-fetch';
-import { ClientBuilder, type AuthMiddlewareOptions, type HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
+import {
+    ClientBuilder,
+    Client,
+    type AuthMiddlewareOptions,
+    type HttpMiddlewareOptions
+} from '@commercetools/sdk-client-v2';
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
@@ -22,7 +27,7 @@ const httpMiddlewareOptions: HttpMiddlewareOptions = {
 };
 
 // Export the ClientBuilder
-export const ctpClient = new ClientBuilder()
+export const ctpClient: Client = new ClientBuilder()
     .withClientCredentialsFlow(authMiddlewareOptions)
     .withHttpMiddleware(httpMiddlewareOptions)
     .withLoggerMiddleware()
