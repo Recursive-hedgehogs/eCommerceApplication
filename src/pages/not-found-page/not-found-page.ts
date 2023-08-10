@@ -1,5 +1,5 @@
-import ElementCreator from "../../utils/template-creation";
-import template from "./not-found-page.html";
+import ElementCreator from '../../utils/template-creation';
+import template from './not-found-page.html';
 
 export default class NotFoundPage {
     public element: HTMLElement;

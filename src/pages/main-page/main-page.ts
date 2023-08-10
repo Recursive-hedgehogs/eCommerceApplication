@@ -10,6 +10,10 @@ export default class MainPage {
             classNames: ['main-page'],
             innerHTML: template,
         }).getElement();
+        // this.element.addEventListener('click', (e: MouseEvent) => {
+        //     // e.preventDefault();
+        //     console.log('gsdfh');
+        // });
     }
 
     public getElement(): HTMLElement {

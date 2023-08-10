@@ -6,8 +6,7 @@ export class Controllers {
         this.app = app;
     }
 
-    redirectCallBack(e: PopStateEvent): void {
-        console.log(e.state.page);
-        this.app.setCurrentPage(e.state.page);
+    redirectCallBack(): void {
+        this.app.setCurrentPage(window.location.pathname.slice(1));
     }
 }

@@ -3,7 +3,7 @@ import { Router } from '../router/router';
 import ElementCreator from '../utils/template-creation';
 import { Controllers } from '../controllers/controllers';
 import View from '../view/view';
-import {ROUTE} from "../models/enums/enum";
+import { ROUTE } from '../models/enums/enum';
 
 class App implements IApp {
     public view: View | null;
@@ -21,21 +21,26 @@ class App implements IApp {
         this.view = view;
         this.controllers = controllers;
 
+        window.addEventListener('load', () => {
+            console.log('gs');
+            this.setCurrentPage(window.location.pathname.slice(1));
+        });
         window.addEventListener('popstate', this.controllers.redirectCallBack);
-        window.addEventListener('load', () => this.setCurrentPage(window.location.pathname.slice(1)));
     }
 
     public buildView(): void {
         if (this.view) {
             this.view.build();
         }
-        document.body.addEventListener('click', () => this.router.navigate());
     }
 
     setCurrentPage(route: string): void {
-        if (this.view && this.view.pages){
-            const page: HTMLElement | undefined = this.view.pages.has(route) ? this.view.pages.get(route) : this.view.pages.get(ROUTE.NOT_FOUND)
-            this.main.setInnerHTML(page)
+        if (this.view && this.view.pages) {
+            const page: HTMLElement | undefined = this.view.pages.has(route)
+                ? this.view.pages.get(route)
+                : this.view.pages.get(ROUTE.NOT_FOUND);
+            this.router.setCurrentPage();
+            this.main.setInnerHTML(page);
         }
     }
 }

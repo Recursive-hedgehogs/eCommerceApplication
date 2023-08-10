@@ -3,8 +3,8 @@ import LoginPage from '../pages/login-page/login-page';
 import Header from '../components/header/header';
 import MainPage from '../pages/main-page/main-page';
 import ElementCreator from '../utils/template-creation';
-import NotFoundPage from "../pages/not-found-page/not-found-page";
-import {ROUTE} from "../models/enums/enum";
+import NotFoundPage from '../pages/not-found-page/not-found-page';
+import { ROUTE } from '../models/enums/enum';
 
 class View implements IView {
     public model: IApp | null;
