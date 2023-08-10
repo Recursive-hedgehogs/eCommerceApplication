@@ -1,9 +1,11 @@
+import { Controllers } from '../../controllers/controllers';
+
 export interface IView {
     build(): void;
 }
 export interface IApp {
     view: IView | null;
-    start(view: IView): void;
+    start(view: IView, controllers: Controllers): void;
     buildView(): void;
 }
 

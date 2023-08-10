@@ -12,5 +12,8 @@ module.exports = {
                 name: 'google chrome',
             },
         },
+        historyApiFallback: {
+            index: '/index.html'
+        }
     },
 };

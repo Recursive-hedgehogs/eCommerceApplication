@@ -3,7 +3,7 @@ import {
     ClientBuilder,
     Client,
     type AuthMiddlewareOptions,
-    type HttpMiddlewareOptions
+    type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 
 // Configure authMiddlewareOptions
