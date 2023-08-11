@@ -1,9 +1,3 @@
-// export function createTemplate<Type>(htmlFromString: string): Type {
-//     const template: HTMLTemplateElement = document.createElement('template');
-//     template.innerHTML = htmlFromString;
-//     return template.content.firstChild as Type;
-// }
-
 import { IElementParams } from '../models/interfaces/interface';
 
 class ElementCreator<T extends HTMLElement> {
@@ -21,7 +15,7 @@ class ElementCreator<T extends HTMLElement> {
         }
     }
 
-    createElement(params: IElementParams) {
+    createElement(params: IElementParams): void {
         const tag: string = params.tag;
         this.element = document.createElement(tag) as T;
         this.setCssClasses(params.classNames);
@@ -29,19 +23,24 @@ class ElementCreator<T extends HTMLElement> {
         if (params.innerHTML) this.setInnerHTML(params.innerHTML);
     }
 
-    setCssClasses(cssClasses: Array<string>) {
-        cssClasses?.map((cssClass) => this.element?.classList.add(cssClass));
+    setCssClasses(cssClasses: Array<string>): void {
+        cssClasses?.map((cssClass: string) => this.element?.classList.add(cssClass));
     }
 
-    setTextContent(text: string, emptyText = '') {
+    setTextContent(text: string, emptyText = ''): void {
         if (this.element) {
             text ? (this.element.textContent = text) : (this.element.textContent = emptyText);
         }
     }
 
-    setInnerHTML(html: string, emptyHTML = '') {
+    setInnerHTML(html?: string | HTMLElement): void {
         if (this.element) {
-            html ? (this.element.innerHTML = html) : (this.element.innerHTML = emptyHTML);
+            this.element.innerHTML = '';
+            if (html instanceof HTMLElement) {
+                this.element.append(html);
+            } else {
+                this.element.innerHTML = html ?? '';
+            }
         }
     }
 }

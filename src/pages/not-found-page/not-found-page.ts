@@ -1,19 +1,15 @@
-import template from './main-page.html';
 import ElementCreator from '../../utils/template-creation';
+import template from './not-found-page.html';
 
-export default class MainPage {
+export default class NotFoundPage {
     public element: HTMLElement;
 
     constructor() {
         this.element = new ElementCreator({
             tag: 'section',
-            classNames: ['main-page'],
+            classNames: ['not-found-page'],
             innerHTML: template,
         }).getElement();
-        // this.element.addEventListener('click', (e: MouseEvent) => {
-        //     // e.preventDefault();
-        //     console.log('gsdfh');
-        // });
     }
 
     public getElement(): HTMLElement {
