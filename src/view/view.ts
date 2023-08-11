@@ -6,6 +6,7 @@ import NotFoundPage from '../pages/not-found-page/not-found-page';
 import { ROUTE } from '../models/enums/enum';
 import { main } from '../components/main/main';
 import App from '../app/app';
+import RegistrationPage from '../pages/registration-page/registration-page';
 
 class View implements IView {
     public app: App | null;
@@ -35,10 +36,12 @@ class View implements IView {
     setPages(): void {
         const mainPage: HTMLElement = new MainPage().getElement();
         const loginPage: HTMLElement = new LoginPage().getElement();
+        const registrPage: HTMLElement = new RegistrationPage().getElement();
         const notFoundPage: HTMLElement = new NotFoundPage().getElement();
         this._pages = new Map();
         this._pages.set(ROUTE.MAIN, mainPage);
         this._pages.set(ROUTE.LOGIN, loginPage);
+        this._pages.set(ROUTE.REGISTRATION, registrPage);
         this._pages.set(ROUTE.NOT_FOUND, notFoundPage);
     }
 }
