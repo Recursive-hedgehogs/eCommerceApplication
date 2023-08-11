@@ -17,7 +17,10 @@ export default class Main {
 
     public setContent(page: HTMLElement | undefined) {
         if (page) {
+            this.element.innerHTML = '';
             this.element.append(page);
         }
     }
 }
+
+export const main: Main = new Main();

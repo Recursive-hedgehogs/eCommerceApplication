@@ -2,7 +2,7 @@ import { IApp } from '../models/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
-import Main from '../components/main/main';
+import Main, { main } from '../components/main/main';
 
 class App implements IApp {
     public view: View | null;
@@ -12,7 +12,8 @@ class App implements IApp {
     constructor() {
         this.view = null;
         this.router = new Router();
-        this.main = new Main();
+        this.main = main;
+        // this.main = new Main();
     }
 
     public start(view: View): void {

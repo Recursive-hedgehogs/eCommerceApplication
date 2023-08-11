@@ -15,7 +15,7 @@ export class Controllers {
         window.addEventListener('popstate', this.redirectCallBack);
     }
 
-    redirectCallBack(): void {
+    redirectCallBack(e: PopStateEvent): void {
         this.app?.setCurrentPage(window.location.pathname.slice(1));
     }
 }
