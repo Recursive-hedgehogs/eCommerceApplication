@@ -6,7 +6,6 @@ export interface IView {
 export interface IApp {
     view: IView | null;
     start(view: IView, controllers: Controllers): void;
-    buildView(): void;
 }
 
 export interface IElementParams {
