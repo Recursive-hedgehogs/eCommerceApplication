@@ -1,19 +1,18 @@
-import { IApp, IView } from '../models/interfaces/interface';
+import { IView } from '../models/interfaces/interface';
 import LoginPage from '../pages/login-page/login-page';
 import Header from '../components/header/header';
 import MainPage from '../pages/main-page/main-page';
-import ElementCreator from '../utils/template-creation';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
 import { ROUTE } from '../models/enums/enum';
+import { main } from '../components/main/main';
+import App from '../app/app';
 
 class View implements IView {
-    public model: IApp | null;
-    private main: ElementCreator<HTMLElement>;
+    public app: App | null;
     private _pages?: Map<string, HTMLElement>;
 
-    constructor(main: ElementCreator<HTMLElement>) {
-        this.main = main;
-        this.model = null;
+    constructor() {
+        this.app = null;
         this.setPages();
     }
 
@@ -21,13 +20,16 @@ class View implements IView {
         return this._pages;
     }
 
-    public start(model: IApp): void {
-        this.model = model;
+    public start(app: App): void {
+        this.app = app;
+        this.build();
     }
 
     public build(): void {
         const header: HTMLElement = new Header().getElement();
-        document.body.append(header, this.main.getElement());
+        const mainElement = main.getElement();
+        // const main: HTMLElement = new Main().getElement();
+        document.body.append(header, mainElement);
     }
 
     setPages(): void {
