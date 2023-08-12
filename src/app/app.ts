@@ -1,4 +1,4 @@
-import { IApp } from '../models/interfaces/interface';
+import {IApp} from '../models/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
@@ -13,11 +13,15 @@ class App implements IApp {
         this.view = null;
         this.router = new Router();
         this.main = main;
-        // this.main = new Main();
     }
 
     public start(view: View): void {
         this.view = view;
+
+
+
+        // const customerData: ICustomerData = {email: 'neiwra@gmail.com', password: '012345'}
+        // apiCustomer.createCustomer(customerData).then((jhlk)=> {console.log(jhlk)})
     }
 
     setCurrentPage(route: string): void {

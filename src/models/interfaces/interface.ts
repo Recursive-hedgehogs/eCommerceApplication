@@ -14,3 +14,8 @@ export interface IElementParams {
     textContent?: string;
     innerHTML?: string;
 }
+
+export interface ICustomerData {
+    email: string;
+    password: string;
+}
