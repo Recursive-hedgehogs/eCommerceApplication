@@ -1,5 +1,5 @@
 import ElementCreator from '../../utils/template-creation';
-import { getTemplate } from './header.template';
+import template from './header.template.html';
 import './header.scss';
 
 export default class Header {
@@ -9,7 +9,7 @@ export default class Header {
         this.element = new ElementCreator({
             tag: 'header',
             classNames: ['header'],
-            innerHTML: getTemplate(),
+            innerHTML: template,
         }).getElement();
     }
 
