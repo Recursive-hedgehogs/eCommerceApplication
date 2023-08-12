@@ -1,28 +1,29 @@
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import {
     ClientBuilder,
     Client,
     type AuthMiddlewareOptions,
     type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
+import { environment } from '../environment/environment';
+import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
-    host: 'https://auth.europe-west1.gcp.commercetools.com',
-    projectKey: 'ecommerce-shop',
+    host: environment.authURL,
+    projectKey: environment.projectKey,
     credentials: {
-        clientId: 'j2TAwgaFyEJ2HSjLAAYGG6gs',
-        clientSecret: '3FwAP1_gsgnXTshyM090BBlNOrJ-sFzS',
+        clientId: environment.clientID,
+        clientSecret: environment.clientSecret,
     },
-    scopes: [
-        'view_published_products:ecommerce-shop manage_my_shopping_lists:ecommerce-shop manage_my_business_units:ecommerce-shop manage_my_payments:ecommerce-shop manage_my_quotes:ecommerce-shop manage_my_orders:ecommerce-shop manage_my_quote_requests:ecommerce-shop create_anonymous_token:ecommerce-shop view_products:ecommerce-shop view_categories:ecommerce-shop manage_my_profile:ecommerce-shop',
-    ],
+    scopes: [environment.scope],
     fetch,
 };
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-    host: 'https://api.europe-west1.gcp.commercetools.com',
+    host: environment.apiURL,
     fetch,
 };
 
@@ -32,3 +33,7 @@ export const ctpClient: Client = new ClientBuilder()
     .withHttpMiddleware(httpMiddlewareOptions)
     .withLoggerMiddleware()
     .build();
+
+export const apiRoot: ByProjectKeyRequestBuilder = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+    projectKey: environment.projectKey,
+});

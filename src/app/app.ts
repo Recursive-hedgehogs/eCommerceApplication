@@ -1,8 +1,9 @@
-import { IApp } from '../models/interfaces/interface';
+import { IApp, ICustomerData } from '../models/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
 import Main, { main } from '../components/main/main';
+import { apiCustomer } from '../api/api-customer';
 
 class App implements IApp {
     public view: View | null;
@@ -13,11 +14,40 @@ class App implements IApp {
         this.view = null;
         this.router = new Router();
         this.main = main;
-        // this.main = new Main();
     }
 
     public start(view: View): void {
         this.view = view;
+
+        const customerData: ICustomerData = {
+            addresses: [
+                {
+                    city: 'Katowice',
+                    country: 'PL',
+                    postalCode: '89',
+                    streetName: 'Wolności',
+                },
+                {
+                    city: 'Minsk',
+                    country: 'BY',
+                    postalCode: '89000',
+                    streetName: 'Skaryny',
+                },
+            ],
+            dateOfBirth: new Date().toISOString().split('T')[0],
+            firstName: 'REW',
+            lastName: 'Wer',
+            email: 'baaera@gmail.com',
+            password: '012345',
+        };
+        // console.log(customerData);
+        // console.log(JSON.parse(JSON.stringify(customerData)));
+        apiCustomer
+            .createCustomer(customerData)
+            .then((jhlk) => {
+                console.log(jhlk);
+            })
+            .catch((err: Error) => alert(err.message));
     }
 
     setCurrentPage(route: string): void {
