@@ -5,11 +5,9 @@ import {
     type AuthMiddlewareOptions,
     type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
-import {environment} from "../environment/environment";
-import {
-    ByProjectKeyRequestBuilder
-} from "@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder";
-import {createApiBuilderFromCtpClient} from "@commercetools/platform-sdk";
+import { environment } from '../environment/environment';
+import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
@@ -19,9 +17,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
         clientId: environment.clientID,
         clientSecret: environment.clientSecret,
     },
-    scopes: [
-        environment.scope
-    ],
+    scopes: [environment.scope],
     fetch,
 };
 

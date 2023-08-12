@@ -9,9 +9,16 @@ class ApiCustomer {
                 body: {
                     email: data.email,
                     password: data.password,
+                    dateOfBirth: data.dateOfBirth,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    addresses: data.addresses,
                 },
             })
-            .execute();
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
     };
 }
 

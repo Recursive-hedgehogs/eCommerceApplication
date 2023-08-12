@@ -15,7 +15,18 @@ export interface IElementParams {
     innerHTML?: string;
 }
 
+export interface IAddress {
+    country: string;
+    city?: string;
+    streetName?: string;
+    postalCode?: string;
+}
+
 export interface ICustomerData {
     email: string;
     password: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    addresses: IAddress[];
 }

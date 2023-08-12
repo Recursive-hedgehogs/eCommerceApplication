@@ -9,20 +9,9 @@
 
 export const environment = {
     projectKey: 'ecommerce-shop',
-    clientSecret: "ymk7wpztGYl22DHiQ5plsF58aAzXiP1e",
+    clientSecret: 'ymk7wpztGYl22DHiQ5plsF58aAzXiP1e',
     clientID: 'ghxZP8X3Wr0gFSWZaioCHAL7',
     authURL: 'https://auth.europe-west1.gcp.commercetools.com',
     apiURL: 'https://api.europe-west1.gcp.commercetools.com',
     scope: 'manage_customers:ecommerce-shop',
 };
-
-
-// export CTP_PROJECT_KEY="ecommerce-shop"
-// export CTP_CLIENT_SECRET="ymk7wpztGYl22DHiQ5plsF58aAzXiP1e"
-// export CTP_CLIENT_ID="ghxZP8X3Wr0gFSWZaioCHAL7"
-// export CTP_AUTH_URL="https://auth.europe-west1.gcp.commercetools.com"
-// export CTP_API_URL="https://api.europe-west1.gcp.commercetools.com"
-// export CTP_SCOPES="manage_customers:ecommerce-shop"
-
-
-
