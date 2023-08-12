@@ -2,12 +2,12 @@ import { ROUTE } from '../models/enums/enum';
 
 export class Router {
     constructor() {
-        this.setCurrentPage();
+        // this.setCurrentPage();
     }
 
-    setCurrentPage(): void {
-        const location: ROUTE = window.location.pathname.slice(1) as ROUTE;
-        history.pushState({ page: location }, 'title', location);
+    setCurrentPage(page: string): void {
+        // const location: ROUTE = window.location.pathname.slice(1) as ROUTE;
+        history.pushState({ page: page }, 'title', page);
     }
 
     navigate(): void {

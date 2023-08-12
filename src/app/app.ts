@@ -25,7 +25,7 @@ class App implements IApp {
             const page: HTMLElement | undefined = this.view.pages.has(route)
                 ? this.view.pages.get(route)
                 : this.view.pages.get(ROUTE.NOT_FOUND);
-            this.router.setCurrentPage();
+            this.router.setCurrentPage(route);
             this.main.setContent(page);
         }
     }

@@ -21,10 +21,10 @@ export class Controllers {
         const loginBtn = document.getElementById('login-btn');
         const registrBtn = document.getElementById('registration-btn');
         loginBtn?.addEventListener('click', () => {
-            window.location.href = ROUTE.LOGIN;
+            this.app?.setCurrentPage(ROUTE.LOGIN);
         });
         registrBtn?.addEventListener('click', () => {
-            window.location.href = ROUTE.REGISTRATION;
+            this.app?.setCurrentPage(ROUTE.REGISTRATION);
         });
     }
 

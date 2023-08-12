@@ -10,6 +10,14 @@ export default class MainPage {
             classNames: ['main-page'],
             innerHTML: template,
         }).getElement();
+        const a = this.element.querySelector('a');
+        console.log(a);
+        a?.addEventListener('click', (e) => {
+            console.log(11111111);
+            e.preventDefault();
+            history.pushState('fdg', 'fd', 'login');
+            document.querySelector('main')!.innerHTML = 'login';
+        });
         // this.element.addEventListener('click', (e: MouseEvent) => {
         //     // e.preventDefault();
         //     console.log('gsdfh');
