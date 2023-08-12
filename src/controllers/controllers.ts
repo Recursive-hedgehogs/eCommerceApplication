@@ -7,11 +7,11 @@ export class Controllers {
         this.app = null;
     }
 
-    public start(app: App) {
+    public start(app: App): void {
         this.app = app;
         window.addEventListener('load', () => {
-            console.log('gs');
-            this.app?.setCurrentPage(window.location.pathname.slice(1));
+            const currentLocation = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
+            this.app?.setCurrentPage(currentLocation);
         });
         window.addEventListener('popstate', this.redirectCallBack);
         this.addListeners();
