@@ -28,8 +28,7 @@ class View implements IView {
 
     public build(): void {
         const header: HTMLElement = new Header().getElement();
-        const mainElement = main.getElement();
-        // const main: HTMLElement = new Main().getElement();
+        const mainElement: HTMLElement = main.getElement();
         document.body.append(header, mainElement);
     }
 

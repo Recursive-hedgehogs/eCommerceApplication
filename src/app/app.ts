@@ -13,7 +13,6 @@ class App implements IApp {
         this.view = null;
         this.router = new Router();
         this.main = main;
-        // this.main = new Main();
     }
 
     public start(view: View): void {
