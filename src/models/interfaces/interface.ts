@@ -37,7 +37,10 @@ export interface ILoginCredentials {
 }
 
 export interface IEmailTokenCredentials {
-    email: string;
     id: string;
     ttlMinutes: number;
+}
+
+export interface IPasswordResetTokenCredentials {
+    email: string;
 }

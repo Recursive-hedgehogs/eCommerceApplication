@@ -1,4 +1,9 @@
-import { ICreateCustomerCredentials, IEmailTokenCredentials, ILoginCredentials } from '../models/interfaces/interface';
+import {
+    ICreateCustomerCredentials,
+    IEmailTokenCredentials,
+    ILoginCredentials,
+    IPasswordResetTokenCredentials,
+} from '../models/interfaces/interface';
 import { apiRoot } from './api-client';
 
 class ApiCustomer {
@@ -39,10 +44,22 @@ class ApiCustomer {
     createEmailToken = (data: IEmailTokenCredentials) => {
         return apiRoot
             .customers()
+            .emailToken()
             .post({
-                body: {
-                    email: data.email,
-                },
+                body: data,
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    createPasswordToken = (data: IPasswordResetTokenCredentials) => {
+        return apiRoot
+            .customers()
+            .passwordToken()
+            .post({
+                body: data,
             })
             .execute()
             .catch((err) => {

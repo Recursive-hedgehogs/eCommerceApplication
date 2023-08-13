@@ -51,8 +51,13 @@ class App implements IApp {
 
         apiCustomer
             .signIn({ email: 'baaera@gmail.com', password: '012345' })
-            .then((jhlk) => {
-                console.log(jhlk);
+            .then((resp) => {
+                const customer = resp.body.customer;
+                return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
+                // return apiCustomer.createPasswordToken( {email: customer.email})
+            })
+            .then((response) => {
+                console.log(response);
             })
             .catch((err: Error) => alert(err.message));
     }
