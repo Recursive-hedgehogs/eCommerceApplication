@@ -1,8 +1,13 @@
-import { ICustomerData } from '../models/interfaces/interface';
+import {
+    ICreateCustomerCredentials,
+    IEmailTokenCredentials,
+    ILoginCredentials,
+    IPasswordResetTokenCredentials,
+} from '../models/interfaces/interface';
 import { apiRoot } from './api-client';
 
 class ApiCustomer {
-    createCustomer = (data: ICustomerData) => {
+    createCustomer = (data: ICreateCustomerCredentials) => {
         return apiRoot
             .customers()
             .post({
@@ -14,6 +19,47 @@ class ApiCustomer {
                     lastName: data.lastName,
                     addresses: data.addresses,
                 },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    signIn = (data: ILoginCredentials) => {
+        return apiRoot
+            .login()
+            .post({
+                body: {
+                    email: data.email,
+                    password: data.password,
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    createEmailToken = (data: IEmailTokenCredentials) => {
+        return apiRoot
+            .customers()
+            .emailToken()
+            .post({
+                body: data,
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    createPasswordToken = (data: IPasswordResetTokenCredentials) => {
+        return apiRoot
+            .customers()
+            .passwordToken()
+            .post({
+                body: data,
             })
             .execute()
             .catch((err) => {
