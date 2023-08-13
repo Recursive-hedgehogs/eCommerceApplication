@@ -22,11 +22,22 @@ export interface IAddress {
     postalCode?: string;
 }
 
-export interface ICustomerData {
+export interface ICreateCustomerCredentials {
     email: string;
     password: string;
     firstName: string;
     lastName: string;
     dateOfBirth: string;
     addresses: IAddress[];
+}
+
+export interface ILoginCredentials {
+    email: string;
+    password: string;
+}
+
+export interface IEmailTokenCredentials {
+    email: string;
+    id: string;
+    ttlMinutes: number;
 }

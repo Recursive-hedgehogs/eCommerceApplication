@@ -1,4 +1,4 @@
-import { IApp, ICustomerData } from '../models/interfaces/interface';
+import { IApp, ICreateCustomerCredentials } from '../models/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
@@ -19,7 +19,7 @@ class App implements IApp {
     public start(view: View): void {
         this.view = view;
 
-        const customerData: ICustomerData = {
+        const customerData: ICreateCustomerCredentials = {
             addresses: [
                 {
                     city: 'Katowice',
@@ -42,8 +42,15 @@ class App implements IApp {
         };
         // console.log(customerData);
         // console.log(JSON.parse(JSON.stringify(customerData)));
+        // apiCustomer
+        //     .createCustomer(customerData)
+        //     .then((jhlk) => {
+        //         console.log(jhlk);
+        //     })
+        //     .catch((err: Error) => alert(err.message));
+
         apiCustomer
-            .createCustomer(customerData)
+            .signIn({ email: 'baaera@gmail.com', password: '012345' })
             .then((jhlk) => {
                 console.log(jhlk);
             })
