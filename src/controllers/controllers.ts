@@ -10,17 +10,13 @@ export class Controllers {
 
     public start(app: App): void {
         this.app = app;
-        window.addEventListener('load', (): void => {
-            const currentLocation: string = window.location.pathname.slice(1)
-                ? window.location.pathname.slice(1)
-                : 'main';
-            this.app?.setCurrentPage(currentLocation);
-        });
-        window.addEventListener('popstate', this.redirectCallBack);
         this.addListeners();
     }
 
     public addListeners(): void {
+        window.addEventListener('load', this.onFirstLoad);
+        window.addEventListener('popstate', this.redirectCallBack);
+
         const loginBtn: HTMLElement | null = document.getElementById('login-btn');
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
         loginBtn?.addEventListener('click', (): void => {
@@ -65,7 +61,14 @@ export class Controllers {
         }
     };
 
-    private redirectCallBack(e: PopStateEvent): void {
-        this.app?.setCurrentPage(window.location.pathname.slice(1));
-    }
+    private onFirstLoad = (): void => {
+        const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
+        this.app?.setCurrentPage(currentLocation);
+        window.removeEventListener('load', this.onFirstLoad);
+    };
+
+    private redirectCallBack = (e: PopStateEvent): void => {
+        const currentPath: string = window.location.pathname.slice(1);
+        this.app?.setCurrentPage(currentPath, e.state.page === currentPath);
+    };
 }

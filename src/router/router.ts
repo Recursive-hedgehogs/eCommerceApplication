@@ -1,10 +1,10 @@
 export class Router {
-    public setCurrentPage(page: string): void {
-        history.pushState({ page: page }, 'title', page);
+    public setCurrentPage(page: string, isUpdate?: boolean): void {
+        if (isUpdate) {
+            history.replaceState({ page }, '', page);
+        } else {
+            history.pushState({ page }, '', page);
+        }
     }
 
-    private navigate(): void {
-        history.go(1);
-        history.back();
-    }
 }

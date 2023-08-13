@@ -19,12 +19,12 @@ class App implements IApp {
         this.view = view;
     }
 
-    setCurrentPage(route: string): void {
+    public setCurrentPage(route: string, isUpdate?: boolean): void {
         if (this.view && this.view.pages) {
             const page: HTMLElement | undefined = this.view.pages.has(route)
                 ? this.view.pages.get(route)
                 : this.view.pages.get(ROUTE.NOT_FOUND);
-            this.router.setCurrentPage(route);
+            this.router.setCurrentPage(route, isUpdate);
             this.main.setContent(page);
         }
     }
