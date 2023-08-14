@@ -62,12 +62,12 @@ class App implements IApp {
             .catch((err: Error) => alert(err.message));
     }
 
-    setCurrentPage(route: string): void {
+    public setCurrentPage(route: string, isUpdate?: boolean): void {
         if (this.view && this.view.pages) {
             const page: HTMLElement | undefined = this.view.pages.has(route)
                 ? this.view.pages.get(route)
                 : this.view.pages.get(ROUTE.NOT_FOUND);
-            this.router.setCurrentPage();
+            this.router.setCurrentPage(route, isUpdate);
             this.main.setContent(page);
         }
     }
