@@ -6,5 +6,4 @@ export class Router {
             history.pushState({ page }, '', page);
         }
     }
-
 }
