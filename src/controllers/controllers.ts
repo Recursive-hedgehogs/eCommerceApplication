@@ -27,6 +27,7 @@ export class Controllers {
         });
 
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
+        this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
 
     private onMainPageClick = (e: Event): void => {
@@ -58,6 +59,12 @@ export class Controllers {
                 default:
                     break;
             }
+        }
+    };
+
+    private onNotFoundPageClick = (e: Event) => {
+        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
+            this.app?.setCurrentPage(ROUTE.MAIN);
         }
     };
 
