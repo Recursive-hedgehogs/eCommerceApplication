@@ -99,8 +99,8 @@ export class Controllers {
 
             apiCustomer
                 .createCustomer(customerData)
-                .then((resp): void => {
-                    console.log(resp);
+                .then((): void => {
+                    alert('success')
                 })
                 .catch((err: Error) => alert(err.message));
         }
