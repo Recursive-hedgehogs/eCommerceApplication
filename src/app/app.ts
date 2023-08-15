@@ -3,7 +3,6 @@ import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
 import Main, { main } from '../components/main/main';
-import { apiCustomer } from '../api/api-customer';
 import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
 
 class App implements IApp {
@@ -21,17 +20,6 @@ class App implements IApp {
 
     public start(view: View): void {
         this.view = view;
-
-        apiCustomer
-            .signIn({ email: 'baaera@gmail.com', password: '012345' })
-            .then((resp) => {
-                const customer = resp.body.customer;
-                return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
-            })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((err: Error) => alert(err.message));
     }
 
     public setCurrentPage(route: string, isUpdate?: boolean): void {

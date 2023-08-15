@@ -1,6 +1,7 @@
 import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
+import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
 
 export class Controllers {
     private app: App | null;
@@ -29,6 +30,7 @@ export class Controllers {
 
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
+        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
     }
 
     private onMainPageClick = (e: Event): void => {
@@ -100,7 +102,29 @@ export class Controllers {
             apiCustomer
                 .createCustomer(customerData)
                 .then((): void => {
-                    alert('success')
+                    alert('success');
+                })
+                .catch((err: Error) => alert(err.message));
+        }
+    };
+
+    private onLoginSubmit = (e: Event): void => {
+        const target: EventTarget | null = e.target;
+        if (target instanceof HTMLFormElement) {
+            e.preventDefault();
+            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
+            const fieldNames: string[] = ['email', 'password'];
+            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
+            const customerData = Object.fromEntries(pairs);
+            apiCustomer
+                .signIn(customerData)
+                .then((resp: ClientResponse<CustomerSignInResult>) => {
+                    const customer: Customer = resp.body.customer;
+                    return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
+                })
+                .then((response: ClientResponse<CustomerToken>): void => {
+                    console.log(response);
+                    alert('success');
                 })
                 .catch((err: Error) => alert(err.message));
         }

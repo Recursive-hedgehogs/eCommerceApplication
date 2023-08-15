@@ -1,5 +1,5 @@
-import ElementCreator from "../../utils/template-creation";
-import template from "./message.html";
+import ElementCreator from '../../utils/template-creation';
+import template from './message.html';
 
 export default class Message {
     element: HTMLElement;
