@@ -68,4 +68,4 @@ class ApiCustomer {
     };
 }
 
-export const apiCustomer = new ApiCustomer();
+export const apiCustomer: ApiCustomer = new ApiCustomer();

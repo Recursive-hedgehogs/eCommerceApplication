@@ -1,65 +1,25 @@
-import { IApp, ICreateCustomerCredentials } from '../models/interfaces/interface';
+import { IApp } from '../models/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
 import Main, { main } from '../components/main/main';
-import { apiCustomer } from '../api/api-customer';
+import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
 
 class App implements IApp {
+    private countriesArray: Array<ISO31661AssignedEntry>;
     public view: View | null;
+    public main: Main;
     private router: Router;
-    main: Main;
 
     constructor() {
         this.view = null;
         this.router = new Router();
         this.main = main;
+        this.countriesArray = iso31661;
     }
 
     public start(view: View): void {
         this.view = view;
-
-        const customerData: ICreateCustomerCredentials = {
-            addresses: [
-                {
-                    city: 'Katowice',
-                    country: 'PL',
-                    postalCode: '89',
-                    streetName: 'Wolności',
-                },
-                {
-                    city: 'Minsk',
-                    country: 'BY',
-                    postalCode: '89000',
-                    streetName: 'Skaryny',
-                },
-            ],
-            dateOfBirth: new Date().toISOString().split('T')[0],
-            firstName: 'REW',
-            lastName: 'Wer',
-            email: 'baaera@gmail.com',
-            password: '012345',
-        };
-        // console.log(customerData);
-        // console.log(JSON.parse(JSON.stringify(customerData)));
-        // apiCustomer
-        //     .createCustomer(customerData)
-        //     .then((jhlk) => {
-        //         console.log(jhlk);
-        //     })
-        //     .catch((err: Error) => alert(err.message));
-
-        apiCustomer
-            .signIn({ email: 'baaera@gmail.com', password: '012345' })
-            .then((resp) => {
-                const customer = resp.body.customer;
-                return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
-                // return apiCustomer.createPasswordToken( {email: customer.email})
-            })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((err: Error) => alert(err.message));
     }
 
     public setCurrentPage(route: string, isUpdate?: boolean): void {
@@ -70,6 +30,14 @@ class App implements IApp {
             this.router.setCurrentPage(route, isUpdate);
             this.main.setContent(page);
         }
+    }
+
+    public getCountryFromCode(code: string): string {
+        return this.countriesArray.find((el: ISO31661AssignedEntry): boolean => el.alpha2 === code)?.name ?? '';
+    }
+
+    public getCodeFromCountryName(name: string): string {
+        return this.countriesArray.find((el: ISO31661AssignedEntry): boolean => el.name === name)?.alpha2 ?? '';
     }
 }
 
