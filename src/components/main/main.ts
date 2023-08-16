@@ -1,3 +1,4 @@
+import './main.scss';
 import ElementCreator from '../../utils/template-creation';
 
 export default class Main {
@@ -6,7 +7,7 @@ export default class Main {
     constructor() {
         this.element = new ElementCreator({
             tag: 'main',
-            classNames: ['main', 'd-flex', 'flex-column', 'flex-grow-1'],
+            classNames: ['main', 'd-flex', 'flex-column', 'flex-grow-1', 'bg-secondary-subtle', 'p-3'],
         }).getElement();
     }
 
