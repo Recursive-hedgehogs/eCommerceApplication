@@ -8,7 +8,7 @@ export default class MainPage {
     constructor() {
         this.element = new ElementCreator({
             tag: 'section',
-            classNames: ['main-page', 'bg-secondary-subtle', 'flex-grow-1'],
+            classNames: ['main-page', 'flex-grow-1'],
             innerHTML: template,
         }).getElement();
     }
