@@ -108,10 +108,13 @@ export class Controllers {
         }
     };
 
-    private onLoginSubmit = (e: Event): void => {
+    private onLoginSubmit = (e: SubmitEvent): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
+            console.log(target.querySelector('.form-control'));
+            const inputEmail = target.querySelector('.form-control');
+
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
@@ -124,9 +127,14 @@ export class Controllers {
                 })
                 .then((response: ClientResponse<CustomerToken>): void => {
                     console.log(response);
-                    alert('success');
+                    this.app?.showMessage('You are logged in');
                 })
-                .catch((err: Error) => alert(err.message));
+                .catch(() => {
+                    inputEmail?.classList.add('is-invalid');
+                    if (inputEmail?.nextElementSibling instanceof HTMLElement) {
+                        inputEmail.nextElementSibling.innerText = 'Account with the given credentials not found';
+                    }
+                });
         }
     };
 }

@@ -1,18 +1,22 @@
 import ElementCreator from '../../utils/template-creation';
-import template from './message.html';
+import './message.scss';
 
 export default class Message {
-    element: HTMLElement;
+    private _element: HTMLElement | null = null;
 
-    constructor() {
-        this.element = new ElementCreator({
+    constructor(text: string) {
+        this._element = new ElementCreator({
             tag: 'div',
-            classNames: ['message'],
-            innerHTML: template,
+            classNames: ['message', 'fixed-bottom', 'left-0', 'bg-primary', 'text-center', 'fs-4'],
+            innerHTML: text,
         }).getElement();
     }
 
-    public getElement(): HTMLElement {
-        return this.element;
+    public get element(): HTMLElement | null {
+        return this._element;
+    }
+
+    public removeElement() {
+        this._element = null;
     }
 }
