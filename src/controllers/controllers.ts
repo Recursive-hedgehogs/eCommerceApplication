@@ -2,6 +2,7 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
+import * as validationUtils from '../utils/validations';
 
 export class Controllers {
     private app: App | null;
@@ -31,8 +32,18 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
+        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('focusout', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
+    private onLoginValidate = (e: Event): void => {
+        const target = e.target as HTMLInputElement;
+        if (target.id === 'input-login-email') {
+            console.log(validationUtils.validateEmail(target.value));
+        }
+        if (target.id === 'input-login-password') {
+            console.log(validationUtils.validatePassword(target.value));
+        }
+    };
 
     private onMainPageClick = (e: Event): void => {
         e.preventDefault();
