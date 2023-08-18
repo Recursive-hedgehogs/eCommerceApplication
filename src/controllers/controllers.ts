@@ -35,13 +35,28 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('focusout', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
+
     private onLoginValidate = (e: Event): void => {
-        const target = e.target as HTMLInputElement;
-        if (target.id === 'input-login-email') {
-            console.log(validationUtils.validateEmail(target.value));
-        }
-        if (target.id === 'input-login-password') {
-            console.log(validationUtils.validatePassword(target.value));
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const parentDiv = target.closest('.form-item');
+        if (!parentDiv) return;
+        const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
+        const errorMessage =
+            target.id === 'input-login-email'
+                ? validationUtils.validateEmail(target.value)
+                : validationUtils.validatePassword(target.value);
+        target.classList.add('is-invalid');
+        if (inputError) {
+            inputError.textContent = errorMessage;
+            inputError.style.display = errorMessage ? 'block' : 'none';
+            if (!errorMessage) {
+                target.classList.remove('is-invalid');
+            }
+        } else if (errorMessage) {
+            const newErrorDiv = document.createElement('div');
+            newErrorDiv.classList.add('invalid-feedback');
+            newErrorDiv.textContent = errorMessage;
+            parentDiv.appendChild(newErrorDiv);
         }
     };
 

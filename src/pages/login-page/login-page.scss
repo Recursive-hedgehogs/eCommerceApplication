@@ -60,3 +60,16 @@
 .btn-link {
     cursor: pointer;
 }
+
+.password-icon-container {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.password {
+    position: relative;
+}
