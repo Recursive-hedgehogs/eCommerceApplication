@@ -109,7 +109,7 @@ export class Controllers {
             apiCustomer
                 .createCustomer(customerData)
                 .then((): void => {
-                    alert('success');
+                    this.app?.showMessage('Your account has been created');
                 })
                 .catch((err: Error) => alert(err.message));
         }

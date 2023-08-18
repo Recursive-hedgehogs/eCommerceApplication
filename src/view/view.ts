@@ -53,7 +53,7 @@ class View implements IView {
         if (message.element) {
             this.main?.getElement()?.after(message.element);
         }
-        // setTimeout(() => document.querySelector('.message')?.remove(), 5000);
+        setTimeout(() => document.querySelector('.message')?.remove(), 4000);
     }
 }
 
