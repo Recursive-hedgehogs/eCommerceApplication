@@ -23,6 +23,13 @@ export class Controllers {
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
+            if (this.app?.isAuthenticated()) {
+                console.log('Redirecting to MAIN page');
+                this.app?.setCurrentPage(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
+            } else {
+                console.log('Redirecting to LOGIN page');
+                this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
+            }
             this.app?.setCurrentPage(ROUTE.LOGIN);
         });
         registrBtn?.addEventListener('click', (): void => {
@@ -145,6 +152,7 @@ export class Controllers {
                 .then((response: ClientResponse<CustomerToken>): void => {
                     console.log(response);
                     alert('success');
+                    this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
                 .catch((err: Error) => alert(err.message));
