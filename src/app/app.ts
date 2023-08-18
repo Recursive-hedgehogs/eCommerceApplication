@@ -11,6 +11,7 @@ class App implements IApp {
     public main: Main;
     private router: Router;
     private loggedIn = false;
+    private regIn = false;
 
     constructor() {
         this.view = null;
@@ -50,6 +51,14 @@ class App implements IApp {
     }
     public isAuthenticated(): boolean {
         return this.loggedIn;
+    }
+
+    public setRegistrationStatus(status: boolean): void {
+        this.regIn = status;
+    }
+
+    public isRegistrated(): boolean {
+        return this.regIn;
     }
 }
 
