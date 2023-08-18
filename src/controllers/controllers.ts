@@ -66,7 +66,7 @@ export class Controllers {
         }
     };
 
-    private onNotFoundPageClick = (e: Event) => {
+    private onNotFoundPageClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
             this.app?.setCurrentPage(ROUTE.MAIN);
         }
@@ -120,7 +120,8 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             console.log(target.querySelector('.form-control'));
-            const inputEmail = target.querySelector('.form-control');
+            const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
+            const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
 
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = ['email', 'password'];
@@ -136,11 +137,14 @@ export class Controllers {
                     console.log(response);
                     this.app?.showMessage('You are logged in');
                 })
-                .catch(() => {
-                    inputEmail?.classList.add('is-invalid');
-                    if (inputEmail?.nextElementSibling instanceof HTMLElement) {
-                        inputEmail.nextElementSibling.innerText = 'Account with the given credentials not found';
-                    }
+                .catch((): void => {
+                    inputEmail?.forEach((el: Element): void => {
+                        el.classList.add('is-invalid');
+                    });
+                    fail?.forEach((el: HTMLElement): void => {
+                        el.innerText = 'Incorrect email or password - please try again.';
+                        el.style.display = 'block';
+                    });
                 });
         }
     };
