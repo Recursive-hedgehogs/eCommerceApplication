@@ -2,8 +2,6 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
-import * as validationUtils from '../utils/validations';
-
 export class Controllers {
     private app: App | null;
 
@@ -123,7 +121,7 @@ export class Controllers {
         }
     };
 
-    private onRegistrationSubmit = (e: Event): void => {
+    private onRegistrationSubmit = (e: SubmitEvent): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
