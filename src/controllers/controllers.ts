@@ -187,10 +187,18 @@ export class Controllers {
     private checkDefaltAddress = (e: Event): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLElement && target.id === 'checkSame') {
-            const shippingContainer: Element | null | undefined = this.app?.view?.pages
+            const shippingContainer: HTMLElement | null | undefined = this.app?.view?.pages
                 ?.get(ROUTE.REGISTRATION)
                 ?.querySelector('.shipping-address');
+            const billingContainer: HTMLElement | null | undefined = this.app?.view?.pages
+                ?.get(ROUTE.REGISTRATION)
+                ?.querySelector('.billing-address');
             shippingContainer?.classList.toggle('hidden');
+            if (billingContainer) {
+                shippingContainer?.classList.contains('hidden')
+                    ? (billingContainer.style.width = '100%')
+                    : (billingContainer.style.width = '50%');
+            }
             console.log(e);
         }
     };

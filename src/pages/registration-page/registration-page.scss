@@ -1,0 +1,41 @@
+.two-column {
+    width: 50%;
+}
+
+.row-address {
+    gap: 5%;
+}
+
+.label-small {
+    font-size: 0.85rem;
+}
+
+.names-column {
+    width: 50%;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.btn-modal {
+    width: 100%;
+    position: absolute;
+}
+
+.btn-modal-container {
+    height: 70px;
+    margin-top: 5%;
+    position: relative;
+    width: 100%;
+}
+
+.header-bg-color {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+@media (max-width: 550px) {
+    .two-column {
+        width: 100%;
+    }
+}
