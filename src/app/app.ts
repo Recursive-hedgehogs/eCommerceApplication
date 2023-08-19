@@ -4,6 +4,7 @@ import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
 
 import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
+import LoginPage from '../pages/login-page/login-page';
 import { Main } from '../components/main/main';
 
 class App implements IApp {
@@ -11,6 +12,7 @@ class App implements IApp {
     public view: View | null;
     private main: Main = new Main();
     private router: Router;
+    public loginPage: LoginPage;
     private loggedIn = false;
 
     constructor() {
@@ -18,6 +20,7 @@ class App implements IApp {
         this.router = new Router();
         this.main = new Main();
         this.countriesArray = iso31661;
+        this.loginPage = new LoginPage();
     }
 
     public start(view: View): void {
@@ -46,15 +49,14 @@ class App implements IApp {
         return this.countriesArray.find((el: ISO31661AssignedEntry): boolean => el.name === name)?.alpha2 ?? '';
     }
 
-
     public showMessage(text: string): void {
         this.view?.showMessage(text);
     }
-      
+
     public setAuthenticationStatus(status: boolean): void {
         this.loggedIn = status;
     }
-  
+
     public isAuthenticated(): boolean {
         return this.loggedIn;
     }
