@@ -4,18 +4,21 @@ import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
 import Main, { main } from '../components/main/main';
 import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
+import LoginPage from '../pages/login-page/login-page';
 
 class App implements IApp {
     private countriesArray: Array<ISO31661AssignedEntry>;
     public view: View | null;
     public main: Main;
     private router: Router;
+    public loginPage: LoginPage;
 
     constructor() {
         this.view = null;
         this.router = new Router();
         this.main = main;
         this.countriesArray = iso31661;
+        this.loginPage = new LoginPage();
     }
 
     public start(view: View): void {
