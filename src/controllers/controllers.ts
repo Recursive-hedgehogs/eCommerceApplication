@@ -33,8 +33,26 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('focusout', this.onLoginValidate);
+        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
+
+    private togglePassword = (): void => {
+        const passwordInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-login-password');
+        const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon');
+
+        passwordIcon?.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            }
+        });
+    };
 
     private onLoginValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
@@ -45,10 +63,13 @@ export class Controllers {
             target.id === 'input-login-email'
                 ? validationUtils.validateEmail(target.value)
                 : validationUtils.validatePassword(target.value);
-        target.classList.add('is-invalid');
+        // const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon');
+        console.log(errorMessage);
         if (inputError) {
+            target.classList.add('is-invalid');
             inputError.textContent = errorMessage;
             inputError.style.display = errorMessage ? 'block' : 'none';
+            // passwordIcon.style.display = errorMessage ? 'none' : 'inline-block';
             if (!errorMessage) {
                 target.classList.remove('is-invalid');
             }
@@ -57,6 +78,7 @@ export class Controllers {
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.appendChild(newErrorDiv);
+            // passwordIcon.style.display = 'none';
         }
     };
 
