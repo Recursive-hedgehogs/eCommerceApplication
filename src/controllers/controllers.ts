@@ -85,7 +85,7 @@ export class Controllers {
         }
     };
 
-    private onNotFoundPageClick = (e: Event) => {
+    private onNotFoundPageClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
             this.app?.setCurrentPage(ROUTE.MAIN);
         }
@@ -99,13 +99,16 @@ export class Controllers {
 
     private redirectCallBack = (e: PopStateEvent): void => {
         const currentPath: string = window.location.pathname.slice(1);
-        this.app?.setCurrentPage(currentPath, e.state.page === currentPath);
+        if (e.state && e.state.page) {
+            this.app?.setCurrentPage(currentPath, e.state.page === currentPath);
+        }
     };
 
     private onRegistrationSubmit = (e: Event): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
+            const inputEmail = target.querySelector('.email input');
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = [
                 'email',
@@ -131,17 +134,28 @@ export class Controllers {
                     this.onLoginSubmit(e); //call auto-login after registration
                 })
                 .then((): void => {
-                    alert('You have successfully registered');
+                    this.app?.showMessage('Your account has been created');
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
-                .catch((err: Error) => alert(err.message));
+                .catch((err: Error) => {
+                    inputEmail?.classList.add('is-invalid');
+                    if (inputEmail?.nextElementSibling) {
+                        inputEmail.nextElementSibling.innerHTML =
+                            'There is already an existing customer with the provided email.';
+                    }
+                    alert(err.message);
+                });
         }
     };
 
-    private onLoginSubmit = (e: Event): void => {
+    private onLoginSubmit = (e: SubmitEvent): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
+            // console.log(target.querySelector('.form-control'));
+            const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
+            const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
+
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
@@ -154,11 +168,19 @@ export class Controllers {
                 })
                 .then((response: ClientResponse<CustomerToken>): void => {
                     console.log(response);
-                    alert('You have successfully logged in');
+                    this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
-                .catch((err: Error) => alert(err.message));
+                .catch((): void => {
+                    inputEmail?.forEach((el: Element): void => {
+                        el.classList.add('is-invalid');
+                    });
+                    fail?.forEach((el: HTMLElement): void => {
+                        el.innerText = 'Incorrect email or password - please try again.';
+                        el.style.display = 'block';
+                    });
+                });
         }
     };
 }
