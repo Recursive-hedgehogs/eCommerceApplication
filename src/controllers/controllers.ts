@@ -21,11 +21,23 @@ export class Controllers {
 
         const loginBtn: HTMLElement | null = document.getElementById('login-btn');
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
+        const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
+            if (this.app?.isAuthenticated()) {
+                console.log('Redirecting to MAIN page');
+                this.app?.setCurrentPage(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
+            } else {
+                console.log('Redirecting to LOGIN page');
+                this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
+            }
             this.app?.setCurrentPage(ROUTE.LOGIN);
         });
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
+        });
+        logoLink?.addEventListener('click', (e): void => {
+            e.preventDefault();
+            this.app?.setCurrentPage(ROUTE.MAIN);
         });
 
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
@@ -41,24 +53,31 @@ export class Controllers {
             switch (target.dataset.link) {
                 case ROUTE.LOGIN:
                     this.app?.setCurrentPage(ROUTE.LOGIN);
+                    document.title = 'eCommerceApplication/Login';
                     break;
                 case ROUTE.REGISTRATION:
                     this.app?.setCurrentPage(ROUTE.REGISTRATION);
+                    document.title = 'eCommerceApplication/Registration';
                     break;
                 case ROUTE.CATALOG:
                     this.app?.setCurrentPage(ROUTE.CATALOG);
+                    document.title = 'eCommerceApplication/Catalog';
                     break;
                 case ROUTE.PRODUCT:
                     this.app?.setCurrentPage(ROUTE.PRODUCT);
+                    document.title = 'eCommerceApplication/Product';
                     break;
                 case ROUTE.USER:
                     this.app?.setCurrentPage(ROUTE.USER);
+                    document.title = 'eCommerceApplication/User';
                     break;
                 case ROUTE.BASKET:
                     this.app?.setCurrentPage(ROUTE.BASKET);
+                    document.title = 'eCommerceApplication/Basket';
                     break;
                 case ROUTE.ABOUT:
                     this.app?.setCurrentPage(ROUTE.ABOUT);
+                    document.title = 'eCommerceApplication/About';
                     break;
                 default:
                     break;
@@ -108,8 +127,12 @@ export class Controllers {
 
             apiCustomer
                 .createCustomer(customerData)
+                .then(() => {
+                    this.onLoginSubmit(e); //call auto-login after registration
+                })
                 .then((): void => {
-                    alert('success');
+                    alert('You have successfully registered');
+                    this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
                 .catch((err: Error) => alert(err.message));
         }
@@ -131,7 +154,9 @@ export class Controllers {
                 })
                 .then((response: ClientResponse<CustomerToken>): void => {
                     console.log(response);
-                    alert('success');
+                    alert('You have successfully logged in');
+                    this.app?.setAuthenticationStatus(true); // set authentication state
+                    this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
                 .catch((err: Error) => alert(err.message));
         }
