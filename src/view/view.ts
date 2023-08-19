@@ -4,17 +4,20 @@ import Header from '../components/header/header';
 import MainPage from '../pages/main-page/main-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
 import { ROUTE } from '../models/enums/enum';
-import { main } from '../components/main/main';
+import { Main } from '../components/main/main';
 import App from '../app/app';
 import RegistrationPage from '../pages/registration-page/registration-page';
+import Message from '../components/message/message';
 
 class View implements IView {
     public app: App | null;
     private _pages?: Map<string, HTMLElement>;
+    private readonly main: Main;
 
     constructor() {
         this.app = null;
         this.setPages();
+        this.main = new Main();
     }
 
     public get pages() {
@@ -28,7 +31,7 @@ class View implements IView {
 
     public build(): void {
         const header: HTMLElement = new Header().getElement();
-        const mainElement: HTMLElement = main.getElement();
+        const mainElement: HTMLElement = this.main.getElement();
         document.body.append(header, mainElement);
     }
 
@@ -42,6 +45,15 @@ class View implements IView {
         this._pages.set(ROUTE.LOGIN, loginPage);
         this._pages.set(ROUTE.REGISTRATION, registrPage);
         this._pages.set(ROUTE.NOT_FOUND, notFoundPage);
+    }
+
+    showMessage(text: string): void {
+        const message: Message = new Message(text);
+        console.log(this.main);
+        if (message.element) {
+            this.main?.getElement()?.after(message.element);
+        }
+        setTimeout(() => document.querySelector('.message')?.remove(), 4000);
     }
 }
 
