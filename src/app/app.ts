@@ -11,6 +11,7 @@ class App implements IApp {
     public view: View | null;
     private main: Main = new Main();
     private router: Router;
+    private loggedIn = false;
 
     constructor() {
         this.view = null;
@@ -25,6 +26,10 @@ class App implements IApp {
 
     public setCurrentPage(route: string, isUpdate?: boolean): void {
         if (this.view && this.view.pages) {
+            if (route === ROUTE.LOGIN && this.isAuthenticated()) {
+                route = ROUTE.MAIN;
+            }
+
             const page: HTMLElement | undefined = this.view.pages.has(route)
                 ? this.view.pages.get(route)
                 : this.view.pages.get(ROUTE.NOT_FOUND);
@@ -41,8 +46,17 @@ class App implements IApp {
         return this.countriesArray.find((el: ISO31661AssignedEntry): boolean => el.name === name)?.alpha2 ?? '';
     }
 
+
     public showMessage(text: string): void {
         this.view?.showMessage(text);
+    }
+      
+    public setAuthenticationStatus(status: boolean): void {
+        this.loggedIn = status;
+    }
+  
+    public isAuthenticated(): boolean {
+        return this.loggedIn;
     }
 }
 
