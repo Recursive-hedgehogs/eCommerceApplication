@@ -33,10 +33,7 @@ export class Controllers {
             this.app?.setCurrentPage(ROUTE.LOGIN);
         });
         registrBtn?.addEventListener('click', (): void => {
-            const isAuthenticated = this.app?.isAuthenticated();
-            const isRegistrated = this.app?.isRegistrated();
-
-            this.app?.setCurrentPage(isAuthenticated ? ROUTE.MAIN : isRegistrated ? ROUTE.MAIN : ROUTE.REGISTRATION);
+            this.app?.setCurrentPage(ROUTE.REGISTRATION);
         });
         logoLink?.addEventListener('click', (e): void => {
             e.preventDefault();
@@ -135,7 +132,6 @@ export class Controllers {
                 })
                 .then((): void => {
                     alert('You have successfully registered');
-                    this.app?.setRegistrationStatus(true);
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
                 .catch((err: Error) => alert(err.message));
