@@ -80,13 +80,16 @@ export class Controllers {
 
     private redirectCallBack = (e: PopStateEvent): void => {
         const currentPath: string = window.location.pathname.slice(1);
-        this.app?.setCurrentPage(currentPath, e.state.page === currentPath);
+        if (e.state && e.state.page) {
+            this.app?.setCurrentPage(currentPath, e.state.page === currentPath);
+        }
     };
 
     private onRegistrationSubmit = (e: Event): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
+            const inputEmail = target.querySelector('.email input');
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = [
                 'email',
@@ -111,7 +114,14 @@ export class Controllers {
                 .then((): void => {
                     this.app?.showMessage('Your account has been created');
                 })
-                .catch((err: Error) => alert(err.message));
+                .catch((err: Error) => {
+                    inputEmail?.classList.add('is-invalid');
+                    if (inputEmail?.nextElementSibling) {
+                        inputEmail.nextElementSibling.innerHTML =
+                            'There is already an existing customer with the provided email.';
+                    }
+                    alert(err.message);
+                });
         }
     };
 
@@ -119,7 +129,7 @@ export class Controllers {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
-            console.log(target.querySelector('.form-control'));
+            // console.log(target.querySelector('.form-control'));
             const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
             const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
 
