@@ -42,6 +42,7 @@ export class Controllers {
 
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.checkDefaltAddress);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
@@ -104,11 +105,11 @@ export class Controllers {
         }
     };
 
-    private onRegistrationSubmit = (e: Event): void => {
+    private onRegistrationSubmit = (e: SubmitEvent): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
-            const inputEmail = target.querySelector('.email input');
+            const inputEmail: Element | null = target.querySelector('.email input');
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = [
                 'email',
@@ -130,7 +131,7 @@ export class Controllers {
 
             apiCustomer
                 .createCustomer(customerData)
-                .then(() => {
+                .then((): void => {
                     this.onLoginSubmit(e); //call auto-login after registration
                 })
                 .then((): void => {
@@ -152,7 +153,6 @@ export class Controllers {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
-            // console.log(target.querySelector('.form-control'));
             const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
             const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
 
@@ -181,6 +181,17 @@ export class Controllers {
                         el.style.display = 'block';
                     });
                 });
+        }
+    };
+
+    private checkDefaltAddress = (e: Event): void => {
+        const target: EventTarget | null = e.target;
+        if (target instanceof HTMLElement && target.id === 'checkSame') {
+            const shippingContainer: Element | null | undefined = this.app?.view?.pages
+                ?.get(ROUTE.REGISTRATION)
+                ?.querySelector('.shipping-address');
+            shippingContainer?.classList.toggle('hidden');
+            console.log(e);
         }
     };
 }
