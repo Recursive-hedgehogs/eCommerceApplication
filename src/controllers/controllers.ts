@@ -2,7 +2,6 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
-
 export class Controllers {
     private app: App | null;
 
@@ -44,8 +43,26 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.checkDefaltAddress);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
+        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
+        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
+
+    private togglePassword = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'password-icon') {
+            this.app?.loginPage.changePasswordVisibility();
+        }
+    };
+
+    private onLoginValidate = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'input-login-email') {
+            this.app?.loginPage.onEmailValidate(target);
+        } else if (target.id === 'input-login-password') {
+            this.app?.loginPage.onPasswordValidate(target);
+        }
+    };
 
     private onMainPageClick = (e: Event): void => {
         e.preventDefault();
