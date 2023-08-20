@@ -42,7 +42,7 @@ export class Controllers {
 
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.checkDefaltAddress);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
@@ -128,15 +128,24 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
-            const defaltSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
+            // const defaultSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
             const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
             const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
             const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
             const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
-            const namesFields: string[] = ['email', 'password', 'firstName', 'lastName', 'dateOfBirth'];
-            const personalArray: string[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
+            const namesFields: string[] = [
+                'email',
+                'password',
+                'firstName',
+                'lastName',
+                'dateOfBirth',
+                'defaultBillingAddress',
+                'defaultShippingAddress',
+                'sameAddress',
+            ];
+            const personalArray: (string | boolean)[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
                 namesFields[i],
-                el.value,
+                el.type === 'checkbox' ? el.checked : el.value,
             ]);
             const billingArray: string[][] = [...billingAddress].map((el: HTMLInputElement, i: number) => [
                 addressFields[i],
@@ -156,7 +165,15 @@ export class Controllers {
             customerData.addresses = [billingData, shippingData];
             customerData.shippingAddresses = [1];
             customerData.billingAddresses = [0];
-            customerData.defaultBillingAddress = 0;
+
+            customerData.defaultShippingAddress = customerData.defaultShippingAddress ? 1 : null;
+            customerData.defaultBillingAddress = customerData.defaultBillingAddress ? 0 : null;
+
+            if (customerData.sameAddress) {
+                customerData.addresses[1] = customerData.addresses[0];
+                shippingAddress.forEach((el: HTMLInputElement, i: number) => (el.value = billingAddress[i].value));
+                delete customerData.sameAddress;
+            }
 
             console.log(customerData);
 
@@ -215,7 +232,7 @@ export class Controllers {
         }
     };
 
-    private checkDefaltAddress = (e: Event): void => {
+    private onRegistrationChange = (e: Event): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLElement && target.id === 'checkSame') {
             const shippingContainer: HTMLElement | null | undefined = this.app?.view?.pages
@@ -225,12 +242,17 @@ export class Controllers {
                 ?.get(ROUTE.REGISTRATION)
                 ?.querySelector('.billing-address');
             shippingContainer?.classList.toggle('hidden');
+
+            const shippingAddress: NodeListOf<HTMLInputElement> | undefined =
+                shippingContainer?.querySelectorAll('.shipping');
+            shippingAddress?.forEach((el: HTMLInputElement): boolean => (el.required = false));
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
             if (billingContainer) {
                 shippingContainer?.classList.contains('hidden')
                     ? (billingContainer.style.width = '100%')
                     : (billingContainer.style.width = '50%');
             }
-            // console.log(e);
         }
     };
 }
