@@ -11,14 +11,7 @@ class ApiCustomer {
         return apiRoot
             .customers()
             .post({
-                body: {
-                    email: data.email,
-                    password: data.password,
-                    dateOfBirth: data.dateOfBirth,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    addresses: data.addresses,
-                },
+                body: data,
             })
             .execute()
             .catch((err) => {

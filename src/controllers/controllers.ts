@@ -2,6 +2,7 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
+
 export class Controllers {
     private app: App | null;
 
@@ -127,24 +128,37 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
-            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
-            const fieldNames: string[] = [
-                'email',
-                'password',
-                'firstName',
-                'lastName',
-                'dateOfBirth',
-                'country',
-                'city',
-                'streetName',
-                'postalCode',
-            ];
-            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
-            const address = Object.fromEntries(pairs.slice(5));
-            const customerData = Object.fromEntries(pairs.slice(0, 5));
+            const defaltSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
+            const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
+            const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
+            const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
+            const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
+            const namesFields: string[] = ['email', 'password', 'firstName', 'lastName', 'dateOfBirth'];
+            const personalArray: string[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
+                namesFields[i],
+                el.value,
+            ]);
+            const billingArray: string[][] = [...billingAddress].map((el: HTMLInputElement, i: number) => [
+                addressFields[i],
+                el.value,
+            ]);
+            const shippingArray: string[][] = [...shippingAddress].map((el: HTMLInputElement, i: number) => [
+                addressFields[i],
+                el.value,
+            ]);
+            const customerData = Object.fromEntries(personalArray);
+            const billingData = Object.fromEntries(billingArray);
+            const shippingData = Object.fromEntries(shippingArray);
 
-            address.country = this.app?.getCodeFromCountryName(address.country);
-            customerData.addresses = [address];
+            billingData.country = this.app?.getCodeFromCountryName(billingData.country);
+            shippingData.country = this.app?.getCodeFromCountryName(shippingData.country);
+
+            customerData.addresses = [billingData, shippingData];
+            customerData.shippingAddresses = [1];
+            customerData.billingAddresses = [0];
+            customerData.defaultBillingAddress = 0;
+
+            console.log(customerData);
 
             apiCustomer
                 .createCustomer(customerData)
@@ -155,7 +169,7 @@ export class Controllers {
                     this.app?.showMessage('Your account has been created');
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
-                .catch((err: Error) => {
+                .catch((err: Error): void => {
                     inputEmail?.classList.add('is-invalid');
                     if (inputEmail?.nextElementSibling) {
                         inputEmail.nextElementSibling.innerHTML =
@@ -216,7 +230,7 @@ export class Controllers {
                     ? (billingContainer.style.width = '100%')
                     : (billingContainer.style.width = '50%');
             }
-            console.log(e);
+            // console.log(e);
         }
     };
 }
