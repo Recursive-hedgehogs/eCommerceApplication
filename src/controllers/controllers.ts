@@ -178,7 +178,7 @@ export class Controllers {
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
             const customerData = Object.fromEntries(pairs);
             apiCustomer
-                .signIn(customerData)
+                .signIn1(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
@@ -188,6 +188,24 @@ export class Controllers {
                     this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                })
+                .then(() => {
+                    // fetch(`${environment.authURL}/oauth/${environment.projectKey}/customers/token`, {
+                    //     body: `grant_type=password&username=${customerData['email']}&password=${customerData['password']}&scope=view_published_products:${environment.projectKey} manage_my_orders:${environment.projectKey} manage_my_profile:${environment.projectKey}`,
+                    //     headers: {
+                    //         Authorization: "Basic e2NsaWVudElkfTp7Y2xpZW50U2VjcmV0fQ==",
+                    //         "Content-Type": "application/x-www-form-urlencoded"
+                    //     },
+                    //     method: "POST"
+                    // }).then(r  => console.log(r));
+                    // fetch(`${environment.authURL}/oauth/${environment.projectKey}/customers/token`, {
+                    //     body: `grant_type=client_credentials&scope=manage_project:${ environment.projectKey }`,
+                    //     headers: {
+                    //         Authorization: "Basic e2NsaWVudElkfTp7Y2xpZW50U2VjcmV0fQ==",
+                    //         "Content-Type": "application/x-www-form-urlencoded"
+                    //     },
+                    //     method: "POST"
+                    // }).then(r  => console.log(r));
                 })
                 .catch((): void => {
                     inputEmail?.forEach((el: Element): void => {

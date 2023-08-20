@@ -5,8 +5,14 @@ import {
     IPasswordResetTokenCredentials,
 } from '../models/interfaces/interface';
 import { apiRoot } from './api-client';
+import { Api } from './api';
+import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 
 class ApiCustomer {
+    private api: Api;
+    constructor() {
+        this.api = new Api();
+    }
     createCustomer = (data: ICreateCustomerCredentials) => {
         return apiRoot
             .customers()
@@ -26,7 +32,24 @@ class ApiCustomer {
             });
     };
 
-    signIn = (data: ILoginCredentials) => {
+    // signIn = (data: ILoginCredentials) => {
+    //     return apiRoot
+    //         .login()
+    //         .post({
+    //             body: {
+    //                 email: data.email,
+    //                 password: data.password,
+    //             },
+    //         })
+    //         .execute()
+    //         .catch((err) => {
+    //             throw Error(err);
+    //         });
+    // };
+
+    signIn1 = (data: ILoginCredentials) => {
+        this.api.setUserData(data.email, data.password);
+        const apiRoot = this.api.apiRoot as ByProjectKeyRequestBuilder;
         return apiRoot
             .login()
             .post({
