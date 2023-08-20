@@ -45,6 +45,7 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
 
@@ -61,6 +62,17 @@ export class Controllers {
             this.app?.loginPage.onEmailValidate(target);
         } else if (target.id === 'input-login-password') {
             this.app?.loginPage.onPasswordValidate(target);
+        }
+    };
+
+    private onRegistrationValidate = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'input-registr-email') {
+            this.app?.loginPage.onEmailValidate(target);
+        } else if (target.id === 'input-registr-password') {
+            this.app?.loginPage.onPasswordValidate(target);
+        } else if (target.id === 'input-first-name' || target.id === 'input-last-name') {
+            this.app?.registrationPage.onNameValidate(target);
         }
     };
 

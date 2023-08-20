@@ -52,3 +52,16 @@ export const validatePassword = (password: string): string | null => {
     // If all checks passed, return null to indicate no error
     return null;
 };
+
+export const validateName = (userName: string): string | null => {
+    const hasValidCharacters = /^[A-Za-z]+$/.test(userName);
+    if (!hasValidCharacters) {
+        return 'Name should only contain letters';
+    }
+    const hasAtLeastOneCharacter = userName.length > 0;
+    if (!hasAtLeastOneCharacter) {
+        return 'Name should contain at least one character';
+    }
+    // If all checks passed, return null to indicate no error
+    return null;
+};
