@@ -5,6 +5,7 @@ import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import SdkAuth from '@commercetools/sdk-auth';
 import { ApiExistingTokenFlow } from './api-existing-token-flow';
+import { ITokenResponse } from '../models/interfaces/interface';
 
 export class ApiPasswordFlow {
     private static singleton: ApiPasswordFlow;
@@ -37,7 +38,7 @@ export class ApiPasswordFlow {
         return ApiPasswordFlow.singleton ?? (ApiPasswordFlow.singleton = this);
     }
 
-    setUserData(email: string, password: string) {
+    setUserData(email: string, password: string): void {
         const authClient = new SdkAuth({
             host: environment.authURL,
             projectKey: environment.projectKey,
@@ -59,7 +60,7 @@ export class ApiPasswordFlow {
         this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
             projectKey: environment.projectKey,
         });
-        const a = authClient
+        authClient
             .customerPasswordFlow(
                 {
                     username: email,
@@ -69,11 +70,10 @@ export class ApiPasswordFlow {
                     disableRefreshToken: false,
                 }
             )
-            .then((resp: Response) => {
+            .then((resp: ITokenResponse): void => {
                 console.log(resp);
-                localStorage.setItem('refreshToken', a.refresh_token);
-                this.token = a.token;
-                this.apiExistingTokenFlow?.setUserData(a.access_token);
+                localStorage.setItem('refreshToken', resp.refresh_token);
+                this.apiExistingTokenFlow?.setUserData(resp.access_token);
             })
             .catch((err: Error) => console.log(err));
     }

@@ -10,7 +10,7 @@ test('Husky is configured in package.json', () => {
 });
 
 test('Husky is installed and configured properly', () => {
-    const huskyConfig: { hooks: { "pre-commit": string } } = packageJson.husky;
+    const huskyConfig: { hooks: { 'pre-commit': string } } = packageJson.husky;
     expect(huskyConfig.hooks['pre-commit']).toBeDefined();
     expect(huskyConfig.hooks['pre-commit']).toBe('lint');
 });
