@@ -21,7 +21,7 @@ export default class RegistrationPage {
         const parentDiv = nameInput.closest('.form-item');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
-        const errorMessage = validationUtils.validatePostalCode(nameInput.value);
+        const errorMessage = validationUtils.validateName(nameInput.value);
         if (errorMessage) {
             nameInput.classList.add('is-invalid');
         }

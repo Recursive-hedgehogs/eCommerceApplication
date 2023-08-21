@@ -57,9 +57,9 @@ export const validateName = (userName: string): string | null => {
     const hasValidCharacters = /^[A-Za-zА-Яа-яЁё]+$/.test(userName);
     const hasAtLeastOneCharacter = userName.length > 0;
     if (!hasAtLeastOneCharacter) {
-        return 'Name should contain at least one character';
+        return 'Should contain at least one character';
     } else if (!hasValidCharacters) {
-        return 'Name should only contain letters';
+        return 'Should only contain letters';
     }
     // If all checks passed, return null to indicate no error
     return null;

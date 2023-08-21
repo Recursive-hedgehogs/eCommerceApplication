@@ -72,7 +72,9 @@ export class Controllers {
             document.getElementById('input-postal-code-ship')
         );
         const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country');
-        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country-ship');
+        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
+            document.getElementById('input-country-ship')
+        );
         countrySelect.addEventListener('change', function () {
             postalCodeInput.value = '';
         });
@@ -94,9 +96,11 @@ export class Controllers {
                 this.app?.registrationPage.onDateDateOfBirth(target);
                 break;
             case 'input-city':
+            case 'input-city-ship':
                 this.app?.registrationPage.onNameValidate(target);
                 break;
             case 'input-street':
+            case 'input-street-ship':
                 this.app?.registrationPage.onNameValidate(target);
                 break;
             case 'input-postal-code':
