@@ -2,6 +2,7 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
+import { validateEmail, validatePassword } from '../utils/validations';
 
 export class Controllers {
     private app: App | null;
@@ -35,7 +36,7 @@ export class Controllers {
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
         });
-        logoLink?.addEventListener('click', (e): void => {
+        logoLink?.addEventListener('click', (e: MouseEvent): void => {
             e.preventDefault();
             this.app?.setCurrentPage(ROUTE.MAIN);
         });
@@ -180,7 +181,6 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
-            // const defaultSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
             const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
             const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
             const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
@@ -260,10 +260,14 @@ export class Controllers {
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
             const customerData = Object.fromEntries(pairs);
+            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
+                return;
+            }
             apiCustomer
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
+                    console.log(resp);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((response: ClientResponse<CustomerToken>): void => {
@@ -278,7 +282,6 @@ export class Controllers {
                     });
                     fail?.forEach((el: HTMLElement): void => {
                         el.innerText = 'Incorrect email or password - please try again.';
-                        el.style.display = 'block';
                     });
                 });
         }
