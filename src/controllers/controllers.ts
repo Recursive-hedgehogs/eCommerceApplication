@@ -2,6 +2,7 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
+import { validateEmail, validatePassword } from '../utils/validations';
 
 export class Controllers {
     private app: App | null;
@@ -35,7 +36,7 @@ export class Controllers {
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
         });
-        logoLink?.addEventListener('click', (e): void => {
+        logoLink?.addEventListener('click', (e: MouseEvent): void => {
             e.preventDefault();
             this.app?.setCurrentPage(ROUTE.MAIN);
         });
@@ -46,6 +47,7 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
 
@@ -62,6 +64,57 @@ export class Controllers {
             this.app?.loginPage.onEmailValidate(target);
         } else if (target.id === 'input-login-password') {
             this.app?.loginPage.onPasswordValidate(target);
+        }
+    };
+
+    private onRegistrationValidate = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const postalCodeInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-postal-code');
+        const postalCodeShipInput: HTMLInputElement = <HTMLInputElement>(
+            document.getElementById('input-postal-code-ship')
+        );
+        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country');
+        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
+            document.getElementById('input-country-ship')
+        );
+        countrySelect.addEventListener('change', function () {
+            postalCodeInput.value = '';
+        });
+        countryShipSelect.addEventListener('change', function () {
+            postalCodeShipInput.value = '';
+        });
+        switch (target.id) {
+            case 'input-registr-email':
+                this.app?.loginPage.onEmailValidate(target);
+                break;
+            case 'input-registr-password':
+                this.app?.loginPage.onPasswordValidate(target);
+                break;
+            case 'input-first-name':
+            case 'input-last-name':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-date-birth':
+                this.app?.registrationPage.onDateDateOfBirth(target);
+                break;
+            case 'input-city':
+            case 'input-city-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-street':
+            case 'input-street-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-postal-code':
+                this.checkCountry(target, countrySelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            case 'input-postal-code-ship':
+                this.checkCountry(target, countryShipSelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            default:
+                break;
         }
     };
 
@@ -128,7 +181,6 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
-            // const defaultSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
             const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
             const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
             const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
@@ -208,10 +260,14 @@ export class Controllers {
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
             const customerData = Object.fromEntries(pairs);
+            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
+                return;
+            }
             apiCustomer
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
+                    console.log(resp);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((response: ClientResponse<CustomerToken>): void => {
@@ -226,7 +282,6 @@ export class Controllers {
                     });
                     fail?.forEach((el: HTMLElement): void => {
                         el.innerText = 'Incorrect email or password - please try again.';
-                        el.style.display = 'block';
                     });
                 });
         }
@@ -255,4 +310,14 @@ export class Controllers {
             }
         }
     };
+
+    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement) {
+        target.addEventListener('keypress', (event) => {
+            if (country.value === 'Poland') {
+                this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
+            } else if (country.value === 'Germany') {
+                this.app?.registrationPage.formatPostalCode(event, target, '', 5);
+            }
+        });
+    }
 }

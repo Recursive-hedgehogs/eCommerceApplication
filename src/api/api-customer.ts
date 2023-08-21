@@ -1,12 +1,19 @@
-import {
-    ICreateCustomerCredentials,
-    IEmailTokenCredentials,
-    ILoginCredentials,
-    IPasswordResetTokenCredentials,
-} from '../models/interfaces/interface';
+import { ICreateCustomerCredentials, IEmailTokenCredentials, ILoginCredentials } from '../models/interfaces/interface';
 import { apiRoot } from './api-client';
+import { ApiPasswordFlow } from './api-password-flow';
+import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
+import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
+import { ApiExistingTokenFlow } from './api-existing-token-flow';
 
 class ApiCustomer {
+    private apiPasswordFlow: ApiPasswordFlow;
+    private apiRefreshTokenFlow: ApiRefreshTokenFlow;
+    private apiExistingTokenFlow: ApiExistingTokenFlow;
+    constructor() {
+        this.apiPasswordFlow = new ApiPasswordFlow();
+        this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
+        this.apiExistingTokenFlow = new ApiExistingTokenFlow();
+    }
     createCustomer = (data: ICreateCustomerCredentials) => {
         return apiRoot
             .customers()
@@ -20,6 +27,29 @@ class ApiCustomer {
     };
 
     signIn = (data: ILoginCredentials) => {
+        this.apiPasswordFlow.setUserData(data.email, data.password);
+        const apiRoot: ByProjectKeyRequestBuilder = this.apiPasswordFlow.apiRoot as ByProjectKeyRequestBuilder;
+        return apiRoot
+            .login()
+            .post({
+                body: {
+                    email: data.email,
+                    password: data.password,
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    signIn2 = (data: ILoginCredentials) => {
+        const refresh = localStorage.getItem('refreshToken');
+        if (refresh) {
+            this.apiRefreshTokenFlow.setUserData(refresh);
+            this.apiRefreshTokenFlow.apiRoot?.customers().get().execute();
+        }
+        const apiRoot: ByProjectKeyRequestBuilder = this.apiRefreshTokenFlow.apiRoot as ByProjectKeyRequestBuilder;
         return apiRoot
             .login()
             .post({
@@ -47,18 +77,15 @@ class ApiCustomer {
             });
     };
 
-    createPasswordToken = (data: IPasswordResetTokenCredentials) => {
-        return apiRoot
-            .customers()
-            .passwordToken()
-            .post({
-                body: data,
-            })
+    public getUser(ID: string) {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.customers()
+            .withId({ ID })
+            .get()
             .execute()
             .catch((err) => {
                 throw Error(err);
             });
-    };
+    }
 }
-
 export const apiCustomer: ApiCustomer = new ApiCustomer();

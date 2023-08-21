@@ -14,4 +14,6 @@ export const environment = {
     authURL: 'https://auth.europe-west1.gcp.commercetools.com',
     apiURL: 'https://api.europe-west1.gcp.commercetools.com',
     scope: 'manage_customers:ecommerce-shop',
+    username: '',
+    password: '',
 };

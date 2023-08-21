@@ -24,7 +24,7 @@
     margin: 0 auto;
     max-width: 750px;
     height: 100%;
-    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
 }
 
 .modal-header {
@@ -39,7 +39,6 @@
     padding: 3%;
     width: 100%;
     text-align: center;
-    padding: 3%;
     justify-content: center;
     font-weight: 600;
 }
@@ -48,11 +47,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    padding: 40px;
 }
 
+.modal-body {
+    width: 100%;
+    max-width: 330px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 .form-item {
     margin: 5% 0;
+    width: 100%;
+    max-width: 340px;
 }
 
 .btn-modal-container {
@@ -60,6 +70,7 @@
     margin-top: 5%;
     position: relative;
     width: 100%;
+    max-width: 330px;
 }
 
 .btn-modal {
@@ -79,14 +90,29 @@
 
 .password-icon-container {
     position: absolute;
-    top: 50%;
-    right: 10px;
+    top: 20px;
+    right: 2px;
     transform: translateY(-50%);
     overflow: hidden;
     cursor: pointer;
     z-index: 5;
+    .fas {
+        display: block !important;
+    }
 }
 
 .password {
     position: relative;
+}
+
+.form-item {
+    height: 43px;
+}
+
+.invalid-feedback {
+    height: 10px;
+}
+
+.input-group-text {
+    border-radius: 0 6px 6px 0 !important;
 }

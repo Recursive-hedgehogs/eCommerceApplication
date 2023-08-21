@@ -6,6 +6,7 @@ import { ROUTE } from '../models/enums/enum';
 import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
 import LoginPage from '../pages/login-page/login-page';
 import { Main } from '../components/main/main';
+import RegistrationPage from '../pages/registration-page/registration-page';
 
 class App implements IApp {
     private countriesArray: Array<ISO31661AssignedEntry>;
@@ -13,6 +14,7 @@ class App implements IApp {
     private main: Main = new Main();
     private router: Router;
     public loginPage: LoginPage;
+    public registrationPage: RegistrationPage;
     private loggedIn = false;
 
     constructor() {
@@ -21,6 +23,7 @@ class App implements IApp {
         this.main = new Main();
         this.countriesArray = iso31661;
         this.loginPage = new LoginPage();
+        this.registrationPage = new RegistrationPage();
     }
 
     public start(view: View): void {
@@ -59,6 +62,18 @@ class App implements IApp {
 
     public isAuthenticated(): boolean {
         return this.loggedIn;
+    }
+
+    public setLocalStorage(key: string, value: unknown): void {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    public getDataFromLocalStorage(key: string): string | null {
+        return localStorage.getItem(key);
+    }
+
+    public removeDatafromLocalStorage(key: string): void {
+        localStorage.removeItem(key);
     }
 }
 
