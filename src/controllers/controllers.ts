@@ -2,6 +2,7 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
+import { validateEmail, validatePassword } from '../utils/validations';
 export class Controllers {
     private app: App | null;
 
@@ -167,6 +168,7 @@ export class Controllers {
     };
 
     private onLoginSubmit = (e: SubmitEvent): void => {
+        console.log(e);
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
@@ -177,6 +179,9 @@ export class Controllers {
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
             const customerData = Object.fromEntries(pairs);
+            // if (validateEmail(customerData.email) && validatePassword(customerData.password)) {
+            //     return
+            // }
             apiCustomer
                 .signIn1(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
@@ -188,24 +193,6 @@ export class Controllers {
                     this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
-                })
-                .then(() => {
-                    // fetch(`${environment.authURL}/oauth/${environment.projectKey}/customers/token`, {
-                    //     body: `grant_type=password&username=${customerData['email']}&password=${customerData['password']}&scope=view_published_products:${environment.projectKey} manage_my_orders:${environment.projectKey} manage_my_profile:${environment.projectKey}`,
-                    //     headers: {
-                    //         Authorization: "Basic e2NsaWVudElkfTp7Y2xpZW50U2VjcmV0fQ==",
-                    //         "Content-Type": "application/x-www-form-urlencoded"
-                    //     },
-                    //     method: "POST"
-                    // }).then(r  => console.log(r));
-                    // fetch(`${environment.authURL}/oauth/${environment.projectKey}/customers/token`, {
-                    //     body: `grant_type=client_credentials&scope=manage_project:${ environment.projectKey }`,
-                    //     headers: {
-                    //         Authorization: "Basic e2NsaWVudElkfTp7Y2xpZW50U2VjcmV0fQ==",
-                    //         "Content-Type": "application/x-www-form-urlencoded"
-                    //     },
-                    //     method: "POST"
-                    // }).then(r  => console.log(r));
                 })
                 .catch((): void => {
                     inputEmail?.forEach((el: Element): void => {

@@ -32,10 +32,10 @@ export default class LoginPage {
     }
 
     public onEmailValidate = (emailInput: HTMLInputElement): void => {
-        const parentDiv = emailInput.closest('.form-item');
+        const parentDiv: Element | null = emailInput.closest('.form-item');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
-        const errorMessage = validationUtils.validateEmail(emailInput.value);
+        const errorMessage: string | null = validationUtils.validateEmail(emailInput.value);
         if (inputError) {
             emailInput.classList.add('is-invalid');
             inputError.textContent = errorMessage;
@@ -43,7 +43,7 @@ export default class LoginPage {
                 emailInput.classList.remove('is-invalid');
             }
         } else if (errorMessage) {
-            const newErrorDiv = document.createElement('div');
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
@@ -51,11 +51,11 @@ export default class LoginPage {
     };
 
     public onPasswordValidate = (passwordInput: HTMLInputElement): void => {
-        const parentDiv = passwordInput.closest('.form-item');
+        const parentDiv: Element | null = passwordInput.closest('.form-item');
         const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
-        const errorMessage = validationUtils.validatePassword(passwordInput.value);
+        const errorMessage: string | null = validationUtils.validatePassword(passwordInput.value);
         if (inputError) {
             passwordInput.classList.add('is-invalid');
             inputError.textContent = errorMessage;
@@ -64,7 +64,7 @@ export default class LoginPage {
                 passwordInput.classList.remove('is-invalid');
             }
         } else if (errorMessage) {
-            const newErrorDiv = document.createElement('div');
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
