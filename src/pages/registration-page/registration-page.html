@@ -33,15 +33,18 @@
                         </div>
                     </div>
                     <div class="date-of-birth form-item">
-                        <input id="input-date-birth" type="date" class="personal form-control"
-                            placeholder="Enter your date of birth" required>
+                        <input id="input-date-birth" type="date" class="form-control"
+                            placeholder="Enter your date of birth" lang="en" required>
                     </div>
                     <div class="row border">
                         <div class="billing-address rounded-1 p-2 two-column">
                             <h6 class="text-primary">Billing address</h6>
                             <div class="country form-item">
-                                <input id="input-country" type="text" class="billing form-control"
-                                    placeholder="Enter your country" required>
+                                <select id="input-country" class="form-select">
+                                    <option value="" disabled selected>Country</option>
+                                    <option value="Poland">Poland</option>
+                                    <option value="Germany">Germany</option>
+                                  </select>
                             </div>
                             <div class="city form-item">
                                 <input id="input-city" type="text" class="billing form-control" placeholder="Enter your city"
@@ -66,8 +69,11 @@
                         <div class="shipping-address rounded-1 p-2 two-column">
                             <h6 class="text-primary">Shipping address</h6>
                             <div class="country form-item">
-                                <input id="input-country-ship" type="text" class="shipping form-control"
-                                    placeholder="Enter your country" required>
+                                <select id="input-country-ship" class="form-select">
+                                    <option value="" disabled selected>Country</option>
+                                    <option value="Poland">Poland</option>
+                                    <option value="Germany">Germany</option>
+                                  </select>
                             </div>
                             <div class="city form-item">
                                 <input id="input-city-ship" type="text" class="shipping form-control"
