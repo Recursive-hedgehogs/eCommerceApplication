@@ -60,6 +60,18 @@ class App implements IApp {
     public isAuthenticated(): boolean {
         return this.loggedIn;
     }
+
+    public setLocalStorage(key: string, value: unknown): void {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    public getDataFromLocalStorage(key: string): string | null {
+        return localStorage.getItem(key);
+    }
+
+    public removeDatafromLocalStorage(key: string): void {
+        localStorage.removeItem(key);
+    }
 }
 
 export default App;

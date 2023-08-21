@@ -24,6 +24,7 @@ export class Controllers {
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
+            apiCustomer.getUser();
             if (this.app?.isAuthenticated()) {
                 console.log('Redirecting to MAIN page');
                 this.app?.setCurrentPage(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
@@ -36,7 +37,7 @@ export class Controllers {
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
         });
-        logoLink?.addEventListener('click', (e): void => {
+        logoLink?.addEventListener('click', (e: MouseEvent): void => {
             e.preventDefault();
             this.app?.setCurrentPage(ROUTE.MAIN);
         });
@@ -129,7 +130,6 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
-            // const defaultSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
             const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
             const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
             const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
@@ -216,6 +216,7 @@ export class Controllers {
                 .signIn1(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
+                    console.log(resp);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((response: ClientResponse<CustomerToken>): void => {

@@ -16,3 +16,17 @@ export type PasswordAuthMiddlewareOptions = {
     oauthUri?: string;
     fetch?: unknown;
 };
+
+export type RefreshAuthMiddlewareOptions = {
+    host: string;
+    projectKey: string;
+    credentials: {
+        clientId: string;
+        clientSecret: string;
+    };
+    refreshToken: string;
+    scopes?: Array<string>;
+    tokenCache?: TokenCache;
+    oauthUri?: string;
+    fetch?: unknown;
+};

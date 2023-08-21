@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@commercetools/platform-sdk": "^5.0.0",
+    "@commercetools/sdk-auth": "^4.0.1",
     "@commercetools/sdk-client-v2": "^2.2.0",
     "bootstrap": "^5.3.1",
     "bootswatch": "^5.3.1",
