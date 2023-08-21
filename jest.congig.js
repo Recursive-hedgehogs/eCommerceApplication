@@ -1,7 +1,8 @@
 module.exports = {
-    rootDir: './src',
-    testMatch: ['<rootDir>/tests/test.js'],
+    preset: 'ts-jest',
+    testEnvironment: 'node',
     transform: {
-        '^.+\\.js$': 'babel-jest',
+        '^.+\\.ts$': 'babel-jest',
     },
+    transformIgnorePatterns: ['/node_modules/(?!iso-3166)'],
 };
