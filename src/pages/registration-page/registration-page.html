@@ -7,13 +7,13 @@
             <form class="modal-form" name="modal-form">
                 <div class="modal-body">
                     <div class="email form-item">
-                        <input id="input-registr-email" type="email" class="form-control"
+                        <input id="input-registr-email" type="email" class="personal form-control"
                             placeholder="Enter your e-mail" required>
                         <div class="invalid-feedback">Error! E-mail is incorrect</div>
                     </div>
                     <div class="password form-item">
                         <div class="input-group">
-                            <input id="input-registr-password" type="password" class="form-control"
+                            <input id="input-registr-password" type="password" class="personal form-control"
                                 placeholder="Enter your password" required>
                             <div class="input-group-append">
                                 <button id="toggle-password" class="btn btn-outline-secondary" type="button">
@@ -24,39 +24,39 @@
                     </div>
                     <div class="row">
                         <div class="first-name form-item names-column no-margin">
-                            <input id="input-first-name" type="text" class="form-control"
+                            <input id="input-first-name" type="text" class="personal form-control"
                                 placeholder="Enter your first name" required>
                         </div>
                         <div class="last-name form-item names-column no-margin">
-                            <input id="input-last-name" type="text" class="form-control"
+                            <input id="input-last-name" type="text" class="personal form-control"
                                 placeholder="Enter your last name" required>
                         </div>
                     </div>
                     <div class="date-of-birth form-item">
-                        <input id="input-date-birth" type="date" class="form-control"
+                        <input id="input-date-birth" type="date" class="personal form-control"
                             placeholder="Enter your date of birth" required>
                     </div>
                     <div class="row border">
                         <div class="billing-address rounded-1 p-2 two-column">
                             <h6 class="text-primary">Billing address</h6>
                             <div class="country form-item">
-                                <input id="input-country" type="text" class="form-control"
+                                <input id="input-country" type="text" class="billing form-control"
                                     placeholder="Enter your country" required>
                             </div>
                             <div class="city form-item">
-                                <input id="input-city" type="text" class="form-control" placeholder="Enter your city"
+                                <input id="input-city" type="text" class="billing form-control" placeholder="Enter your city"
                                     required>
                             </div>
                             <div class="street form-item">
-                                <input id="input-street" type="text" class="form-control"
+                                <input id="input-street" type="text" class="billing form-control"
                                     placeholder="Enter your street" required>
                             </div>
                             <div class="postal-code form-item">
-                                <input id="input-postal-code" type="text" class="form-control"
+                                <input id="input-postal-code" type="text" class="billing form-control"
                                     placeholder="Enter your postal code" required>
                             </div>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="radio" name="default" role="switch"
+                                <input class="form-check-input personal" type="checkbox" name="default" role="switch"
                                     id="switchDefaultAddress">
                                 <label class="form-check-label label-small" for="switchDefaultAddress">Set the address
                                     as the
@@ -66,23 +66,23 @@
                         <div class="shipping-address rounded-1 p-2 two-column">
                             <h6 class="text-primary">Shipping address</h6>
                             <div class="country form-item">
-                                <input id="input-country-ship" type="text" class="form-control"
+                                <input id="input-country-ship" type="text" class="shipping form-control"
                                     placeholder="Enter your country" required>
                             </div>
                             <div class="city form-item">
-                                <input id="input-city-ship" type="text" class="form-control"
+                                <input id="input-city-ship" type="text" class="shipping form-control"
                                     placeholder="Enter your city" required>
                             </div>
                             <div class="street form-item">
-                                <input id="input-street-ship" type="text" class="form-control"
+                                <input id="input-street-ship" type="text" class="shipping form-control"
                                     placeholder="Enter your street" required>
                             </div>
                             <div class="postal-code form-item">
-                                <input id="input-postal-code-ship" type="text" class="form-control"
+                                <input id="input-postal-code-ship" type="text" class="shipping form-control"
                                     placeholder="Enter your postal code" required>
                             </div>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="radio" name="default" role="switch"
+                                <input class="form-check-input personal" type="checkbox" name="default" role="switch"
                                     id="switchDefaultAddressShipping">
                                 <label class="form-check-label label-small" for="switchDefaultAddressShipping">Set the
                                     address as the
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" value="" id="checkSame">
+                        <input class="form-check-input personal" type="checkbox" value="" id="checkSame">
                         <label class="form-check-label text-primary fs-6" for="checkSame">
                             Use the same address for both billing and shipping
                         </label>

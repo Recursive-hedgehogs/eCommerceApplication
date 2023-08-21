@@ -3,6 +3,7 @@ import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
 import { validateEmail, validatePassword } from '../utils/validations';
+
 export class Controllers {
     private app: App | null;
 
@@ -42,7 +43,7 @@ export class Controllers {
 
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.checkDefaltAddress);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
@@ -128,24 +129,54 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
-            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
-            const fieldNames: string[] = [
+            // const defaultSwitcher: NodeListOf<HTMLInputElement> = target.querySelectorAll('.default-address');
+            const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
+            const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
+            const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
+            const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
+            const namesFields: string[] = [
                 'email',
                 'password',
                 'firstName',
                 'lastName',
                 'dateOfBirth',
-                'country',
-                'city',
-                'streetName',
-                'postalCode',
+                'defaultBillingAddress',
+                'defaultShippingAddress',
+                'sameAddress',
             ];
-            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
-            const address = Object.fromEntries(pairs.slice(5));
-            const customerData = Object.fromEntries(pairs.slice(0, 5));
+            const personalArray: (string | boolean)[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
+                namesFields[i],
+                el.type === 'checkbox' ? el.checked : el.value,
+            ]);
+            const billingArray: string[][] = [...billingAddress].map((el: HTMLInputElement, i: number) => [
+                addressFields[i],
+                el.value,
+            ]);
+            const shippingArray: string[][] = [...shippingAddress].map((el: HTMLInputElement, i: number) => [
+                addressFields[i],
+                el.value,
+            ]);
+            const customerData = Object.fromEntries(personalArray);
+            const billingData = Object.fromEntries(billingArray);
+            const shippingData = Object.fromEntries(shippingArray);
 
-            address.country = this.app?.getCodeFromCountryName(address.country);
-            customerData.addresses = [address];
+            billingData.country = this.app?.getCodeFromCountryName(billingData.country);
+            shippingData.country = this.app?.getCodeFromCountryName(shippingData.country);
+
+            customerData.addresses = [billingData, shippingData];
+            customerData.shippingAddresses = [1];
+            customerData.billingAddresses = [0];
+
+            customerData.defaultShippingAddress = customerData.defaultShippingAddress ? 1 : null;
+            customerData.defaultBillingAddress = customerData.defaultBillingAddress ? 0 : null;
+
+            if (customerData.sameAddress) {
+                customerData.addresses[1] = customerData.addresses[0];
+                shippingAddress.forEach((el: HTMLInputElement, i: number) => (el.value = billingAddress[i].value));
+                delete customerData.sameAddress;
+            }
+
+            console.log(customerData);
 
             apiCustomer
                 .createCustomer(customerData)
@@ -156,7 +187,7 @@ export class Controllers {
                     this.app?.showMessage('Your account has been created');
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
-                .catch((err: Error) => {
+                .catch((err: Error): void => {
                     inputEmail?.classList.add('is-invalid');
                     if (inputEmail?.nextElementSibling) {
                         inputEmail.nextElementSibling.innerHTML =
@@ -168,7 +199,6 @@ export class Controllers {
     };
 
     private onLoginSubmit = (e: SubmitEvent): void => {
-        console.log(e);
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
@@ -206,7 +236,7 @@ export class Controllers {
         }
     };
 
-    private checkDefaltAddress = (e: Event): void => {
+    private onRegistrationChange = (e: Event): void => {
         const target: EventTarget | null = e.target;
         if (target instanceof HTMLElement && target.id === 'checkSame') {
             const shippingContainer: HTMLElement | null | undefined = this.app?.view?.pages
@@ -216,12 +246,17 @@ export class Controllers {
                 ?.get(ROUTE.REGISTRATION)
                 ?.querySelector('.billing-address');
             shippingContainer?.classList.toggle('hidden');
+
+            const shippingAddress: NodeListOf<HTMLInputElement> | undefined =
+                shippingContainer?.querySelectorAll('.shipping');
+            shippingAddress?.forEach((el: HTMLInputElement): boolean => (el.required = false));
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
             if (billingContainer) {
                 shippingContainer?.classList.contains('hidden')
                     ? (billingContainer.style.width = '100%')
                     : (billingContainer.style.width = '50%');
             }
-            console.log(e);
         }
     };
 }
