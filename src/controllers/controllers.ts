@@ -1,7 +1,7 @@
 import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
 import {
     validateDateOfBirth,
     validateEmail,
@@ -294,11 +294,9 @@ export class Controllers {
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
-                    console.log(resp);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
-                .then((response: ClientResponse<CustomerToken>): void => {
-                    console.log(response);
+                .then((): void => {
                     this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page

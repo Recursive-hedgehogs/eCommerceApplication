@@ -71,7 +71,6 @@ export class ApiPasswordFlow {
                 }
             )
             .then((resp: ITokenResponse): void => {
-                console.log(resp);
                 localStorage.setItem('refreshToken', resp.refresh_token);
                 this.apiExistingTokenFlow?.setUserData(resp.access_token);
             })
