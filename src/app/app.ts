@@ -52,8 +52,8 @@ class App implements IApp {
         return this.countriesArray.find((el: ISO31661AssignedEntry): boolean => el.name === name)?.alpha2 ?? '';
     }
 
-    public showMessage(text: string): void {
-        this.view?.showMessage(text);
+    public showMessage(text: string, color?: string): void {
+        this.view?.showMessage(text, color);
     }
 
     public setAuthenticationStatus(status: boolean): void {

@@ -2,7 +2,13 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
-import { validateEmail, validatePassword } from '../utils/validations';
+import {
+    validateDateOfBirth,
+    validateEmail,
+    validateName,
+    validatePassword,
+    validatePostalCode,
+} from '../utils/validations';
 
 export class Controllers {
     private app: App | null;
@@ -44,10 +50,11 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.onRegistrationClick);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
 
@@ -55,6 +62,9 @@ export class Controllers {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         if (target.id === 'password-icon') {
             this.app?.loginPage.changePasswordVisibility();
+        }
+        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
+            this.app?.setCurrentPage(ROUTE.REGISTRATION);
         }
     };
 
@@ -227,7 +237,21 @@ export class Controllers {
                 delete customerData.sameAddress;
             }
 
-            console.log(customerData);
+            if (
+                validateEmail(customerData.email) ||
+                validatePassword(customerData.password) ||
+                validateName(customerData.addresses[0].city) ||
+                validateName(customerData.addresses[1].city) ||
+                validateName(customerData.addresses[0].streetName) ||
+                validateName(customerData.addresses[1].streetName) ||
+                validateName(customerData.firstName) ||
+                validateName(customerData.lastName) ||
+                validateDateOfBirth(customerData.dateOfBirth) ||
+                validatePostalCode(customerData.addresses[0].postalCode) ||
+                validatePostalCode(customerData.addresses[1].postalCode)
+            ) {
+                return;
+            }
 
             apiCustomer
                 .createCustomer(customerData)
@@ -238,13 +262,16 @@ export class Controllers {
                     this.app?.showMessage('Your account has been created');
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
                 })
-                .catch((err: Error): void => {
+                .catch((): void => {
                     inputEmail?.classList.add('is-invalid');
                     if (inputEmail?.nextElementSibling) {
                         inputEmail.nextElementSibling.innerHTML =
                             'There is already an existing customer with the provided email.';
                     }
-                    alert(err.message);
+                    this.app?.showMessage(
+                        'Something went wrong during the registration process, try again later',
+                        'red'
+                    );
                 });
         }
     };
@@ -320,4 +347,10 @@ export class Controllers {
             }
         });
     }
+
+    private onRegistrationClick = (e: Event) => {
+        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.LOGIN) {
+            this.app?.setCurrentPage(ROUTE.LOGIN);
+        }
+    };
 }

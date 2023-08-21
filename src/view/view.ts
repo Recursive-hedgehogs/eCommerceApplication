@@ -47,11 +47,13 @@ class View implements IView {
         this._pages.set(ROUTE.NOT_FOUND, notFoundPage);
     }
 
-    showMessage(text: string): void {
+    showMessage(text: string, color?: string): void {
         const message: Message = new Message(text);
-        console.log(this.main);
         if (message.element) {
             this.main?.getElement()?.after(message.element);
+        }
+        if (color) {
+            message.element?.classList.add('bg-warning');
         }
         setTimeout(() => document.querySelector('.message')?.remove(), 4000);
     }

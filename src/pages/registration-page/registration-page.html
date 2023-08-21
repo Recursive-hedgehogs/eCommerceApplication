@@ -17,30 +17,31 @@
                                 placeholder="Enter your password" required>
                             <div class="input-group-append">
                                 <button id="toggle-password" class="btn btn-outline-secondary" type="button">
-                                    <i id="password-icon" class="fas fa-eye-slash"></i>
+                                    <i id="password-icon" class="fas fa-eye-slash" style="display: block"></i>
                                 </button>
                             </div>
+                            <div class="invalid-feedback"></div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="first-name form-item names-column no-margin">
+                        <div class="first-name form-item names-column">
                             <input id="input-first-name" type="text" class="personal form-control"
                                 placeholder="Enter your first name" required>
                         </div>
-                        <div class="last-name form-item names-column no-margin">
+                        <div class="last-name form-item names-column">
                             <input id="input-last-name" type="text" class="personal form-control"
                                 placeholder="Enter your last name" required>
                         </div>
                     </div>
                     <div class="date-of-birth form-item">
-                        <input id="input-date-birth" type="date" class="form-control"
+                        <input id="input-date-birth" type="date" class="form-control personal"
                             placeholder="Enter your date of birth" lang="en" required>
                     </div>
                     <div class="row border">
                         <div class="billing-address rounded-1 p-2 two-column">
                             <h6 class="text-primary">Billing address</h6>
                             <div class="country form-item">
-                                <select id="input-country" class="form-select">
+                                <select id="input-country" class="form-select billing">
                                     <option value="" disabled selected>Country</option>
                                     <option value="Poland">Poland</option>
                                     <option value="Germany">Germany</option>
@@ -69,7 +70,7 @@
                         <div class="shipping-address rounded-1 p-2 two-column">
                             <h6 class="text-primary">Shipping address</h6>
                             <div class="country form-item">
-                                <select id="input-country-ship" class="form-select">
+                                <select id="input-country-ship" class="form-select shipping">
                                     <option value="" disabled selected>Country</option>
                                     <option value="Poland">Poland</option>
                                     <option value="Germany">Germany</option>
@@ -106,6 +107,7 @@
                 <div class="btn-modal-container">
                     <button id="btn-sign-in" type="submit" class="btn btn-primary btn-modal">Sign up</button>
                 </div>
+                <a data-link="login" role="button" class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Already have an account? Login</a>
             </form>
         </div>
     </div>
