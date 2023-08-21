@@ -2,7 +2,13 @@ import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerToken } from '@commercetools/platform-sdk';
-import { validateEmail, validatePassword } from '../utils/validations';
+import {
+    validateDateOfBirth,
+    validateEmail,
+    validateName,
+    validatePassword,
+    validatePostalCode
+} from '../utils/validations';
 
 export class Controllers {
     private app: App | null;
@@ -227,7 +233,11 @@ export class Controllers {
                 delete customerData.sameAddress;
             }
 
-            console.log(customerData);
+            console.log(customerData, customerData.email, customerData.password, customerData.addresses[0].city, customerData.streetName, customerData.firstName, customerData.lastName, customerData.dateOfBirth, customerData.postalCode);
+            if (validateEmail(customerData.email) || validatePassword(customerData.password) || validateName(customerData.addresses[0].city) || validateName(customerData.addresses[1].city) || validateName(customerData.addresses[0].streetName) || validateName(customerData.addresses[1].streetName) || validateName(customerData.firstName) || validateName(customerData.lastName) || validateDateOfBirth(customerData.dateOfBirth) || validatePostalCode(customerData.addresses[0].postalCode) || validatePostalCode(customerData.addresses[1].postalCode)) {
+                return;
+            }
+
 
             apiCustomer
                 .createCustomer(customerData)
