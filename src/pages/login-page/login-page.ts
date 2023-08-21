@@ -77,7 +77,7 @@ export default class LoginPage {
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
-            passwordIcon.style.display = 'none';
+            // passwordIcon.style.display = 'none';
         }
         const email: Element | null = this.element.querySelector('.email');
         const emailInput: HTMLElement | null = document.getElementById('input-login-email');
