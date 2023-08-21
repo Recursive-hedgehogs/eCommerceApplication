@@ -67,6 +67,18 @@ export class Controllers {
 
     private onRegistrationValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const postalCodeInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-postal-code');
+        const postalCodeShipInput: HTMLInputElement = <HTMLInputElement>(
+            document.getElementById('input-postal-code-ship')
+        );
+        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country');
+        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country-ship');
+        countrySelect.addEventListener('change', function () {
+            postalCodeInput.value = '';
+        });
+        countryShipSelect.addEventListener('change', function () {
+            postalCodeShipInput.value = '';
+        });
         switch (target.id) {
             case 'input-registr-email':
                 this.app?.loginPage.onEmailValidate(target);
@@ -80,6 +92,20 @@ export class Controllers {
                 break;
             case 'input-date-birth':
                 this.app?.registrationPage.onDateDateOfBirth(target);
+                break;
+            case 'input-city':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-street':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-postal-code':
+                this.checkCountry(target, countrySelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            case 'input-postal-code-ship':
+                this.checkCountry(target, countryShipSelect);
+                this.app?.registrationPage.onPostalValidate(target);
                 break;
             default:
                 break;
@@ -241,4 +267,14 @@ export class Controllers {
             console.log(e);
         }
     };
+
+    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement) {
+        target.addEventListener('keypress', (event) => {
+            if (country.value === 'Poland') {
+                this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
+            } else if (country.value === 'Germany') {
+                this.app?.registrationPage.formatPostalCode(event, target, '', 5);
+            }
+        });
+    }
 }

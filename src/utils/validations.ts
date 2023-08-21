@@ -69,14 +69,14 @@ export const validateDateOfBirth = (dateBirth: string): string | null => {
     const currentDate = new Date();
     const inputDate = new Date(dateBirth);
 
-    // Check if the input is a valid date
-    if (isNaN(inputDate.getTime())) {
-        return 'Invalid date format';
-    }
-
     // Calculate the user's age in years
     const ageInMilliseconds = currentDate.getTime() - inputDate.getTime();
     const ageInYears = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25);
+
+    // Check if the input is a valid date
+    if (ageInYears > 110) {
+        return 'Invalid date';
+    }
 
     const minAge = 13;
     if (ageInYears < minAge) {
@@ -84,5 +84,15 @@ export const validateDateOfBirth = (dateBirth: string): string | null => {
     }
 
     // If all checks passed, return null to indicate no error
+    return null;
+};
+
+export const validatePostalCode = (code: string): string | null => {
+    const validPattern = /^[0-9-]+$/;
+
+    if (!validPattern.test(code)) {
+        return 'Postal code should contain only digits and dashes';
+    }
+
     return null;
 };
