@@ -48,6 +48,16 @@ export default class LoginPage {
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
         }
+        if (emailInput.validity.valid) {
+            emailInput.classList.remove('is-invalid');
+        }
+        const password: Element | null = this.element.querySelector('.password');
+        const passwordInput: HTMLElement | null = document.getElementById('input-login-password');
+        if (passwordInput instanceof HTMLInputElement && passwordInput.validity.valid) {
+            passwordInput.classList.remove('is-invalid');
+            console.log(password, password?.querySelector('.invalid-feedback'));
+            password?.querySelector('.invalid-feedback')?.classList.remove('invalid-feedback');
+        }
     };
 
     public onPasswordValidate = (passwordInput: HTMLInputElement): void => {

@@ -37,9 +37,9 @@ export class ApiPasswordFlow {
         return ApiPasswordFlow.singleton ?? (ApiPasswordFlow.singleton = this);
     }
 
-    async setUserData(email: string, password: string) {
+    setUserData(email: string, password: string) {
         const authClient = new SdkAuth({
-            host: 'https://auth.commercetools.com',
+            host: environment.authURL,
             projectKey: environment.projectKey,
             disableRefreshToken: false,
             credentials: {
@@ -59,20 +59,22 @@ export class ApiPasswordFlow {
         this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
             projectKey: environment.projectKey,
         });
-        const a = await authClient.customerPasswordFlow(
-            {
-                username: email,
-                password,
-            },
-            {
-                disableRefreshToken: false,
-            }
-        );
-        localStorage.setItem('refreshToken', a.refresh_token);
-
-        this.token = a.token;
-        this.apiExistingTokenFlow?.setUserData(a.access_token);
-        console.log(a);
-        console.log(this.apiExistingTokenFlow, '!!!!!!!');
+        const a = authClient
+            .customerPasswordFlow(
+                {
+                    username: email,
+                    password,
+                },
+                {
+                    disableRefreshToken: false,
+                }
+            )
+            .then((resp: Response) => {
+                console.log(resp);
+                localStorage.setItem('refreshToken', a.refresh_token);
+                this.token = a.token;
+                this.apiExistingTokenFlow?.setUserData(a.access_token);
+            })
+            .catch((err: Error) => console.log(err));
     }
 }

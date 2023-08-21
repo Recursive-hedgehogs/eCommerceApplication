@@ -24,7 +24,6 @@ export class Controllers {
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
-            apiCustomer.getUser();
             if (this.app?.isAuthenticated()) {
                 console.log('Redirecting to MAIN page');
                 this.app?.setCurrentPage(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
@@ -209,11 +208,11 @@ export class Controllers {
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
             const customerData = Object.fromEntries(pairs);
-            // if (validateEmail(customerData.email) && validatePassword(customerData.password)) {
-            //     return
-            // }
+            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
+                return;
+            }
             apiCustomer
-                .signIn1(customerData)
+                .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
                     console.log(resp);
@@ -231,7 +230,6 @@ export class Controllers {
                     });
                     fail?.forEach((el: HTMLElement): void => {
                         el.innerText = 'Incorrect email or password - please try again.';
-                        el.style.display = 'block';
                     });
                 });
         }

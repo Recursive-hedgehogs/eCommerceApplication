@@ -26,36 +26,7 @@ class ApiCustomer {
             });
     };
 
-    createCustomer1 = (data: ICreateCustomerCredentials) => {
-        this.apiPasswordFlow.setUserData(data.email, data.password);
-        const apiRoot: ByProjectKeyRequestBuilder = this.apiPasswordFlow.apiRoot as ByProjectKeyRequestBuilder;
-        return apiRoot
-            .customers()
-            .post({
-                body: data,
-            })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    // signIn = (data: ILoginCredentials) => {
-    //     return apiRoot
-    //         .login()
-    //         .post({
-    //             body: {
-    //                 email: data.email,
-    //                 password: data.password,
-    //             },
-    //         })
-    //         .execute()
-    //         .catch((err) => {
-    //             throw Error(err);
-    //         });
-    // };
-
-    signIn1 = (data: ILoginCredentials) => {
+    signIn = (data: ILoginCredentials) => {
         this.apiPasswordFlow.setUserData(data.email, data.password);
         const apiRoot: ByProjectKeyRequestBuilder = this.apiPasswordFlow.apiRoot as ByProjectKeyRequestBuilder;
         return apiRoot
@@ -106,15 +77,15 @@ class ApiCustomer {
             });
     };
 
-    public getUser() {
-        console.log(this.apiExistingTokenFlow);
-        this.apiExistingTokenFlow.apiRoot
+    public getUser(ID: string) {
+        return this.apiExistingTokenFlow.apiRoot
             ?.customers()
-            .withId({ ID: 'a7be1a82-d0e2-44ef-8363-07029e0cb796' })
+            .withId({ ID })
             .get()
             .execute()
-            .then((r) => console.log(r));
+            .catch((err) => {
+                throw Error(err);
+            });
     }
 }
-
 export const apiCustomer: ApiCustomer = new ApiCustomer();
