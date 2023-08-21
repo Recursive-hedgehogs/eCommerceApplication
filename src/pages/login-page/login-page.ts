@@ -61,14 +61,12 @@ export default class LoginPage {
 
     public onPasswordValidate = (passwordInput: HTMLInputElement): void => {
         const parentDiv: Element | null = passwordInput.closest('.form-item');
-        const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
         const errorMessage: string | null = validationUtils.validatePassword(passwordInput.value);
         if (inputError) {
             passwordInput.classList.add('is-invalid');
             inputError.textContent = errorMessage;
-            passwordIcon.style.display = errorMessage ? 'none' : 'inline-block';
             if (!errorMessage) {
                 passwordInput.classList.remove('is-invalid');
             }
@@ -77,7 +75,6 @@ export default class LoginPage {
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
-            // passwordIcon.style.display = 'none';
         }
         const email: Element | null = this.element.querySelector('.email');
         const emailInput: HTMLElement | null = document.getElementById('input-login-email');

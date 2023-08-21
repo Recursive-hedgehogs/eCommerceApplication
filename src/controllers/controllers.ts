@@ -27,6 +27,7 @@ export class Controllers {
         window.addEventListener('popstate', this.redirectCallBack);
 
         const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
@@ -38,6 +39,12 @@ export class Controllers {
                 this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
             }
             this.app?.setCurrentPage(ROUTE.LOGIN);
+        });
+        logoutBtn?.addEventListener('click', (): void => {
+            this.app?.setAuthenticationStatus(false); // set authentication state
+            this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
+            logoutBtn.classList.add('hidden');
+            loginBtn?.classList.remove('hidden');
         });
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
@@ -52,6 +59,7 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.onRegistrationClick);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
@@ -62,6 +70,8 @@ export class Controllers {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         if (target.id === 'password-icon') {
             this.app?.loginPage.changePasswordVisibility();
+        } else if (target.id === 'password-icon-registr') {
+            this.app?.registrationPage.changePasswordVisibility();
         }
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
@@ -191,6 +201,8 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
+            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
             const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
             const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
             const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
@@ -261,6 +273,8 @@ export class Controllers {
                 .then((): void => {
                     this.app?.showMessage('Your account has been created');
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                    logoutBtn?.classList.remove('hidden');
+                    loginBtn?.classList.add('hidden');
                 })
                 .catch((): void => {
                     inputEmail?.classList.add('is-invalid');
@@ -282,7 +296,8 @@ export class Controllers {
             e.preventDefault();
             const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
             const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
-
+            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
@@ -300,6 +315,8 @@ export class Controllers {
                     this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                    logoutBtn?.classList.remove('hidden');
+                    loginBtn?.classList.add('hidden');
                 })
                 .catch((): void => {
                     inputEmail?.forEach((el: Element): void => {
