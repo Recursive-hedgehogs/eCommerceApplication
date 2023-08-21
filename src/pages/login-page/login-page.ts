@@ -55,7 +55,6 @@ export default class LoginPage {
         const passwordInput: HTMLElement | null = document.getElementById('input-login-password');
         if (passwordInput instanceof HTMLInputElement && passwordInput.validity.valid) {
             passwordInput.classList.remove('is-invalid');
-            console.log(password, password?.querySelector('.invalid-feedback'));
             password?.querySelector('.invalid-feedback')?.classList.remove('invalid-feedback');
         }
     };
@@ -79,6 +78,12 @@ export default class LoginPage {
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
             passwordIcon.style.display = 'none';
+        }
+        const email: Element | null = this.element.querySelector('.email');
+        const emailInput: HTMLElement | null = document.getElementById('input-login-email');
+        if (emailInput instanceof HTMLInputElement && emailInput.validity.valid) {
+            emailInput.classList.remove('is-invalid');
+            email?.querySelector('.invalid-feedback')?.classList.remove('invalid-feedback');
         }
     };
 }
