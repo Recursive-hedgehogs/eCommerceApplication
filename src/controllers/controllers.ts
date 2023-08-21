@@ -67,12 +67,22 @@ export class Controllers {
 
     private onRegistrationValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
-        if (target.id === 'input-registr-email') {
-            this.app?.loginPage.onEmailValidate(target);
-        } else if (target.id === 'input-registr-password') {
-            this.app?.loginPage.onPasswordValidate(target);
-        } else if (target.id === 'input-first-name' || target.id === 'input-last-name') {
-            this.app?.registrationPage.onNameValidate(target);
+        switch (target.id) {
+            case 'input-registr-email':
+                this.app?.loginPage.onEmailValidate(target);
+                break;
+            case 'input-registr-password':
+                this.app?.loginPage.onPasswordValidate(target);
+                break;
+            case 'input-first-name':
+            case 'input-last-name':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-date-birth':
+                this.app?.registrationPage.onDateDateOfBirth(target);
+                break;
+            default:
+                break;
         }
     };
 
