@@ -1,7 +1,7 @@
 import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult, Project } from '@commercetools/platform-sdk';
 import {
     validateDateOfBirth,
     validateEmail,
@@ -9,12 +9,21 @@ import {
     validatePassword,
     validatePostalCode,
 } from '../utils/validations';
+import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
+import SdkAuth from '@commercetools/sdk-auth';
+import { environment } from '../environment/environment';
+import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
+import { ITokenResponse } from '../models/interfaces/interface';
 
 export class Controllers {
     private app: App | null;
+    private apiRefreshTokenFlow: ApiRefreshTokenFlow;
+    private apiExistingTokenFlow: ApiExistingTokenFlow;
 
     constructor() {
         this.app = null;
+        this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
+        this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
 
     public start(app: App): void {
@@ -45,6 +54,7 @@ export class Controllers {
             this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
             logoutBtn.classList.add('hidden');
             loginBtn?.classList.remove('hidden');
+            localStorage.removeItem('refreshToken');
         });
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
@@ -186,6 +196,50 @@ export class Controllers {
     private onFirstLoad = (): void => {
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
         this.app?.setCurrentPage(currentLocation);
+        const refreshToken: string | null = localStorage.getItem('refreshToken');
+        if (refreshToken) {
+            const authClient = new SdkAuth({
+                host: environment.authURL,
+                projectKey: environment.projectKey,
+                disableRefreshToken: false,
+                credentials: {
+                    clientId: environment.clientID,
+                    clientSecret: environment.clientSecret,
+                },
+                scopes: [environment.scope],
+                fetch,
+            });
+            authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
+                this.apiExistingTokenFlow.setUserData(resp.access_token);
+                // this.app?.showMessage('You are logged in');
+                this.app?.setAuthenticationStatus(true); // set authentication state
+                this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+                const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+                logoutBtn?.classList.remove('hidden');
+                loginBtn?.classList.add('hidden');
+            });
+            this.apiRefreshTokenFlow.setUserData(refreshToken);
+            this.apiRefreshTokenFlow.apiRoot
+                ?.get()
+                .execute()
+                .then((resp: ClientResponse<Project>): void => {
+                    if (resp.headers) {
+                        const headers: { Authorization: string } = resp.headers as { Authorization: string };
+                        this.apiExistingTokenFlow.setUserData(headers.Authorization);
+                        this.app?.showMessage('You are logged in');
+                        this.app?.setAuthenticationStatus(true); // set authentication state
+                        this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                        const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+                        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+                        logoutBtn?.classList.remove('hidden');
+                        loginBtn?.classList.add('hidden');
+                    }
+                })
+                .catch((err) => {
+                    throw Error(err);
+                });
+        }
         window.removeEventListener('load', this.onFirstLoad);
     };
 
@@ -353,7 +407,7 @@ export class Controllers {
         }
     };
 
-    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement) {
+    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
         target.addEventListener('keypress', (event) => {
             if (country.value === 'Poland') {
                 this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
@@ -363,7 +417,7 @@ export class Controllers {
         });
     }
 
-    private onRegistrationClick = (e: Event) => {
+    private onRegistrationClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.LOGIN) {
             this.app?.setCurrentPage(ROUTE.LOGIN);
         }

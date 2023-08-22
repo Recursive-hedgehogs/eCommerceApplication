@@ -6,6 +6,7 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import SdkAuth from '@commercetools/sdk-auth';
 import { ApiExistingTokenFlow } from './api-existing-token-flow';
 import { ITokenResponse } from '../models/interfaces/interface';
+import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
 
 export class ApiPasswordFlow {
     private static singleton: ApiPasswordFlow;
@@ -32,9 +33,11 @@ export class ApiPasswordFlow {
     private client?: Client;
     public token?: string;
     private apiExistingTokenFlow?: ApiExistingTokenFlow;
+    private apiRefreshTokenFlow?: ApiRefreshTokenFlow;
 
     constructor() {
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
+        this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         return ApiPasswordFlow.singleton ?? (ApiPasswordFlow.singleton = this);
     }
 
@@ -72,6 +75,7 @@ export class ApiPasswordFlow {
             )
             .then((resp: ITokenResponse): void => {
                 localStorage.setItem('refreshToken', resp.refresh_token);
+                this.apiRefreshTokenFlow?.setUserData(resp.refresh_token);
                 this.apiExistingTokenFlow?.setUserData(resp.access_token);
             })
             .catch((err: Error) => console.log(err));
