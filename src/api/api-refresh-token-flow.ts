@@ -13,9 +13,8 @@ export class ApiRefreshTokenFlow {
     };
 
     refreshAuthMiddlewareOptions: RefreshAuthMiddlewareOptions = {
-        host: 'https://auth.europe-west1.gcp.commercetools.com',
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        projectKey: 'test-project-key',
+        host: environment.authURL,
+        projectKey: environment.projectKey,
         credentials: {
             clientId: environment.clientID,
             clientSecret: environment.clientSecret,

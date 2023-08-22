@@ -1,7 +1,7 @@
 import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult, Project } from '@commercetools/platform-sdk';
 import {
     validateDateOfBirth,
     validateEmail,
@@ -9,12 +9,21 @@ import {
     validatePassword,
     validatePostalCode,
 } from '../utils/validations';
+import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
+import SdkAuth from '@commercetools/sdk-auth';
+import { environment } from '../environment/environment';
+import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
+import { ITokenResponse } from '../models/interfaces/interface';
 
 export class Controllers {
     private app: App | null;
+    private apiRefreshTokenFlow: ApiRefreshTokenFlow;
+    private apiExistingTokenFlow: ApiExistingTokenFlow;
 
     constructor() {
         this.app = null;
+        this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
+        this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
 
     public start(app: App): void {
@@ -27,6 +36,7 @@ export class Controllers {
         window.addEventListener('popstate', this.redirectCallBack);
 
         const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
         const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
@@ -38,6 +48,13 @@ export class Controllers {
                 this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
             }
             this.app?.setCurrentPage(ROUTE.LOGIN);
+        });
+        logoutBtn?.addEventListener('click', (): void => {
+            this.app?.setAuthenticationStatus(false); // set authentication state
+            this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
+            logoutBtn.classList.add('hidden');
+            loginBtn?.classList.remove('hidden');
+            localStorage.removeItem('refreshToken');
         });
         registrBtn?.addEventListener('click', (): void => {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
@@ -52,6 +69,7 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.onRegistrationClick);
+        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
@@ -62,6 +80,8 @@ export class Controllers {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         if (target.id === 'password-icon') {
             this.app?.loginPage.changePasswordVisibility();
+        } else if (target.id === 'password-icon-registr') {
+            this.app?.registrationPage.changePasswordVisibility();
         }
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
             this.app?.setCurrentPage(ROUTE.REGISTRATION);
@@ -176,6 +196,50 @@ export class Controllers {
     private onFirstLoad = (): void => {
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
         this.app?.setCurrentPage(currentLocation);
+        const refreshToken: string | null = localStorage.getItem('refreshToken');
+        if (refreshToken) {
+            const authClient = new SdkAuth({
+                host: environment.authURL,
+                projectKey: environment.projectKey,
+                disableRefreshToken: false,
+                credentials: {
+                    clientId: environment.clientID,
+                    clientSecret: environment.clientSecret,
+                },
+                scopes: [environment.scope],
+                fetch,
+            });
+            authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
+                this.apiExistingTokenFlow.setUserData(resp.access_token);
+                // this.app?.showMessage('You are logged in');
+                this.app?.setAuthenticationStatus(true); // set authentication state
+                this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+                const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+                logoutBtn?.classList.remove('hidden');
+                loginBtn?.classList.add('hidden');
+            });
+            this.apiRefreshTokenFlow.setUserData(refreshToken);
+            this.apiRefreshTokenFlow.apiRoot
+                ?.get()
+                .execute()
+                .then((resp: ClientResponse<Project>): void => {
+                    if (resp.headers) {
+                        const headers: { Authorization: string } = resp.headers as { Authorization: string };
+                        this.apiExistingTokenFlow.setUserData(headers.Authorization);
+                        this.app?.showMessage('You are logged in');
+                        this.app?.setAuthenticationStatus(true); // set authentication state
+                        this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                        const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+                        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+                        logoutBtn?.classList.remove('hidden');
+                        loginBtn?.classList.add('hidden');
+                    }
+                })
+                .catch((err) => {
+                    throw Error(err);
+                });
+        }
         window.removeEventListener('load', this.onFirstLoad);
     };
 
@@ -191,6 +255,8 @@ export class Controllers {
         if (target instanceof HTMLFormElement) {
             e.preventDefault();
             const inputEmail: Element | null = target.querySelector('.email input');
+            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
             const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
             const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
             const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
@@ -261,6 +327,8 @@ export class Controllers {
                 .then((): void => {
                     this.app?.showMessage('Your account has been created');
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                    logoutBtn?.classList.remove('hidden');
+                    loginBtn?.classList.add('hidden');
                 })
                 .catch((): void => {
                     inputEmail?.classList.add('is-invalid');
@@ -282,7 +350,8 @@ export class Controllers {
             e.preventDefault();
             const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
             const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
-
+            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
@@ -300,6 +369,8 @@ export class Controllers {
                     this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                    logoutBtn?.classList.remove('hidden');
+                    loginBtn?.classList.add('hidden');
                 })
                 .catch((): void => {
                     inputEmail?.forEach((el: Element): void => {
@@ -336,7 +407,7 @@ export class Controllers {
         }
     };
 
-    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement) {
+    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
         target.addEventListener('keypress', (event) => {
             if (country.value === 'Poland') {
                 this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
@@ -346,7 +417,7 @@ export class Controllers {
         });
     }
 
-    private onRegistrationClick = (e: Event) => {
+    private onRegistrationClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.LOGIN) {
             this.app?.setCurrentPage(ROUTE.LOGIN);
         }

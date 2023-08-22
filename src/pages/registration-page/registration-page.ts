@@ -18,10 +18,10 @@ export default class RegistrationPage {
     }
 
     public onNameValidate = (nameInput: HTMLInputElement): void => {
-        const parentDiv = nameInput.closest('.form-item');
+        const parentDiv: Element | null = nameInput.closest('.form-item');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
-        const errorMessage = validationUtils.validateName(nameInput.value);
+        const errorMessage: string | null = validationUtils.validateName(nameInput.value);
         if (errorMessage) {
             nameInput.classList.add('is-invalid');
         }
@@ -32,7 +32,7 @@ export default class RegistrationPage {
                 nameInput.classList.remove('is-invalid');
             }
         } else {
-            const newErrorDiv = document.createElement('div');
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
@@ -40,10 +40,10 @@ export default class RegistrationPage {
     };
 
     public onDateDateOfBirth = (nameInput: HTMLInputElement): void => {
-        const parentDiv = nameInput.closest('.form-item');
+        const parentDiv: Element | null = nameInput.closest('.form-item');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
-        const errorMessage = validationUtils.validateDateOfBirth(nameInput.value);
+        const errorMessage: string | null = validationUtils.validateDateOfBirth(nameInput.value);
         if (errorMessage) {
             nameInput.classList.add('is-invalid');
         }
@@ -54,7 +54,7 @@ export default class RegistrationPage {
                 nameInput.classList.remove('is-invalid');
             }
         } else {
-            const newErrorDiv = document.createElement('div');
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
@@ -62,10 +62,10 @@ export default class RegistrationPage {
     };
 
     public onPostalValidate = (codeInput: HTMLInputElement): void => {
-        const parentDiv = codeInput.closest('.form-item');
+        const parentDiv: Element | null = codeInput.closest('.form-item');
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
-        const errorMessage = validationUtils.validatePostalCode(codeInput.value);
+        const errorMessage: string | null = validationUtils.validatePostalCode(codeInput.value);
         if (errorMessage) {
             codeInput.classList.add('is-invalid');
         }
@@ -76,7 +76,7 @@ export default class RegistrationPage {
                 codeInput.classList.remove('is-invalid');
             }
         } else {
-            const newErrorDiv = document.createElement('div');
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
             newErrorDiv.classList.add('invalid-feedback');
             newErrorDiv.textContent = errorMessage;
             parentDiv.append(newErrorDiv);
@@ -84,7 +84,7 @@ export default class RegistrationPage {
     };
 
     public formatPostalCode = (event: Event, target: HTMLInputElement, separator: string, maxLength: number) => {
-        const numValue = target.value;
+        const numValue: string = target.value;
         if (numValue.length >= maxLength) {
             event.preventDefault();
             target.value = numValue.substring(0, maxLength);
@@ -93,4 +93,18 @@ export default class RegistrationPage {
             target.value = `${numValue.substring(0, 2)}${separator}${numValue.substring(2)}`;
         }
     };
+
+    public changePasswordVisibility(): void {
+        const passwordInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-registr-password');
+        const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon-registr');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('fa-eye-slash');
+            passwordIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('fa-eye');
+            passwordIcon.classList.add('fa-eye-slash');
+        }
+    }
 }
