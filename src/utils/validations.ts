@@ -9,7 +9,10 @@ export const validateEmail = (s: string): string | null => {
         return "Email should contain an '@' symbol";
     }
 
-    const hasValidDomain = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/.test(s.split('@')[1]);
+    const hasValidDomain =
+        /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/.test(
+            s
+        );
     if (!hasValidDomain) {
         return 'Invalid domain in the email address';
     }
@@ -92,6 +95,10 @@ export const validatePostalCode = (code: string): string | null => {
 
     if (!validPattern.test(code)) {
         return 'Postal code should contain only digits and dashes';
+    }
+
+    if (code.replace(/-/g, '').length < 5) {
+        return 'Postal code should have at least 5 digits';
     }
 
     return null;
