@@ -1,7 +1,7 @@
 import App from '../app/app';
 import { ROUTE } from '../models/enums/enum';
 import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult, Project } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
 import {
     validateDateOfBirth,
     validateEmail,
@@ -213,32 +213,34 @@ export class Controllers {
                 this.apiExistingTokenFlow.setUserData(resp.access_token);
                 // this.app?.showMessage('You are logged in');
                 this.app?.setAuthenticationStatus(true); // set authentication state
-                this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
+                    this.app?.setCurrentPage(ROUTE.MAIN); //add redirection from login to MAIN page
+                }
                 const loginBtn: HTMLElement | null = document.getElementById('login-btn');
                 const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
                 logoutBtn?.classList.remove('hidden');
                 loginBtn?.classList.add('hidden');
             });
             this.apiRefreshTokenFlow.setUserData(refreshToken);
-            this.apiRefreshTokenFlow.apiRoot
-                ?.get()
-                .execute()
-                .then((resp: ClientResponse<Project>): void => {
-                    if (resp.headers) {
-                        const headers: { Authorization: string } = resp.headers as { Authorization: string };
-                        this.apiExistingTokenFlow.setUserData(headers.Authorization);
-                        this.app?.showMessage('You are logged in');
-                        this.app?.setAuthenticationStatus(true); // set authentication state
-                        this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
-                        const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-                        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-                        logoutBtn?.classList.remove('hidden');
-                        loginBtn?.classList.add('hidden');
-                    }
-                })
-                .catch((err) => {
-                    throw Error(err);
-                });
+            // this.apiRefreshTokenFlow.apiRoot
+            //     ?.get()
+            //     .execute()
+            // .then((resp: ClientResponse<Project>): void => {
+            // if (resp.headers) {
+            //     const headers: { Authorization: string } = resp.headers as { Authorization: string };
+            //     this.apiExistingTokenFlow.setUserData(headers.Authorization);
+            //     this.app?.showMessage('You are logged in');
+            //     this.app?.setAuthenticationStatus(true); // set authentication state
+            //     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+            //     const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            //     const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+            //     logoutBtn?.classList.remove('hidden');
+            //     loginBtn?.classList.add('hidden');
+            // }
+            // })
+            // .catch((err) => {
+            //     throw Error(err);
+            // });
         }
         window.removeEventListener('load', this.onFirstLoad);
     };
