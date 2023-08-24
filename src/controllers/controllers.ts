@@ -14,7 +14,6 @@ import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
 import { ITokenResponse } from '../models/interfaces/interface';
-import fetch from 'node-fetch';
 
 export class Controllers {
     private app: App | null;

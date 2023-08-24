@@ -2,7 +2,6 @@ import * as packageJson from '../../package.json';
 import App from '../app/app';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
-import { Controllers } from '../controllers/controllers';
 import 'jest-fetch-mock';
 
 test('Husky is configured in package.json', () => {
