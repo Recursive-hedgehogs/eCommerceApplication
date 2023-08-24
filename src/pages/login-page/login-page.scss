@@ -1,0 +1,119 @@
+.modal {
+    display: block;
+    position: absolute;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    left: 0;
+    top: 0;
+    transition: z-index 0.31s linear, background-color 0.31s linear;
+}
+
+.hidden {
+    display: none;
+}
+
+.wrapper-modal {
+    transform: translateY(3.5%);
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 750px;
+    height: 100%;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+}
+
+.modal-header {
+    width: 100%;
+}
+
+.header-bg-color {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.modal-title {
+    padding: 3%;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 40px;
+}
+
+.modal-body {
+    width: 100%;
+    max-width: 330px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-item {
+    margin: 0 0 30px;
+    width: 100%;
+    max-width: 340px;
+}
+
+.btn-modal-container {
+    height: 70px;
+    margin-top: 5%;
+    position: relative;
+    width: 100%;
+    max-width: 330px;
+}
+
+.btn-modal {
+    width: 100%;
+    position: absolute;
+}
+
+.btn-link {
+    cursor: pointer;
+}
+
+
+#input-login-password {
+    position: relative;
+    z-index: 1;
+}
+
+.password-icon-container {
+    position: absolute;
+    top: 20px;
+    right: 2px;
+    transform: translateY(-50%);
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 5;
+    .fas {
+        display: block !important;
+    }
+}
+
+.password {
+    position: relative;
+}
+
+.form-item {
+    height: 43px;
+}
+
+.invalid-feedback {
+    height: 10px;
+    line-height: 14px;
+}
+
+.input-group-text {
+    border-radius: 0 6px 6px 0 !important;
+}

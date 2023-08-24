@@ -1,0 +1,116 @@
+<div class="wrapper-modal">
+    <div class="container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title header-bg-color">Registration</h5>
+            </div>
+            <form class="modal-form" name="modal-form">
+                <div class="modal-body">
+                    <div class="email form-item">
+                        <input id="input-registr-email" type="email" class="personal form-control"
+                            placeholder="Enter your e-mail" required>
+                        <div class="invalid-feedback">Error! E-mail is incorrect</div>
+                    </div>
+                    <div class="password form-item">
+                        <div class="input-group">
+                            <input id="input-registr-password" type="password" class="personal form-control"
+                                placeholder="Enter your password" required>
+                            <div class="input-group-text">
+                                <span class="password-icon-container">
+                                    <i id="password-icon-registr" class="fas fa-eye-slash"></i>
+                                </span>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="first-name form-item names-column">
+                            <input id="input-first-name" type="text" class="personal form-control"
+                                placeholder="Enter your first name" required>
+                        </div>
+                        <div class="last-name form-item names-column">
+                            <input id="input-last-name" type="text" class="personal form-control"
+                                placeholder="Enter your last name" required>
+                        </div>
+                    </div>
+                    <div class="date-of-birth form-item">
+                        <input id="input-date-birth" type="date" class="form-control personal"
+                            placeholder="Enter your date of birth" lang="en" required>
+                    </div>
+                    <div class="row border">
+                        <div class="billing-address rounded-1 p-2 two-column">
+                            <h6 class="text-primary">Billing address</h6>
+                            <div class="country form-item">
+                                <select id="input-country" class="form-select billing" required>
+                                    <option value="" disabled selected>Country</option>
+                                    <option value="Poland">Poland</option>
+                                    <option value="Germany">Germany</option>
+                                </select>
+                            </div>
+                            <div class="city form-item">
+                                <input id="input-city" type="text" class="billing form-control"
+                                    placeholder="Enter your city" required>
+                            </div>
+                            <div class="street form-item">
+                                <input id="input-street" type="text" class="billing form-control"
+                                    placeholder="Enter your street" required>
+                            </div>
+                            <div class="postal-code form-item">
+                                <input id="input-postal-code" type="text" class="billing form-control"
+                                    placeholder="Enter your postal code" required>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input personal" type="checkbox" name="default" role="switch"
+                                    id="switchDefaultAddress">
+                                <label class="form-check-label label-small" for="switchDefaultAddress">Set the address
+                                    as the
+                                    default</label>
+                            </div>
+                        </div>
+                        <div class="shipping-address rounded-1 p-2 two-column">
+                            <h6 class="text-primary">Shipping address</h6>
+                            <div class="country form-item">
+                                <select id="input-country-ship" class="form-select shipping" required>
+                                    <option value="" disabled selected>Country</option>
+                                    <option value="Poland">Poland</option>
+                                    <option value="Germany">Germany</option>
+                                </select>
+                            </div>
+                            <div class="city form-item">
+                                <input id="input-city-ship" type="text" class="shipping form-control"
+                                    placeholder="Enter your city" required>
+                            </div>
+                            <div class="street form-item">
+                                <input id="input-street-ship" type="text" class="shipping form-control"
+                                    placeholder="Enter your street" required>
+                            </div>
+                            <div class="postal-code form-item">
+                                <input id="input-postal-code-ship" type="text" class="shipping form-control"
+                                    placeholder="Enter your postal code" required>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input personal" type="checkbox" name="default" role="switch"
+                                    id="switchDefaultAddressShipping">
+                                <label class="form-check-label label-small" for="switchDefaultAddressShipping">Set the
+                                    address as the
+                                    default</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check my-3">
+                        <input class="form-check-input personal" type="checkbox" value="" id="checkSame">
+                        <label class="form-check-label text-primary fs-6" for="checkSame">
+                            Use the same address for both billing and shipping
+                        </label>
+                    </div>
+                </div>
+                <div class="btn-modal-container">
+                    <button id="btn-sign-in" type="submit" class="btn btn-primary btn-modal">Sign up</button>
+                </div>
+                <a data-link="login" role="button"
+                    class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Already
+                    have an account? Login</a>
+            </form>
+        </div>
+    </div>
+</div>

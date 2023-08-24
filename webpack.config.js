@@ -26,6 +26,17 @@ const baseConfig = {
                 test: /\.html$/,
                 use: ['html-loader'],
             },
+            {
+                test: /\.(woff|woff2|eot|ttf)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'fonts/[name].[hash].[ext]',
+                        },
+                    },
+                ],
+            },
         ],
     },
     resolve: {
