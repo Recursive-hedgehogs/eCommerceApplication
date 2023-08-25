@@ -74,7 +74,14 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
+        this.app?.view?.pages?.get(ROUTE.CATALOG)?.addEventListener('click', this.onCatalogClick);
     }
+
+    private onCatalogClick = (e: Event) => {
+        if (e.target) {
+            this.app?.setCurrentPage(ROUTE.PRODUCT);
+        }
+    };
 
     private togglePassword = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;

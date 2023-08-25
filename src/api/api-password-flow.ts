@@ -10,13 +10,11 @@ import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
 
 export class ApiPasswordFlow {
     private static singleton: ApiPasswordFlow;
-    public apiRoot?: ByProjectKeyRequestBuilder;
-    httpMiddlewareOptions: HttpMiddlewareOptions = {
+    private httpMiddlewareOptions: HttpMiddlewareOptions = {
         host: environment.apiURL,
         fetch,
     };
-
-    passwordAuthMiddlewareOptions: IPasswordAuthMiddlewareOptions = {
+    private passwordAuthMiddlewareOptions: IPasswordAuthMiddlewareOptions = {
         host: environment.authURL,
         projectKey: environment.projectKey,
         credentials: {
@@ -31,9 +29,9 @@ export class ApiPasswordFlow {
         fetch,
     };
     private client?: Client;
-    public token?: string;
     private apiExistingTokenFlow?: ApiExistingTokenFlow;
     private apiRefreshTokenFlow?: ApiRefreshTokenFlow;
+    public apiRoot?: ByProjectKeyRequestBuilder;
 
     constructor() {
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
@@ -41,7 +39,7 @@ export class ApiPasswordFlow {
         return ApiPasswordFlow.singleton ?? (ApiPasswordFlow.singleton = this);
     }
 
-    setUserData(email: string, password: string): void {
+    public setUserData(email: string, password: string): void {
         const authClient = new SdkAuth({
             host: environment.authURL,
             projectKey: environment.projectKey,

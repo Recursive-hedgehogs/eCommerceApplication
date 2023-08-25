@@ -18,7 +18,7 @@ class ApiCustomer {
         this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
-    createCustomer = (data: ICreateCustomerCredentials) => {
+    public createCustomer = (data: ICreateCustomerCredentials) => {
         return apiRoot
             .customers()
             .post({
@@ -30,7 +30,7 @@ class ApiCustomer {
             });
     };
 
-    signIn = (data: ILoginCredentials) => {
+    public signIn = (data: ILoginCredentials) => {
         this.apiPasswordFlow.setUserData(data.email, data.password);
         const apiRoot: ByProjectKeyRequestBuilder = this.apiPasswordFlow.apiRoot as ByProjectKeyRequestBuilder;
         return apiRoot
@@ -47,7 +47,7 @@ class ApiCustomer {
             });
     };
 
-    signIn2 = (data: ILoginCredentials) => {
+    public signIn2 = (data: ILoginCredentials) => {
         const refresh = localStorage.getItem('refreshToken');
         if (refresh) {
             this.apiRefreshTokenFlow.setUserData(refresh);
@@ -68,7 +68,7 @@ class ApiCustomer {
             });
     };
 
-    createEmailToken = (data: IEmailTokenCredentials) => {
+    public createEmailToken = (data: IEmailTokenCredentials) => {
         return apiRoot
             .customers()
             .emailToken()
