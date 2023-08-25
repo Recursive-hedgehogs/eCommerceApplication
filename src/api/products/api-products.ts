@@ -2,7 +2,7 @@ import { ApiPasswordFlow } from '../api-password-flow';
 import { ApiRefreshTokenFlow } from '../api-refresh-token-flow';
 import { ApiExistingTokenFlow } from '../api-existing-token-flow';
 
-class ApiProduct {
+export class ApiProduct {
     private apiPasswordFlow: ApiPasswordFlow;
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
@@ -14,6 +14,7 @@ class ApiProduct {
     }
 
     public getProductByKey = (key: string) => {
+        console.log(key);
         return this.apiExistingTokenFlow.apiRoot
             ?.products()
             .withKey({ key })
