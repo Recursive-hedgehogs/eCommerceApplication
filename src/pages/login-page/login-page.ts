@@ -7,7 +7,7 @@ export default class LoginPage {
 
     constructor() {
         this.element = new ElementCreator({
-            tag: 'div',
+            tag: 'section',
             classNames: ['login-page-container'],
             innerHTML: template,
         }).getElement();

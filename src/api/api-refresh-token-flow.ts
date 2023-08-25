@@ -18,7 +18,6 @@ export class ApiRefreshTokenFlow {
             clientSecret: environment.clientSecret,
         },
         refreshToken: '',
-        // tokenCache: ,
         scopes: [environment.scope],
         fetch,
     };

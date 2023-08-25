@@ -192,7 +192,7 @@ export class Controllers {
                     break;
                 case ROUTE.ABOUT:
                     this.app?.setCurrentPage(ROUTE.ABOUT);
-                    document.title = 'shelfStories store/About';
+                    document.title = 'shelfStories store | About';
                     break;
                 default:
                     break;

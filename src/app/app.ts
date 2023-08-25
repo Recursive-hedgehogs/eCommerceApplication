@@ -2,22 +2,21 @@ import { IApp } from '../models/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
 import { ROUTE } from '../models/enums/enum';
-
 import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
-import LoginPage from '../pages/login-page/login-page';
 import { Main } from '../components/main/main';
+import LoginPage from '../pages/login-page/login-page';
 import RegistrationPage from '../pages/registration-page/registration-page';
 import ProductPage from '../pages/product-page/product-page';
 
 class App implements IApp {
     private countriesArray: Array<ISO31661AssignedEntry>;
-    public view: View | null;
     private main: Main = new Main();
     private router: Router;
+    private loggedIn = false;
+    public view: View | null;
+    public productPage: ProductPage;
     public loginPage: LoginPage;
     public registrationPage: RegistrationPage;
-    private loggedIn = false;
-    public productPage: ProductPage;
 
     constructor() {
         this.view = null;
@@ -38,7 +37,6 @@ class App implements IApp {
             if (route === ROUTE.LOGIN && this.isAuthenticated()) {
                 route = ROUTE.MAIN;
             }
-
             const page: HTMLElement | undefined = this.view.pages.has(route)
                 ? this.view.pages.get(route)
                 : this.view.pages.get(ROUTE.NOT_FOUND);
