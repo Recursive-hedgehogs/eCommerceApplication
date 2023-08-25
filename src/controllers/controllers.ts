@@ -13,7 +13,7 @@ import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
-import { ITokenResponse } from '../models/interfaces/interface';
+import { ITokenResponse } from '../models/interfaces/response.interface';
 
 export class Controllers {
     private app: App | null;
@@ -155,31 +155,31 @@ export class Controllers {
             switch (target.dataset.link) {
                 case ROUTE.LOGIN:
                     this.app?.setCurrentPage(ROUTE.LOGIN);
-                    document.title = 'eCommerceApplication/Login';
+                    document.title = 'shelfStories store/Login';
                     break;
                 case ROUTE.REGISTRATION:
                     this.app?.setCurrentPage(ROUTE.REGISTRATION);
-                    document.title = 'eCommerceApplication/Registration';
+                    document.title = 'shelfStories store/Registration';
                     break;
                 case ROUTE.CATALOG:
                     this.app?.setCurrentPage(ROUTE.CATALOG);
-                    document.title = 'eCommerceApplication/Catalog';
+                    document.title = 'shelfStories store/Catalog';
                     break;
                 case ROUTE.PRODUCT:
                     this.app?.setCurrentPage(ROUTE.PRODUCT);
-                    document.title = 'eCommerceApplication/Product';
+                    document.title = 'shelfStories store/Product';
                     break;
                 case ROUTE.USER:
                     this.app?.setCurrentPage(ROUTE.USER);
-                    document.title = 'eCommerceApplication/User';
+                    document.title = 'shelfStories store/User';
                     break;
                 case ROUTE.BASKET:
                     this.app?.setCurrentPage(ROUTE.BASKET);
-                    document.title = 'eCommerceApplication/Basket';
+                    document.title = 'shelfStories store/Basket';
                     break;
                 case ROUTE.ABOUT:
                     this.app?.setCurrentPage(ROUTE.ABOUT);
-                    document.title = 'eCommerceApplication/About';
+                    document.title = 'shelfStories store/About';
                     break;
                 default:
                     break;

@@ -1,11 +1,11 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { PasswordAuthMiddlewareOptions } from '../models/types/type';
+import { IPasswordAuthMiddlewareOptions } from '../models/interfaces/interface';
 import { environment } from '../environment/environment';
 import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import SdkAuth from '@commercetools/sdk-auth';
 import { ApiExistingTokenFlow } from './api-existing-token-flow';
-import { ITokenResponse } from '../models/interfaces/interface';
+import { ITokenResponse } from '../models/interfaces/response.interface';
 import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
 
 export class ApiPasswordFlow {
@@ -16,7 +16,7 @@ export class ApiPasswordFlow {
         fetch,
     };
 
-    passwordAuthMiddlewareOptions: PasswordAuthMiddlewareOptions = {
+    passwordAuthMiddlewareOptions: IPasswordAuthMiddlewareOptions = {
         host: environment.authURL,
         projectKey: environment.projectKey,
         credentials: {

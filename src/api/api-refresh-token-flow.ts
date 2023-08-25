@@ -1,5 +1,5 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { RefreshAuthMiddlewareOptions } from '../models/types/type';
+import { IRefreshAuthMiddlewareOptions } from '../models/interfaces/interface';
 import { environment } from '../environment/environment';
 import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
@@ -12,7 +12,7 @@ export class ApiRefreshTokenFlow {
         fetch,
     };
 
-    refreshAuthMiddlewareOptions: RefreshAuthMiddlewareOptions = {
+    refreshAuthMiddlewareOptions: IRefreshAuthMiddlewareOptions = {
         host: environment.authURL,
         projectKey: environment.projectKey,
         credentials: {
