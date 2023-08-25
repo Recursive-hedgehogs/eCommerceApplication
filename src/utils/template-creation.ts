@@ -21,6 +21,7 @@ class ElementCreator<T extends HTMLElement> {
         this.setCssClasses(params.classNames);
         if (params.textContent) this.setTextContent(params.textContent);
         if (params.innerHTML) this.setInnerHTML(params.innerHTML);
+        if (params.background) this.element.style.backgroundImage = `url('${params.background}')`;
     }
 
     public setCssClasses(cssClasses: Array<string>): void {

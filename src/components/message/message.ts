@@ -1,7 +1,7 @@
 import ElementCreator from '../../utils/template-creation';
 import './message.scss';
 
-export default class Message {
+export class Message {
     private _element: HTMLElement | null = null;
 
     constructor(text: string) {

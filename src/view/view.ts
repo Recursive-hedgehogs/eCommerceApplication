@@ -7,7 +7,7 @@ import { ROUTE } from '../models/enums/enum';
 import { Main } from '../components/main/main';
 import App from '../app/app';
 import RegistrationPage from '../pages/registration-page/registration-page';
-import Message from '../components/message/message';
+import { Message } from '../components/message/message';
 import ProductPage from '../pages/product-page/product-page';
 import CatalogPage from '../pages/catalog-page/catalog-page';
 
