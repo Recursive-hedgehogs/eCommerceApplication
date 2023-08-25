@@ -10,22 +10,22 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
 export class ApiExistingTokenFlow {
     private static singleton: ApiExistingTokenFlow;
-    public apiRoot?: ByProjectKeyRequestBuilder;
-    httpMiddlewareOptions: HttpMiddlewareOptions = {
+    private httpMiddlewareOptions: HttpMiddlewareOptions = {
         host: environment.apiURL,
         fetch,
     };
 
-    authorization = '';
-    existingTokenMiddlewareOptions: ExistingTokenMiddlewareOptions = {
+    private authorization = '';
+    private existingTokenMiddlewareOptions: ExistingTokenMiddlewareOptions = {
         force: true,
     };
     private client?: Client;
+    public apiRoot?: ByProjectKeyRequestBuilder;
     constructor() {
         return ApiExistingTokenFlow.singleton ?? (ApiExistingTokenFlow.singleton = this);
     }
 
-    setUserData(token: string): void {
+    public setUserData(token: string): void {
         this.authorization = `Bearer ${token}`;
         this.client = new ClientBuilder()
             .withHttpMiddleware(this.httpMiddlewareOptions)

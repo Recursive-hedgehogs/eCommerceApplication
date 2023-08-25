@@ -7,6 +7,7 @@ import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
 import LoginPage from '../pages/login-page/login-page';
 import { Main } from '../components/main/main';
 import RegistrationPage from '../pages/registration-page/registration-page';
+import ProductPage from '../pages/product-page/product-page';
 
 class App implements IApp {
     private countriesArray: Array<ISO31661AssignedEntry>;
@@ -16,6 +17,7 @@ class App implements IApp {
     public loginPage: LoginPage;
     public registrationPage: RegistrationPage;
     private loggedIn = false;
+    public productPage: ProductPage;
 
     constructor() {
         this.view = null;
@@ -24,6 +26,7 @@ class App implements IApp {
         this.countriesArray = iso31661;
         this.loginPage = new LoginPage();
         this.registrationPage = new RegistrationPage();
+        this.productPage = new ProductPage();
     }
 
     public start(view: View): void {
@@ -72,7 +75,7 @@ class App implements IApp {
         return localStorage.getItem(key);
     }
 
-    public removeDatafromLocalStorage(key: string): void {
+    public removeDataFromLocalStorage(key: string): void {
         localStorage.removeItem(key);
     }
 }

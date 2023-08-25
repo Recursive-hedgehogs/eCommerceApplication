@@ -13,17 +13,20 @@ import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
-import { ITokenResponse } from '../models/interfaces/interface';
+import { ITokenResponse } from '../models/interfaces/response.interface';
+import { ApiProduct } from '../api/products/api-products';
 
 export class Controllers {
     private app: App | null;
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
+    private apiProduct: ApiProduct;
 
     constructor() {
         this.app = null;
         this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
+        this.apiProduct = new ApiProduct();
     }
 
     public start(app: App): void {
@@ -41,10 +44,8 @@ export class Controllers {
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
             if (this.app?.isAuthenticated()) {
-                console.log('Redirecting to MAIN page');
                 this.app?.setCurrentPage(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
             } else {
-                console.log('Redirecting to LOGIN page');
                 this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
             }
             this.app?.setCurrentPage(ROUTE.LOGIN);
@@ -74,7 +75,19 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
+        this.app?.view?.pages?.get(ROUTE.CATALOG)?.addEventListener('click', this.onCatalogClick);
     }
+
+    private onCatalogClick = (e: Event): void => {
+        if (e.target) {
+            console.log('hhfjhfhjfhjf');
+            this.apiProduct.getProductByKey('denim_jacket')?.then((resp) => {
+                console.log(resp);
+                this.app?.productPage.setContent(resp.body);
+                this.app?.setCurrentPage(ROUTE.PRODUCT);
+            });
+        }
+    };
 
     private togglePassword = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
@@ -155,31 +168,31 @@ export class Controllers {
             switch (target.dataset.link) {
                 case ROUTE.LOGIN:
                     this.app?.setCurrentPage(ROUTE.LOGIN);
-                    document.title = 'eCommerceApplication/Login';
+                    document.title = 'storiesShelf store | Login';
                     break;
                 case ROUTE.REGISTRATION:
                     this.app?.setCurrentPage(ROUTE.REGISTRATION);
-                    document.title = 'eCommerceApplication/Registration';
+                    document.title = 'storiesShelf store | Registration';
                     break;
                 case ROUTE.CATALOG:
                     this.app?.setCurrentPage(ROUTE.CATALOG);
-                    document.title = 'eCommerceApplication/Catalog';
+                    document.title = 'storiesShelf store | Catalog';
                     break;
                 case ROUTE.PRODUCT:
                     this.app?.setCurrentPage(ROUTE.PRODUCT);
-                    document.title = 'eCommerceApplication/Product';
+                    document.title = 'storiesShelf store | Product';
                     break;
                 case ROUTE.USER:
                     this.app?.setCurrentPage(ROUTE.USER);
-                    document.title = 'eCommerceApplication/User';
+                    document.title = 'storiesShelf store | User';
                     break;
                 case ROUTE.BASKET:
                     this.app?.setCurrentPage(ROUTE.BASKET);
-                    document.title = 'eCommerceApplication/Basket';
+                    document.title = 'storiesShelf store | Basket';
                     break;
                 case ROUTE.ABOUT:
                     this.app?.setCurrentPage(ROUTE.ABOUT);
-                    document.title = 'eCommerceApplication/About';
+                    document.title = 'shelfStories store/About';
                     break;
                 default:
                     break;

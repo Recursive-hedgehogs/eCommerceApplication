@@ -1,4 +1,6 @@
 import { Controllers } from '../../controllers/controllers';
+import { TokenCache } from '@commercetools/sdk-client-v2';
+import { IClientCredentials, IUserCredentials } from './credentials.interface';
 
 export interface IView {
     build(): void;
@@ -22,34 +24,23 @@ export interface IAddress {
     postalCode?: string;
 }
 
-export interface ICreateCustomerCredentials {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    addresses: IAddress[];
+export interface IPasswordAuthMiddlewareOptions {
+    host: string;
+    projectKey: string;
+    credentials: IUserCredentials;
+    scopes?: Array<string>;
+    tokenCache?: TokenCache;
+    oauthUri?: string;
+    fetch?: unknown;
 }
 
-export interface ILoginCredentials {
-    email: string;
-    password: string;
-}
-
-export interface IEmailTokenCredentials {
-    id: string;
-    ttlMinutes: number;
-}
-
-export interface IPasswordResetTokenCredentials {
-    email: string;
-}
-
-export interface ITokenResponse {
-    access_token: string;
-    expires_at: number;
-    expires_in: number;
-    refresh_token: string;
-    scope: string;
-    token_type: string;
+export interface IRefreshAuthMiddlewareOptions {
+    host: string;
+    projectKey: string;
+    credentials: IClientCredentials;
+    refreshToken: string;
+    scopes?: Array<string>;
+    tokenCache?: TokenCache;
+    oauthUri?: string;
+    fetch?: unknown;
 }

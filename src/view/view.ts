@@ -8,11 +8,13 @@ import { Main } from '../components/main/main';
 import App from '../app/app';
 import RegistrationPage from '../pages/registration-page/registration-page';
 import Message from '../components/message/message';
+import ProductPage from '../pages/product-page/product-page';
+import CatalogPage from '../pages/catalog-page/catalog-page';
 
 class View implements IView {
-    public app: App | null;
     private _pages?: Map<string, HTMLElement>;
     private readonly main: Main;
+    public app: App | null;
 
     constructor() {
         this.app = null;
@@ -35,19 +37,23 @@ class View implements IView {
         document.body.append(header, mainElement);
     }
 
-    setPages(): void {
+    public setPages(): void {
         const mainPage: HTMLElement = new MainPage().getElement();
         const loginPage: HTMLElement = new LoginPage().getElement();
         const registrPage: HTMLElement = new RegistrationPage().getElement();
+        const catalogPage: HTMLElement = new CatalogPage().getElement();
+        const productPage: HTMLElement = new ProductPage().getElement();
         const notFoundPage: HTMLElement = new NotFoundPage().getElement();
         this._pages = new Map();
         this._pages.set(ROUTE.MAIN, mainPage);
         this._pages.set(ROUTE.LOGIN, loginPage);
         this._pages.set(ROUTE.REGISTRATION, registrPage);
+        this._pages.set(ROUTE.PRODUCT, productPage);
+        this._pages.set(ROUTE.CATALOG, catalogPage);
         this._pages.set(ROUTE.NOT_FOUND, notFoundPage);
     }
 
-    showMessage(text: string, color?: string): void {
+    public showMessage(text: string, color?: string): void {
         const message: Message = new Message(text);
         if (message.element) {
             this.main?.getElement()?.after(message.element);

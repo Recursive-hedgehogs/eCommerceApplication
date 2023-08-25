@@ -1,22 +1,20 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { PasswordAuthMiddlewareOptions } from '../models/types/type';
+import { IPasswordAuthMiddlewareOptions } from '../models/interfaces/interface';
 import { environment } from '../environment/environment';
 import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import SdkAuth from '@commercetools/sdk-auth';
 import { ApiExistingTokenFlow } from './api-existing-token-flow';
-import { ITokenResponse } from '../models/interfaces/interface';
+import { ITokenResponse } from '../models/interfaces/response.interface';
 import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
 
 export class ApiPasswordFlow {
     private static singleton: ApiPasswordFlow;
-    public apiRoot?: ByProjectKeyRequestBuilder;
-    httpMiddlewareOptions: HttpMiddlewareOptions = {
+    private httpMiddlewareOptions: HttpMiddlewareOptions = {
         host: environment.apiURL,
         fetch,
     };
-
-    passwordAuthMiddlewareOptions: PasswordAuthMiddlewareOptions = {
+    private passwordAuthMiddlewareOptions: IPasswordAuthMiddlewareOptions = {
         host: environment.authURL,
         projectKey: environment.projectKey,
         credentials: {
@@ -31,9 +29,9 @@ export class ApiPasswordFlow {
         fetch,
     };
     private client?: Client;
-    public token?: string;
     private apiExistingTokenFlow?: ApiExistingTokenFlow;
     private apiRefreshTokenFlow?: ApiRefreshTokenFlow;
+    public apiRoot?: ByProjectKeyRequestBuilder;
 
     constructor() {
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
@@ -41,7 +39,7 @@ export class ApiPasswordFlow {
         return ApiPasswordFlow.singleton ?? (ApiPasswordFlow.singleton = this);
     }
 
-    setUserData(email: string, password: string): void {
+    public setUserData(email: string, password: string): void {
         const authClient = new SdkAuth({
             host: environment.authURL,
             projectKey: environment.projectKey,
