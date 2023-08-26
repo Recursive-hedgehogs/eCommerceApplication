@@ -1,7 +1,7 @@
 import App from '../app/app';
-import { ROUTE } from '../models/enums/enum';
+import { ROUTE } from '../constants/enums/enum';
 import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 import {
     validateDateOfBirth,
     validateEmail,
@@ -13,7 +13,7 @@ import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
-import { ITokenResponse } from '../models/interfaces/response.interface';
+import { ITokenResponse } from '../constants/interfaces/response.interface';
 import { ApiProduct } from '../api/products/api-products';
 
 export class Controllers {
@@ -75,17 +75,21 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
-        this.app?.view?.pages?.get(ROUTE.CATALOG)?.addEventListener('click', this.onCatalogClick);
+        // this.app?.view?.pages?.get(ROUTE.CATALOG)?.addEventListener('click', this.onCatalogClick);
     }
 
     private onCatalogClick = (e: Event): void => {
         if (e.target) {
             console.log('hhfjhfhjfhjf');
-            this.apiProduct.getProductByKey('denim_jacket')?.then((resp) => {
+            this.apiProduct.getProducts()?.then((resp: ClientResponse<ProductPagedQueryResponse>) => {
                 console.log(resp);
-                this.app?.productPage.setContent(resp.body);
-                this.app?.setCurrentPage(ROUTE.PRODUCT);
+                this.app?.catalogPage.setContent(resp.body.results);
             });
+
+            // this.apiProduct.getProductByKey('denim_jacket')?.then((resp) => {
+            //     this.app?.productPage.setContent(resp.body);
+            //     this.app?.setCurrentPage(ROUTE.PRODUCT);
+            // });
         }
     };
 
@@ -177,6 +181,13 @@ export class Controllers {
                 case ROUTE.CATALOG:
                     this.app?.setCurrentPage(ROUTE.CATALOG);
                     document.title = 'storiesShelf store | Catalog';
+                    if (e.target) {
+                        console.log('hhfjhfhjfhjf');
+                        this.apiProduct.getProducts()?.then((resp: ClientResponse<ProductPagedQueryResponse>) => {
+                            console.log(resp);
+                            this.app?.catalogPage.setContent(resp.body.results);
+                        });
+                    }
                     break;
                 case ROUTE.PRODUCT:
                     this.app?.setCurrentPage(ROUTE.PRODUCT);
@@ -224,7 +235,6 @@ export class Controllers {
             });
             authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
                 this.apiExistingTokenFlow.setUserData(resp.access_token);
-                // this.app?.showMessage('You are logged in');
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
                     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection from login to MAIN page

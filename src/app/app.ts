@@ -1,12 +1,13 @@
-import { IApp } from '../models/interfaces/interface';
+import { IApp } from '../constants/interfaces/interface';
 import { Router } from '../router/router';
 import View from '../view/view';
-import { ROUTE } from '../models/enums/enum';
+import { ROUTE } from '../constants/enums/enum';
 import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
 import { Main } from '../components/main/main';
 import LoginPage from '../pages/login-page/login-page';
 import RegistrationPage from '../pages/registration-page/registration-page';
 import ProductPage from '../pages/product-page/product-page';
+import CatalogPage from '../pages/catalog-page/catalog-page';
 
 class App implements IApp {
     private countriesArray: Array<ISO31661AssignedEntry>;
@@ -15,6 +16,7 @@ class App implements IApp {
     private loggedIn = false;
     public view: View | null;
     public productPage: ProductPage;
+    public catalogPage: CatalogPage;
     public loginPage: LoginPage;
     public registrationPage: RegistrationPage;
 
@@ -26,6 +28,7 @@ class App implements IApp {
         this.loginPage = new LoginPage();
         this.registrationPage = new RegistrationPage();
         this.productPage = new ProductPage();
+        this.catalogPage = new CatalogPage();
     }
 
     public start(view: View): void {

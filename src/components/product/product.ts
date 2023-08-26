@@ -1,5 +1,6 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './product.html';
+import './product.scss';
 import { Product } from '@commercetools/platform-sdk';
 
 export class ProductCard {
@@ -22,7 +23,10 @@ export class ProductCard {
         this.productImage = new ElementCreator({
             tag: 'div',
             classNames: ['product-image'],
-            background: data.masterData.current.variants[0].images![0].url,
+            background:
+                data.masterData.current.variants[0].images && data.masterData.current.variants[0].images[0]
+                    ? data.masterData.current.variants[0].images[0].url
+                    : 'none',
         }).getElement();
         this.productDescription = new ElementCreator({
             tag: 'p',
@@ -32,6 +36,7 @@ export class ProductCard {
                 '   ' +
                 data.masterData.current.variants[0].attributes![0].value['key'],
         }).getElement();
+        this._element.append(this.productName, this.productImage, this.productDescription);
     }
 
     public get element(): HTMLElement | null {

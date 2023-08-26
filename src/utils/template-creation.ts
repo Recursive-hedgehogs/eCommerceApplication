@@ -1,4 +1,4 @@
-import { IElementParams } from '../models/interfaces/interface';
+import { IElementParams } from '../constants/interfaces/interface';
 
 class ElementCreator<T extends HTMLElement> {
     element: T | null;

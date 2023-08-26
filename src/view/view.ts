@@ -1,9 +1,9 @@
-import { IView } from '../models/interfaces/interface';
+import { IView } from '../constants/interfaces/interface';
 import LoginPage from '../pages/login-page/login-page';
 import Header from '../components/header/header';
 import MainPage from '../pages/main-page/main-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
-import { ROUTE } from '../models/enums/enum';
+import { ROUTE } from '../constants/enums/enum';
 import { Main } from '../components/main/main';
 import App from '../app/app';
 import RegistrationPage from '../pages/registration-page/registration-page';
