@@ -1,13 +1,13 @@
 import ElementCreator from '../../utils/template-creation';
-import template from './product.html';
-import './product.scss';
+import template from './product-card.html';
+import './product-card.scss';
 import { Product } from '@commercetools/platform-sdk';
 
 export class ProductCard {
-    private _element: HTMLElement | null = null;
-    private productName: HTMLElement;
-    private productImage: HTMLElement;
-    private productDescription: HTMLElement;
+    private readonly _element: HTMLElement | null = null;
+    private readonly productName: HTMLElement;
+    private readonly productImage: HTMLElement;
+    private readonly productDescription: HTMLElement;
 
     constructor(data: Product) {
         this._element = new ElementCreator({
