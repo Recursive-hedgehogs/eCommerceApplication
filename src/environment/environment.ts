@@ -1,12 +1,3 @@
-// export const environment = {
-//     projectKey: 'ecommerce-shop',
-//     clientSecret: 'ixV-d6be7s7y1442LBSMyIXT1lR2-C_5',
-//     clientID: 'Q10P3-YHcN4fbfgurbqac7tJ',
-//     authURL: 'https://auth.europe-west1.gcp.commercetools.com',
-//     apiURL: 'https://api.europe-west1.gcp.commercetools.com',
-//     scope: 'manage_customers:ecommerce-shop view_project_settings:ecommerce-shop',
-// };
-
 export const environment = {
     projectKey: 'ecommerce-shop',
     clientSecret: 'g531_AjAASi5dhYD-xu01K4X8KzRlLZv',

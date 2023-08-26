@@ -1,34 +1,29 @@
-import { IView } from '../models/interfaces/interface';
+import { IView } from '../constants/interfaces/interface';
 import LoginPage from '../pages/login-page/login-page';
 import Header from '../components/header/header';
-import MainPage from '../pages/main-page/main-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
-import { ROUTE } from '../models/enums/enum';
+import { ROUTE } from '../constants/enums/enum';
 import { Main } from '../components/main/main';
 import App from '../app/app';
 import RegistrationPage from '../pages/registration-page/registration-page';
-import Message from '../components/message/message';
+import { Message } from '../components/message/message';
 import ProductPage from '../pages/product-page/product-page';
 import CatalogPage from '../pages/catalog-page/catalog-page';
 
 class View implements IView {
     private _pages?: Map<string, HTMLElement>;
     private readonly main: Main;
-    public app: App | null;
+    public app: App;
 
-    constructor() {
-        this.app = null;
+    constructor(app: App) {
+        this.app = app;
         this.setPages();
-        this.main = new Main();
+        this.main = this.app.main;
+        this.build();
     }
 
     public get pages() {
         return this._pages;
-    }
-
-    public start(app: App): void {
-        this.app = app;
-        this.build();
     }
 
     public build(): void {
@@ -38,7 +33,7 @@ class View implements IView {
     }
 
     public setPages(): void {
-        const mainPage: HTMLElement = new MainPage().getElement();
+        const mainPage: HTMLElement = this.app.mainPage.getElement();
         const loginPage: HTMLElement = new LoginPage().getElement();
         const registrPage: HTMLElement = new RegistrationPage().getElement();
         const catalogPage: HTMLElement = new CatalogPage().getElement();

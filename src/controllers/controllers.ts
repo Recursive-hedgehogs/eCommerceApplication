@@ -1,5 +1,5 @@
 import App from '../app/app';
-import { ROUTE } from '../models/enums/enum';
+import { ROUTE } from '../constants/enums/enum';
 import { apiCustomer } from '../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
 import {
@@ -13,24 +13,29 @@ import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
-import { ITokenResponse } from '../models/interfaces/response.interface';
+import { ITokenResponse } from '../constants/interfaces/response.interface';
 import { ApiProduct } from '../api/products/api-products';
+import { MainPageControllers } from '../pages/main-page/main-page-controllers';
+import { Router } from '../router/router';
 
 export class Controllers {
     private app: App | null;
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
     private apiProduct: ApiProduct;
+    private router: Router;
 
     constructor() {
         this.app = null;
         this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
         this.apiProduct = new ApiProduct();
+        this.router = new Router();
     }
 
     public start(app: App): void {
         this.app = app;
+        const mainPageControllers = new MainPageControllers(app);
         this.addListeners();
     }
 
@@ -44,28 +49,27 @@ export class Controllers {
         const logoLink: HTMLElement | null = document.querySelector('.navbar-brand');
         loginBtn?.addEventListener('click', (): void => {
             if (this.app?.isAuthenticated()) {
-                this.app?.setCurrentPage(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
+                this.router.navigate(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
             } else {
-                this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
+                this.router.navigate(ROUTE.LOGIN); // else to the login page
             }
-            this.app?.setCurrentPage(ROUTE.LOGIN);
+            this.router.navigate(ROUTE.LOGIN);
         });
         logoutBtn?.addEventListener('click', (): void => {
             this.app?.setAuthenticationStatus(false); // set authentication state
-            this.app?.setCurrentPage(ROUTE.LOGIN); // else to the login page
+            this.router.navigate(ROUTE.LOGIN); // else to the login page
             logoutBtn.classList.add('hidden');
             loginBtn?.classList.remove('hidden');
             localStorage.removeItem('refreshToken');
         });
         registrBtn?.addEventListener('click', (): void => {
-            this.app?.setCurrentPage(ROUTE.REGISTRATION);
+            this.router.navigate(ROUTE.REGISTRATION);
         });
         logoLink?.addEventListener('click', (e: MouseEvent): void => {
             e.preventDefault();
-            this.app?.setCurrentPage(ROUTE.MAIN);
+            this.router.navigate(ROUTE.MAIN);
         });
 
-        this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
@@ -75,19 +79,7 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
         this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
-        this.app?.view?.pages?.get(ROUTE.CATALOG)?.addEventListener('click', this.onCatalogClick);
     }
-
-    private onCatalogClick = (e: Event): void => {
-        if (e.target) {
-            console.log('hhfjhfhjfhjf');
-            this.apiProduct.getProductByKey('denim_jacket')?.then((resp) => {
-                console.log(resp);
-                this.app?.productPage.setContent(resp.body);
-                this.app?.setCurrentPage(ROUTE.PRODUCT);
-            });
-        }
-    };
 
     private togglePassword = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
@@ -97,7 +89,7 @@ export class Controllers {
             this.app?.registrationPage.changePasswordVisibility();
         }
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
-            this.app?.setCurrentPage(ROUTE.REGISTRATION);
+            this.router.navigate(ROUTE.REGISTRATION);
         }
     };
 
@@ -161,54 +153,15 @@ export class Controllers {
         }
     };
 
-    private onMainPageClick = (e: Event): void => {
-        e.preventDefault();
-        const target: EventTarget | null = e.target;
-        if (target instanceof HTMLElement) {
-            switch (target.dataset.link) {
-                case ROUTE.LOGIN:
-                    this.app?.setCurrentPage(ROUTE.LOGIN);
-                    document.title = 'storiesShelf store | Login';
-                    break;
-                case ROUTE.REGISTRATION:
-                    this.app?.setCurrentPage(ROUTE.REGISTRATION);
-                    document.title = 'storiesShelf store | Registration';
-                    break;
-                case ROUTE.CATALOG:
-                    this.app?.setCurrentPage(ROUTE.CATALOG);
-                    document.title = 'storiesShelf store | Catalog';
-                    break;
-                case ROUTE.PRODUCT:
-                    this.app?.setCurrentPage(ROUTE.PRODUCT);
-                    document.title = 'storiesShelf store | Product';
-                    break;
-                case ROUTE.USER:
-                    this.app?.setCurrentPage(ROUTE.USER);
-                    document.title = 'storiesShelf store | User';
-                    break;
-                case ROUTE.BASKET:
-                    this.app?.setCurrentPage(ROUTE.BASKET);
-                    document.title = 'storiesShelf store | Basket';
-                    break;
-                case ROUTE.ABOUT:
-                    this.app?.setCurrentPage(ROUTE.ABOUT);
-                    document.title = 'shelfStories store/About';
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
     private onNotFoundPageClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
-            this.app?.setCurrentPage(ROUTE.MAIN);
+            this.router.navigate(ROUTE.MAIN);
         }
     };
 
     private onFirstLoad = (): void => {
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
-        this.app?.setCurrentPage(currentLocation);
+        this.router.navigate(currentLocation);
         const refreshToken: string | null = localStorage.getItem('refreshToken');
         if (refreshToken) {
             const authClient = new SdkAuth({
@@ -224,10 +177,9 @@ export class Controllers {
             });
             authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
                 this.apiExistingTokenFlow.setUserData(resp.access_token);
-                // this.app?.showMessage('You are logged in');
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
-                    this.app?.setCurrentPage(ROUTE.MAIN); //add redirection from login to MAIN page
+                    this.router.navigate(ROUTE.MAIN); //add redirection from login to MAIN page
                 }
                 const loginBtn: HTMLElement | null = document.getElementById('login-btn');
                 const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
@@ -261,7 +213,7 @@ export class Controllers {
     private redirectCallBack = (e: PopStateEvent): void => {
         const currentPath: string = window.location.pathname.slice(1);
         if (e.state && e.state.page) {
-            this.app?.setCurrentPage(currentPath, e.state.page === currentPath);
+            this.router.navigate(currentPath, e.state.page === currentPath);
         }
     };
 
@@ -341,7 +293,7 @@ export class Controllers {
                 })
                 .then((): void => {
                     this.app?.showMessage('Your account has been created');
-                    this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
                     logoutBtn?.classList.remove('hidden');
                     loginBtn?.classList.add('hidden');
                 })
@@ -383,7 +335,7 @@ export class Controllers {
                 .then((): void => {
                     this.app?.showMessage('You are logged in');
                     this.app?.setAuthenticationStatus(true); // set authentication state
-                    this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
                     logoutBtn?.classList.remove('hidden');
                     loginBtn?.classList.add('hidden');
                 })
@@ -434,7 +386,7 @@ export class Controllers {
 
     private onRegistrationClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.LOGIN) {
-            this.app?.setCurrentPage(ROUTE.LOGIN);
+            this.router.navigate(ROUTE.LOGIN);
         }
     };
 }

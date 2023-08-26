@@ -15,6 +15,7 @@ export interface IElementParams {
     classNames: Array<string>;
     textContent?: string;
     innerHTML?: string;
+    background?: string;
 }
 
 export interface IAddress {

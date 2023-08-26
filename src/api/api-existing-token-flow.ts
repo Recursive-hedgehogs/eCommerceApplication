@@ -14,7 +14,6 @@ export class ApiExistingTokenFlow {
         host: environment.apiURL,
         fetch,
     };
-
     private authorization = '';
     private existingTokenMiddlewareOptions: ExistingTokenMiddlewareOptions = {
         force: true,

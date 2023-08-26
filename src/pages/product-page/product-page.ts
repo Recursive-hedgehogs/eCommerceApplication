@@ -30,8 +30,6 @@ export default class ProductPage {
     }
 
     public setContent(data: Product): void {
-        console.log(data.masterData.current.name['en-US']);
-        console.log(this.element, this.productName);
         this.productName.innerText = data.masterData.current.name['en-US'];
         if (data.masterData.current.variants[0].images) {
             this.productImage.style.background = `url('${data.masterData.current.variants[0].images[0].url}') no-repeat`;

@@ -7,7 +7,7 @@ export default class RegistrationPage {
 
     constructor() {
         this.element = new ElementCreator({
-            tag: 'div',
+            tag: 'section',
             classNames: ['registration-page-container'],
             innerHTML: template,
         }).getElement();

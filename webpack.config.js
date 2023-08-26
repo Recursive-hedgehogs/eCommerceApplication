@@ -45,6 +45,7 @@ const baseConfig = {
     output: {
         filename: 'index.js',
         path: _resolve(__dirname, './dist'),
+        publicPath: '/',
     },
     plugins: [
         new HtmlWebpackPlugin({

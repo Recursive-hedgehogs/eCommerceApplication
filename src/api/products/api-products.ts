@@ -14,10 +14,19 @@ export class ApiProduct {
     }
 
     public getProductByKey = (key: string) => {
-        console.log(key);
         return this.apiExistingTokenFlow.apiRoot
             ?.products()
             .withKey({ key })
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public getProducts = () => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.products()
             .get()
             .execute()
             .catch((err) => {
