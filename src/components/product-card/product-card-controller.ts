@@ -22,9 +22,10 @@ export class ProductCardController {
     }
 
     public onClick = (e: Event) => {
+        console.log(this.productCard);
         this.router.navigate(ROUTE.PRODUCT);
-        if (e.target) {
-            this.apiProduct.getProductByKey('denim_jacket')?.then((resp) => {
+        if (e.target && this.productCard.productKey) {
+            this.apiProduct.getProductByKey(this.productCard.productKey)?.then((resp) => {
                 console.log(this.app, 'jytgjhgjhghjghj', resp);
                 this.app?.productPage.setContent(resp.body);
             });

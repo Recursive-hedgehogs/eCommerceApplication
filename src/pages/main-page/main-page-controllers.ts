@@ -11,10 +11,10 @@ export class MainPageControllers {
     private apiProduct: ApiProduct;
     private router: Router;
 
-    constructor(app: App) {
-        this.app = app;
+    constructor() {
+        this.app = new App();
         this.router = new Router();
-        this.mainPage = app.mainPage;
+        this.mainPage = this.app.mainPage;
         this.apiProduct = new ApiProduct();
         this.addListeners();
     }

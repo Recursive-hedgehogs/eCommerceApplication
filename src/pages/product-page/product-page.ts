@@ -33,6 +33,7 @@ export default class ProductPage {
         this.productName.innerText = data.masterData.current.name['en-US'];
         if (data.masterData.current.variants[0].images) {
             this.productImage.style.background = `url('${data.masterData.current.variants[0].images[0].url}') no-repeat`;
+            this.productImage.style.backgroundSize = 'cover';
         }
         if (data.masterData.current.variants[0].attributes) {
             this.productDescription.innerText =

@@ -14,28 +14,27 @@ import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
-import { ApiProduct } from '../api/products/api-products';
 import { MainPageControllers } from '../pages/main-page/main-page-controllers';
 import { Router } from '../router/router';
+import { NotFoundPageControllers } from '../pages/not-found-page/not-found-page-controllers';
 
 export class Controllers {
     private app: App | null;
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
-    private apiProduct: ApiProduct;
     private router: Router;
 
     constructor() {
         this.app = null;
         this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
-        this.apiProduct = new ApiProduct();
         this.router = new Router();
     }
 
     public start(app: App): void {
         this.app = app;
-        const mainPageControllers = new MainPageControllers(app);
+        new MainPageControllers();
+        new NotFoundPageControllers();
         this.addListeners();
     }
 
@@ -78,86 +77,8 @@ export class Controllers {
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
         this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
-        this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
+        // this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
-
-    private togglePassword = (e: Event): void => {
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        if (target.id === 'password-icon') {
-            this.app?.loginPage.changePasswordVisibility();
-        } else if (target.id === 'password-icon-registr') {
-            this.app?.registrationPage.changePasswordVisibility();
-        }
-        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
-            this.router.navigate(ROUTE.REGISTRATION);
-        }
-    };
-
-    private onLoginValidate = (e: Event): void => {
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        if (target.id === 'input-login-email') {
-            this.app?.loginPage.onEmailValidate(target);
-        } else if (target.id === 'input-login-password') {
-            this.app?.loginPage.onPasswordValidate(target);
-        }
-    };
-
-    private onRegistrationValidate = (e: Event): void => {
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        const postalCodeInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-postal-code');
-        const postalCodeShipInput: HTMLInputElement = <HTMLInputElement>(
-            document.getElementById('input-postal-code-ship')
-        );
-        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country');
-        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
-            document.getElementById('input-country-ship')
-        );
-        countrySelect.addEventListener('change', function () {
-            postalCodeInput.value = '';
-        });
-        countryShipSelect.addEventListener('change', function () {
-            postalCodeShipInput.value = '';
-        });
-        switch (target.id) {
-            case 'input-registr-email':
-                this.app?.loginPage.onEmailValidate(target);
-                break;
-            case 'input-registr-password':
-                this.app?.loginPage.onPasswordValidate(target);
-                break;
-            case 'input-first-name':
-            case 'input-last-name':
-                this.app?.registrationPage.onNameValidate(target);
-                break;
-            case 'input-date-birth':
-                this.app?.registrationPage.onDateDateOfBirth(target);
-                break;
-            case 'input-city':
-            case 'input-city-ship':
-                this.app?.registrationPage.onNameValidate(target);
-                break;
-            case 'input-street':
-            case 'input-street-ship':
-                this.app?.registrationPage.onNameValidate(target);
-                break;
-            case 'input-postal-code':
-                this.checkCountry(target, countrySelect);
-                this.app?.registrationPage.onPostalValidate(target);
-                break;
-            case 'input-postal-code-ship':
-                this.checkCountry(target, countryShipSelect);
-                this.app?.registrationPage.onPostalValidate(target);
-                break;
-            default:
-                break;
-        }
-    };
-
-    private onNotFoundPageClick = (e: Event): void => {
-        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
-            this.router.navigate(ROUTE.MAIN);
-        }
-    };
 
     private onFirstLoad = (): void => {
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
@@ -212,8 +133,8 @@ export class Controllers {
 
     private redirectCallBack = (e: PopStateEvent): void => {
         const currentPath: string = window.location.pathname.slice(1);
-        if (e.state && e.state.page) {
-            this.router.navigate(currentPath, e.state.page === currentPath);
+        if (e.state && e.state.route) {
+            this.router.navigate(currentPath, e.state.route === currentPath);
         }
     };
 
@@ -347,6 +268,78 @@ export class Controllers {
                         el.innerText = 'Incorrect email or password - please try again.';
                     });
                 });
+        }
+    };
+
+    private togglePassword = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'password-icon') {
+            this.app?.loginPage.changePasswordVisibility();
+        } else if (target.id === 'password-icon-registr') {
+            this.app?.registrationPage.changePasswordVisibility();
+        }
+        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
+            this.router.navigate(ROUTE.REGISTRATION);
+        }
+    };
+
+    private onLoginValidate = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'input-login-email') {
+            this.app?.loginPage.onEmailValidate(target);
+        } else if (target.id === 'input-login-password') {
+            this.app?.loginPage.onPasswordValidate(target);
+        }
+    };
+
+    private onRegistrationValidate = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const postalCodeInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-postal-code');
+        const postalCodeShipInput: HTMLInputElement = <HTMLInputElement>(
+            document.getElementById('input-postal-code-ship')
+        );
+        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country');
+        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
+            document.getElementById('input-country-ship')
+        );
+        countrySelect.addEventListener('change', function () {
+            postalCodeInput.value = '';
+        });
+        countryShipSelect.addEventListener('change', function () {
+            postalCodeShipInput.value = '';
+        });
+        switch (target.id) {
+            case 'input-registr-email':
+                this.app?.loginPage.onEmailValidate(target);
+                break;
+            case 'input-registr-password':
+                this.app?.loginPage.onPasswordValidate(target);
+                break;
+            case 'input-first-name':
+            case 'input-last-name':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-date-birth':
+                this.app?.registrationPage.onDateDateOfBirth(target);
+                break;
+            case 'input-city':
+            case 'input-city-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-street':
+            case 'input-street-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-postal-code':
+                this.checkCountry(target, countrySelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            case 'input-postal-code-ship':
+                this.checkCountry(target, countryShipSelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            default:
+                break;
         }
     };
 

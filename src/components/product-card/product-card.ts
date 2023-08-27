@@ -8,8 +8,12 @@ export class ProductCard {
     private readonly productName: HTMLElement;
     private readonly productImage: HTMLElement;
     private readonly productDescription: HTMLElement;
+    private productId: string;
+    public productKey: string | undefined;
 
     constructor(data: Product) {
+        this.productId = data.id;
+        this.productKey = data.key;
         this._element = new ElementCreator({
             tag: 'div',
             classNames: ['product'],
