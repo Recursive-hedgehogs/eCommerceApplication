@@ -7,6 +7,7 @@ import RegistrationPage from '../pages/registration-page/registration-page';
 import ProductPage from '../pages/product-page/product-page';
 import CatalogPage from '../pages/catalog-page/catalog-page';
 import MainPage from '../pages/main-page/main-page';
+import NotFoundPage from '../pages/not-found-page/not-found-page';
 
 class App implements IApp {
     private countriesArray!: Array<ISO31661AssignedEntry>;
@@ -18,6 +19,7 @@ class App implements IApp {
     public loginPage!: LoginPage;
     public registrationPage!: RegistrationPage;
     public mainPage!: MainPage;
+    public notFoundPage!: NotFoundPage;
     private static singleton: App;
 
     constructor() {
@@ -32,6 +34,7 @@ class App implements IApp {
         this.registrationPage = new RegistrationPage();
         this.productPage = new ProductPage();
         this.catalogPage = new CatalogPage();
+        this.notFoundPage = new NotFoundPage();
     }
 
     public start(view: View): void {

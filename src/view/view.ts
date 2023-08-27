@@ -1,14 +1,9 @@
 import { IView } from '../constants/interfaces/interface';
-import LoginPage from '../pages/login-page/login-page';
 import Header from '../components/header/header';
-import NotFoundPage from '../pages/not-found-page/not-found-page';
 import { ROUTE } from '../constants/enums/enum';
 import { Main } from '../components/main/main';
 import App from '../app/app';
-import RegistrationPage from '../pages/registration-page/registration-page';
 import { Message } from '../components/message/message';
-import ProductPage from '../pages/product-page/product-page';
-import CatalogPage from '../pages/catalog-page/catalog-page';
 
 class View implements IView {
     private _pages?: Map<string, HTMLElement>;
@@ -34,11 +29,11 @@ class View implements IView {
 
     public setPages(): void {
         const mainPage: HTMLElement = this.app.mainPage.getElement();
-        const loginPage: HTMLElement = new LoginPage().getElement();
-        const registrPage: HTMLElement = new RegistrationPage().getElement();
-        const catalogPage: HTMLElement = new CatalogPage().getElement();
-        const productPage: HTMLElement = new ProductPage().getElement();
-        const notFoundPage: HTMLElement = new NotFoundPage().getElement();
+        const loginPage: HTMLElement = this.app.loginPage.getElement();
+        const registrPage: HTMLElement = this.app.registrationPage.getElement();
+        const catalogPage: HTMLElement = this.app.catalogPage.getElement();
+        const productPage: HTMLElement = this.app.productPage.getElement();
+        const notFoundPage: HTMLElement = this.app.notFoundPage.getElement();
         this._pages = new Map();
         this._pages.set(ROUTE.MAIN, mainPage);
         this._pages.set(ROUTE.LOGIN, loginPage);

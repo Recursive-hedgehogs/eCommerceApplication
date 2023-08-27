@@ -1,6 +1,7 @@
 import { Controllers } from '../../controllers/controllers';
 import { TokenCache } from '@commercetools/sdk-client-v2';
 import { IClientCredentials, IUserCredentials } from './credentials.interface';
+import { Product, ProductDiscount } from '@commercetools/platform-sdk';
 
 export interface IView {
     build(): void;
@@ -44,4 +45,9 @@ export interface IRefreshAuthMiddlewareOptions {
     tokenCache?: TokenCache;
     oauthUri?: string;
     fetch?: unknown;
+}
+
+export interface IProductWithDiscount {
+    product: Product;
+    discount?: ProductDiscount;
 }

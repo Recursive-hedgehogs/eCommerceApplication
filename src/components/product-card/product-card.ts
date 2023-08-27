@@ -1,15 +1,27 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './product-card.html';
 import './product-card.scss';
-import { Product } from '@commercetools/platform-sdk';
+import { IProductWithDiscount } from '../../constants/interfaces/interface';
+import {
+    Price,
+    ProductDiscountValueAbsolute,
+    ProductDiscountValueExternal,
+    ProductDiscountValueRelative,
+} from '@commercetools/platform-sdk';
 
 export class ProductCard {
     private readonly _element: HTMLElement | null = null;
     private readonly productName: HTMLElement;
     private readonly productImage: HTMLElement;
     private readonly productDescription: HTMLElement;
+    public productId: string;
+    public productKey: string | undefined;
+    private readonly productPrice: HTMLElement;
+    private readonly productDefaultPrice: HTMLElement;
 
-    constructor(data: Product) {
+    constructor(data: IProductWithDiscount) {
+        this.productId = data.product.id;
+        this.productKey = data.product.key;
         this._element = new ElementCreator({
             tag: 'div',
             classNames: ['product'],
@@ -18,25 +30,48 @@ export class ProductCard {
         this.productName = new ElementCreator({
             tag: 'h5',
             classNames: ['product-name'],
-            innerHTML: data.masterData.current.name['en-US'],
+            innerHTML: data.product.masterData.current.name['en-US'],
         }).getElement();
         this.productImage = new ElementCreator({
             tag: 'div',
             classNames: ['product-image'],
             background:
-                data.masterData.current.variants[0].images && data.masterData.current.variants[0].images[0]
-                    ? data.masterData.current.variants[0].images[0].url
+                data.product.masterData.current.variants[0].images &&
+                data.product.masterData.current.variants[0].images[0]
+                    ? data.product.masterData.current.variants[0].images[0].url
                     : 'none',
         }).getElement();
+        const variant = data.product.masterData.current.variants[0].attributes;
         this.productDescription = new ElementCreator({
             tag: 'p',
             classNames: ['product-description'],
-            innerHTML:
-                data.masterData.current.variants[0].attributes![0].name +
-                '   ' +
-                data.masterData.current.variants[0].attributes![0].value['key'],
+            innerHTML: variant && variant[0] ? variant[0].name + '   ' + variant[0].value['key'] : '',
         }).getElement();
-        this._element.append(this.productName, this.productImage, this.productDescription);
+        const prices: Price[] | undefined = data.product.masterData.current.masterVariant.prices;
+        this.productPrice = new ElementCreator({
+            tag: 'p',
+            classNames: ['product-price'],
+            innerHTML: `Original price ${prices && prices[0] ? prices[0].value.centAmount / 100 + '€' : ''}`,
+        }).getElement();
+        const pricesD:
+            | ProductDiscountValueAbsolute
+            | ProductDiscountValueExternal
+            | ProductDiscountValueRelative
+            | undefined = data.discount?.value;
+        const b = pricesD as unknown as { permyriad: string };
+        this.productDefaultPrice = new ElementCreator({
+            tag: 'p',
+            classNames: ['product-price-discount', 'text-warning'],
+            innerHTML: `Discounted price ${pricesD && b.permyriad ? b.permyriad + '€' : ''}`,
+        }).getElement();
+
+        this._element.append(
+            this.productName,
+            this.productImage,
+            this.productDescription,
+            this.productPrice,
+            this.productDefaultPrice
+        );
     }
 
     public get element(): HTMLElement | null {
