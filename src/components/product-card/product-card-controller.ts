@@ -5,7 +5,7 @@ import { ApiProduct } from '../../api/products/api-products';
 import App from '../../app/app';
 
 export class ProductCardController {
-    private productCard: ProductCard;
+    private readonly productCard: ProductCard;
     private router: Router;
     private apiProduct: ApiProduct;
     private app: App;
@@ -17,16 +17,15 @@ export class ProductCardController {
         this.apiProduct = new ApiProduct();
     }
 
-    private addListeners() {
+    private addListeners(): void {
         this.productCard.element?.addEventListener('click', this.onClick);
     }
 
-    public onClick = (e: Event) => {
+    public onClick = (e: Event): void => {
         console.log(this.productCard);
         this.router.navigate(ROUTE.PRODUCT);
-        if (e.target && this.productCard.productKey) {
-            this.apiProduct.getProductByKey(this.productCard.productKey)?.then((resp) => {
-                console.log(this.app, 'jytgjhgjhghjghj', resp);
+        if (e.target) {
+            this.apiProduct.getProductById(this.productCard.productId)?.then((resp) => {
                 this.app?.productPage.setContent(resp.body);
             });
         }

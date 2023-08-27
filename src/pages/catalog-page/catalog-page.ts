@@ -2,8 +2,8 @@ import ElementCreator from '../../utils/template-creation';
 import template from './catalog-page.html';
 import './catalog-page.scss';
 import { ProductCard } from '../../components/product-card/product-card';
-import { Product } from '@commercetools/platform-sdk';
 import { ProductCardController } from '../../components/product-card/product-card-controller';
+import { IProductWithDiscount } from '../../constants/interfaces/interface';
 
 export default class CatalogPage {
     public element!: HTMLElement;
@@ -29,10 +29,10 @@ export default class CatalogPage {
         return this.element;
     }
 
-    public setContent(data: Product[]): void {
-        this.products = data.map((product: Product) => {
-            const productCard = new ProductCard(product);
-            const productController = new ProductCardController(productCard);
+    public setContent(products: IProductWithDiscount[]): void {
+        this.products = products.map((product: IProductWithDiscount) => {
+            const productCard: ProductCard = new ProductCard(product);
+            new ProductCardController(productCard);
             return productCard;
         });
         const productElements: HTMLElement[] = this.products.map((el: ProductCard) => el.element) as HTMLElement[];

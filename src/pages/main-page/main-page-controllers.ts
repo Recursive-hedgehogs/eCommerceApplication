@@ -1,6 +1,6 @@
 import MainPage from './main-page';
 import { ROUTE } from '../../constants/enums/enum';
-import { ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import { ClientResponse, Product, ProductDiscount, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 import App from '../../app/app';
 import { ApiProduct } from '../../api/products/api-products';
 import { Router } from '../../router/router';
@@ -40,9 +40,7 @@ export class MainPageControllers {
                     this.router.navigate(ROUTE.CATALOG);
                     document.title = 'storiesShelf store | Catalog';
                     if (e.target) {
-                        this.apiProduct.getProducts()?.then((resp: ClientResponse<ProductPagedQueryResponse>) => {
-                            this.app?.catalogPage.setContent(resp.body.results);
-                        });
+                        this.showCatalog();
                     }
                     break;
                 case ROUTE.PRODUCT:
@@ -66,4 +64,28 @@ export class MainPageControllers {
             }
         }
     };
+
+    private showCatalog() {
+        this.apiProduct
+            .getProducts()
+            ?.then((resp: ClientResponse<ProductPagedQueryResponse>) => resp.body.results)
+            .then((resp: Product[]) =>
+                resp.map(async (product: Product) => {
+                    try {
+                        const discountResponse: ClientResponse<ProductDiscount> | undefined =
+                            await this.apiProduct.getProductDiscountById(product.id);
+                        const discount: ProductDiscount | undefined = discountResponse?.body;
+                        return { product, discount };
+                    } catch {
+                        return { product };
+                    }
+                })
+            )
+            .then((res) => {
+                Promise.all(res).then((res) => this.app?.catalogPage.setContent(res));
+                console.log(res);
+                // this.app?.catalogPage.setContent(res);
+            })
+            .catch((err) => console.log(err));
+    }
 }
