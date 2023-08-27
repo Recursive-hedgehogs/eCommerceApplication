@@ -2,6 +2,12 @@ import ElementCreator from '../../utils/template-creation';
 import template from './product-card.html';
 import './product-card.scss';
 import { IProductWithDiscount } from '../../constants/interfaces/interface';
+import {
+    Price,
+    ProductDiscountValueAbsolute,
+    ProductDiscountValueExternal,
+    ProductDiscountValueRelative,
+} from '@commercetools/platform-sdk';
 
 export class ProductCard {
     private readonly _element: HTMLElement | null = null;
@@ -10,8 +16,8 @@ export class ProductCard {
     private readonly productDescription: HTMLElement;
     public productId: string;
     public productKey: string | undefined;
-    private productPrice: HTMLElement;
-    private productDefaultPrice: HTMLElement;
+    private readonly productPrice: HTMLElement;
+    private readonly productDefaultPrice: HTMLElement;
 
     constructor(data: IProductWithDiscount) {
         this.productId = data.product.id;
@@ -35,25 +41,28 @@ export class ProductCard {
                     ? data.product.masterData.current.variants[0].images[0].url
                     : 'none',
         }).getElement();
+        const variant = data.product.masterData.current.variants[0].attributes;
         this.productDescription = new ElementCreator({
             tag: 'p',
             classNames: ['product-description'],
-            innerHTML:
-                data.product.masterData.current.variants[0].attributes![0].name +
-                '   ' +
-                data.product.masterData.current.variants[0].attributes![0].value['key'],
+            innerHTML: variant && variant[0] ? variant[0].name + '   ' + variant[0].value['key'] : '',
         }).getElement();
-        const prices = data.product.masterData.current.masterVariant.prices;
+        const prices: Price[] | undefined = data.product.masterData.current.masterVariant.prices;
         this.productPrice = new ElementCreator({
             tag: 'p',
             classNames: ['product-price'],
             innerHTML: `Original price ${prices && prices[0] ? prices[0].value.centAmount / 100 + '€' : ''}`,
         }).getElement();
-        const pricesD = data.discount?.value;
+        const pricesD:
+            | ProductDiscountValueAbsolute
+            | ProductDiscountValueExternal
+            | ProductDiscountValueRelative
+            | undefined = data.discount?.value;
+        const b = pricesD as unknown as { permyriad: string };
         this.productDefaultPrice = new ElementCreator({
             tag: 'p',
             classNames: ['product-price-discount', 'text-warning'],
-            innerHTML: `Discounted price ${pricesD && pricesD ? pricesD : ''}`,
+            innerHTML: `Discounted price ${pricesD && b.permyriad ? b.permyriad + '€' : ''}`,
         }).getElement();
 
         this._element.append(

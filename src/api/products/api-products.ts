@@ -1,15 +1,9 @@
-import { ApiPasswordFlow } from '../api-password-flow';
-import { ApiRefreshTokenFlow } from '../api-refresh-token-flow';
 import { ApiExistingTokenFlow } from '../api-existing-token-flow';
 
 export class ApiProduct {
-    private apiPasswordFlow: ApiPasswordFlow;
-    private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
 
     constructor() {
-        this.apiPasswordFlow = new ApiPasswordFlow();
-        this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
 
@@ -48,6 +42,16 @@ export class ApiProduct {
         return this.apiExistingTokenFlow.apiRoot
             ?.productDiscounts()
             .withId({ ID })
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public getProductDiscounts = () => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.productDiscounts()
             .get()
             .execute()
             .catch((err) => {

@@ -1,6 +1,12 @@
 import MainPage from './main-page';
 import { ROUTE } from '../../constants/enums/enum';
-import { ClientResponse, Product, ProductDiscount, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import {
+    ClientResponse,
+    Price,
+    Product,
+    ProductDiscount,
+    ProductPagedQueryResponse,
+} from '@commercetools/platform-sdk';
 import App from '../../app/app';
 import { ApiProduct } from '../../api/products/api-products';
 import { Router } from '../../router/router';
@@ -65,15 +71,18 @@ export class MainPageControllers {
         }
     };
 
-    private showCatalog() {
+    private showCatalog(): void {
         this.apiProduct
             .getProducts()
             ?.then((resp: ClientResponse<ProductPagedQueryResponse>) => resp.body.results)
             .then((resp: Product[]) =>
                 resp.map(async (product: Product) => {
+                    const a: Price[] | undefined = product.masterData.current.masterVariant.prices;
+                    const b: string | undefined =
+                        a && a[0] && a[0].discounted?.discount.id ? a[0].discounted?.discount.id : '';
                     try {
                         const discountResponse: ClientResponse<ProductDiscount> | undefined =
-                            await this.apiProduct.getProductDiscountById(product.id);
+                            await this.apiProduct.getProductDiscountById(b);
                         const discount: ProductDiscount | undefined = discountResponse?.body;
                         return { product, discount };
                     } catch {
@@ -84,7 +93,6 @@ export class MainPageControllers {
             .then((res) => {
                 Promise.all(res).then((res) => this.app?.catalogPage.setContent(res));
                 console.log(res);
-                // this.app?.catalogPage.setContent(res);
             })
             .catch((err) => console.log(err));
     }

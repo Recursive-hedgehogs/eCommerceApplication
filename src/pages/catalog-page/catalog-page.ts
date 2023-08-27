@@ -7,7 +7,7 @@ import { IProductWithDiscount } from '../../constants/interfaces/interface';
 
 export default class CatalogPage {
     public element!: HTMLElement;
-    private catalogContainer!: Element | null;
+    private readonly catalogContainer!: Element | null;
     private products?: ProductCard[];
     private static singleton: CatalogPage;
 
@@ -18,7 +18,7 @@ export default class CatalogPage {
 
         this.element = new ElementCreator({
             tag: 'section',
-            classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row'],
+            classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row', 'column-gap-4'],
             innerHTML: template,
         }).getElement();
         this.catalogContainer = this.element.querySelector('.catalog-container');
