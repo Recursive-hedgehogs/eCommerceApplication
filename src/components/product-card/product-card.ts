@@ -36,12 +36,13 @@ export class ProductCard {
             tag: 'div',
             classNames: ['product-image'],
             background:
-                data.product.masterData.current.variants[0].images &&
-                data.product.masterData.current.variants[0].images[0]
-                    ? data.product.masterData.current.variants[0].images[0].url
+                data.product.masterData.current.masterVariant.images &&
+                data.product.masterData.current.masterVariant.images[0]
+                    ? data.product.masterData.current.masterVariant.images[0].url
                     : 'none',
         }).getElement();
-        const variant = data.product.masterData.current.variants[0].attributes;
+        const variant = data.product.masterData.current.masterVariant.attributes;
+        console.log(variant);
         this.productDescription = new ElementCreator({
             tag: 'p',
             classNames: ['product-description'],

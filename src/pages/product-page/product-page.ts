@@ -41,30 +41,38 @@ export default class ProductPage {
 
     public setContent(data: IProductWithDiscount): void {
         this.productName.innerText = data.product.masterData.current.name['en-US'];
-        if (data.product.masterData.current.variants[0].images) {
-            this.productImage.style.background = `url('${data.product.masterData.current.variants[0].images[0].url}') no-repeat`;
+        if (data.product.masterData.current.masterVariant.images) {
+            this.productImage.style.background = `url('${data.product.masterData.current.masterVariant.images[0].url}') no-repeat`;
             this.productImage.style.backgroundSize = 'cover';
         }
-        if (data.product.masterData.current.variants[0].attributes) {
+        if (
+            data.product.masterData.current.masterVariant.attributes &&
+            data.product.masterData.current.masterVariant.attributes[0]
+        ) {
             this.productDescription.innerText =
-                data.product.masterData.current.variants[0].attributes[0].name +
+                data.product.masterData.current.masterVariant.attributes[0].name +
                 '   ' +
-                data.product.masterData.current.variants[0].attributes[0].value['key'];
+                data.product.masterData.current.masterVariant.attributes[0].value['key'];
         }
-        const pricesD:
-            | ProductDiscountValueAbsolute
-            | ProductDiscountValueExternal
-            | ProductDiscountValueRelative
-            | undefined = data.discount?.value;
-        const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
+
         if (data.product.masterData.current.masterVariant.prices) {
-            const priceDiscount =
-                data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
-                (+b.permyriad / 10000) *
-                    (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
             this.productPrice.innerText = `Original price: ${
                 data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100
             }€`;
+            const pricesD:
+                | ProductDiscountValueAbsolute
+                | ProductDiscountValueExternal
+                | ProductDiscountValueRelative
+                | undefined = data.discount?.value;
+            const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
+
+            const priceDiscount =
+                b && b.permyriad
+                    ? data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
+                      (+b.permyriad / 10000) *
+                          (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100)
+                    : '';
+
             this.productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
         }
     }
