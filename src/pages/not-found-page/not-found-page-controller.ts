@@ -3,7 +3,7 @@ import { ROUTE } from '../../constants/enums/enum';
 import App from '../../app/app';
 import { Router } from '../../router/router';
 
-export class NotFoundPageControllers {
+export class NotFoundPageController {
     private notFoundPage: NotFoundPage;
     private app: App;
     private router: Router;

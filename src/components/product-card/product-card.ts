@@ -58,11 +58,17 @@ export class ProductCard {
             | ProductDiscountValueExternal
             | ProductDiscountValueRelative
             | undefined = data.discount?.value;
-        const b = pricesD as unknown as { permyriad: string };
+        const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
         this.productDefaultPrice = new ElementCreator({
             tag: 'p',
             classNames: ['product-price-discount', 'text-warning'],
-            innerHTML: `Discounted price ${pricesD && b.permyriad ? b.permyriad + '€' : ''}`,
+            innerHTML: `Discounted price ${
+                prices && prices[0] && pricesD && b.permyriad
+                    ? prices[0].value.centAmount / 100 -
+                      (+b.permyriad / 10000) * (prices[0].value.centAmount / 100) +
+                      '€'
+                    : ''
+            }`,
         }).getElement();
 
         this._element.append(

@@ -5,11 +5,13 @@ import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
-import { MainPageControllers } from '../pages/main-page/main-page-controllers';
+import { MainPageController } from '../pages/main-page/main-page-controller';
 import { Router } from '../router/router';
-import { NotFoundPageControllers } from '../pages/not-found-page/not-found-page-controllers';
-import { LoginPageControllers } from '../pages/login-page/login-page-controllers';
-import { RegistrationPageControllers } from '../pages/registration-page/registration-page-controllers';
+import { NotFoundPageController } from '../pages/not-found-page/not-found-page-controller';
+import { LoginPageController } from '../pages/login-page/login-page-controller';
+import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
+import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
+import { ProductPageController } from '../pages/product-page/product-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -26,10 +28,12 @@ export class Controllers {
 
     public start(app: App): void {
         this.app = app;
-        new MainPageControllers();
-        new NotFoundPageControllers();
-        new LoginPageControllers();
-        new RegistrationPageControllers();
+        new MainPageController();
+        new NotFoundPageController();
+        new LoginPageController();
+        new RegistrationPageController();
+        new CatalogPageController();
+        new ProductPageController();
         this.addListeners();
     }
 

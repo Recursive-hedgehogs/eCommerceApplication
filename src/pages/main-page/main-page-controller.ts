@@ -11,11 +11,11 @@ import App from '../../app/app';
 import { ApiProduct } from '../../api/products/api-products';
 import { Router } from '../../router/router';
 
-export class MainPageControllers {
-    private mainPage: MainPage;
+export class MainPageController {
     private app: App;
     private apiProduct: ApiProduct;
     private router: Router;
+    private mainPage: MainPage;
 
     constructor() {
         this.app = new App();
@@ -26,7 +26,7 @@ export class MainPageControllers {
     }
 
     addListeners(): void {
-        this.app?.view?.pages?.get(ROUTE.MAIN)?.addEventListener('click', this.onMainPageClick);
+        this.mainPage.element.addEventListener('click', this.onMainPageClick);
     }
 
     private onMainPageClick = (e: Event): void => {

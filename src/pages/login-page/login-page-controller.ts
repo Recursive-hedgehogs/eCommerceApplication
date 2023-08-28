@@ -6,7 +6,7 @@ import { validateEmail, validatePassword } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
 
-export class LoginPageControllers {
+export class LoginPageController {
     private app: App;
     private loinPage: LoginPage;
     private router: Router;

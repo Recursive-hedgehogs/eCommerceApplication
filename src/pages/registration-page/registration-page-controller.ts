@@ -10,19 +10,19 @@ import {
 } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { Router } from '../../router/router';
-import { LoginPageControllers } from '../login-page/login-page-controllers';
+import { LoginPageController } from '../login-page/login-page-controller';
 
-export class RegistrationPageControllers {
+export class RegistrationPageController {
     private app: App;
     private registrationPage: RegistrationPage;
     private router: Router;
-    private loginPageControllers: LoginPageControllers;
+    private loginPageController: LoginPageController;
 
     constructor() {
         this.app = new App();
         this.registrationPage = this.app.registrationPage;
         this.router = new Router();
-        this.loginPageControllers = new LoginPageControllers();
+        this.loginPageController = new LoginPageController();
         this.addListeners();
     }
 
@@ -31,7 +31,7 @@ export class RegistrationPageControllers {
         this.registrationPage.element.addEventListener('change', this.onRegistrationChange);
         this.registrationPage.element.addEventListener('input', this.onRegistrationValidate);
         this.registrationPage.element.addEventListener('click', this.onRegistrationClick);
-        this.registrationPage.element.addEventListener('click', this.loginPageControllers.togglePassword);
+        this.registrationPage.element.addEventListener('click', this.loginPageController.togglePassword);
     }
 
     private onRegistrationValidate = (e: Event): void => {
@@ -194,8 +194,8 @@ export class RegistrationPageControllers {
             apiCustomer
                 .createCustomer(customerData)
                 .then((): void => {
-                    if (this.loginPageControllers) {
-                        this.loginPageControllers.onLoginSubmit(e); //call auto-login after registration
+                    if (this.loginPageController) {
+                        this.loginPageController.onLoginSubmit(e); //call auto-login after registration
                     }
                 })
                 .then((): void => {
