@@ -45,14 +45,8 @@ export default class ProductPage {
             this.productImage.style.background = `url('${data.product.masterData.current.masterVariant.images[0].url}') no-repeat`;
             this.productImage.style.backgroundSize = 'cover';
         }
-        if (
-            data.product.masterData.current.masterVariant.attributes &&
-            data.product.masterData.current.masterVariant.attributes[0]
-        ) {
-            this.productDescription.innerText =
-                data.product.masterData.current.masterVariant.attributes[0].name +
-                '   ' +
-                data.product.masterData.current.masterVariant.attributes[0].value['key'];
+        if (data.product.masterData.current.description) {
+            this.productDescription.innerText = data.product.masterData.current.description['en-US'];
         }
 
         if (data.product.masterData.current.masterVariant.prices) {

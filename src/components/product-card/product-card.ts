@@ -41,12 +41,12 @@ export class ProductCard {
                     ? data.product.masterData.current.masterVariant.images[0].url
                     : 'none',
         }).getElement();
-        const variant = data.product.masterData.current.masterVariant.attributes;
-        console.log(variant);
         this.productDescription = new ElementCreator({
             tag: 'p',
             classNames: ['product-description'],
-            innerHTML: variant && variant[0] ? variant[0].name + '   ' + variant[0].value['key'] : '',
+            innerHTML: data.product.masterData.current.description
+                ? data.product.masterData.current.description['en-US']
+                : '',
         }).getElement();
         const prices: Price[] | undefined = data.product.masterData.current.masterVariant.prices;
         this.productPrice = new ElementCreator({

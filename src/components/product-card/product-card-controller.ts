@@ -43,7 +43,10 @@ export class ProductCardController {
                         return { product };
                     }
                 })
-                .then((resp) => this.app?.productPage.setContent(resp));
+                .then((resp) => {
+                    console.log(resp);
+                    this.app?.productPage.setContent(resp);
+                });
         }
     };
 }
