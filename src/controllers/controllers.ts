@@ -17,6 +17,7 @@ import { ITokenResponse } from '../constants/interfaces/response.interface';
 import { MainPageControllers } from '../pages/main-page/main-page-controllers';
 import { Router } from '../router/router';
 import { NotFoundPageControllers } from '../pages/not-found-page/not-found-page-controllers';
+import { HeaderControllers } from '../components/header/headerControllers';
 
 export class Controllers {
     private app: App | null;
@@ -33,6 +34,7 @@ export class Controllers {
 
     public start(app: App): void {
         this.app = app;
+        new HeaderControllers();
         new MainPageControllers();
         new NotFoundPageControllers();
         this.addListeners();
@@ -41,36 +43,6 @@ export class Controllers {
     public addListeners(): void {
         window.addEventListener('load', this.onFirstLoad);
         window.addEventListener('popstate', this.redirectCallBack);
-
-        const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-        const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
-        const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
-        const logoLink: HTMLElement | null = document.getElementById('main-logo');
-        loginBtn?.addEventListener('click', (): void => {
-            if (this.app?.isAuthenticated()) {
-                this.router.navigate(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
-            } else {
-                this.router.navigate(ROUTE.LOGIN); // else to the login page
-            }
-            this.router.navigate(ROUTE.LOGIN);
-        });
-        logoutBtn?.addEventListener('click', (): void => {
-            this.app?.setAuthenticationStatus(false); // set authentication state
-            this.router.navigate(ROUTE.LOGIN); // else to the login page
-            logoutBtn.classList.add('hidden');
-            profileBtn?.classList.add('hidden');
-            loginBtn?.classList.remove('hidden');
-            registrBtn?.classList.remove('hidden');
-            localStorage.removeItem('refreshToken');
-        });
-        registrBtn?.addEventListener('click', (): void => {
-            this.router.navigate(ROUTE.REGISTRATION);
-        });
-        logoLink?.addEventListener('click', (e: MouseEvent): void => {
-            e.preventDefault();
-            this.router.navigate(ROUTE.MAIN);
-        });
 
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
         this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
@@ -393,4 +365,7 @@ export class Controllers {
             this.router.navigate(ROUTE.LOGIN);
         }
     };
+}
+function getUser() {
+    throw new Error('Function not implemented.');
 }
