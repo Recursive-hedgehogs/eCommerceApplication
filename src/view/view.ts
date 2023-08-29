@@ -29,6 +29,7 @@ class View implements IView {
 
     public setPages(): void {
         const mainPage: HTMLElement = this.app.mainPage.getElement();
+        const userPage: HTMLElement = this.app.userPage.getElement();
         const loginPage: HTMLElement = this.app.loginPage.getElement();
         const registrPage: HTMLElement = this.app.registrationPage.getElement();
         const catalogPage: HTMLElement = this.app.catalogPage.getElement();
@@ -36,6 +37,7 @@ class View implements IView {
         const notFoundPage: HTMLElement = this.app.notFoundPage.getElement();
         this._pages = new Map();
         this._pages.set(ROUTE.MAIN, mainPage);
+        this._pages.set(ROUTE.USER, userPage);
         this._pages.set(ROUTE.LOGIN, loginPage);
         this._pages.set(ROUTE.REGISTRATION, registrPage);
         this._pages.set(ROUTE.PRODUCT, productPage);
