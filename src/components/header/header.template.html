@@ -1,16 +1,45 @@
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="">
+    <a id="main-logo" class="navbar-brand" href="">
       <img src="../../assets/icons/book-shelf.svg" width="40px" height="40px" alt="Logo">
-      stories<i>S</i>helf
+      <img src="../../assets/icons/svg343243.svg" width="90px" height="70px" alt="Logo">
     </a>
-    <form class="d-flex my-d-flex">
-      <button id="login-btn" class="btn btn-secondary" type="button">
-        <i class="fas fa-user-lock"></i><span class="my-btn-link"> Log in</span></button>
-      <button id="logout-btn" class="btn btn-secondary hidden" type="button">
-        <i class="fas fa-user-slash"></i><span class="my-btn-link">Log out</span></button>
-      <button id="registration-btn" class="btn btn-secondary" type="button">
-        <i class="fas fa-user-plus"> Register</i></button>
-    </form>
-  </div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a data-link="main" class="nav-link active" href="#">Home
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a data-link="catalog" role="button" class="nav-link" href="#">Catalog</a>
+        </li>
+        <li class="nav-item">
+          <a data-link="about" role="button" class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+            aria-expanded="true"><i class="fas fa-user dropdown-item"></i></a>
+          <div class="dropdown-menu show" data-bs-popper="static">
+            <a id="login-btn" data-link="login" class="dropdown-item" href="#"><i class="fas fa-user "></i><span class="my-btn-link"> Log
+                in</span></a>
+            <a id="profile-btn" data-link="user" class="dropdown-item hidden" href="#">
+              <i data-link="user" class="fas fa-address-card"></i>
+              <span data-link="user" class="my-btn-link"> Your profile</span>
+            </a>
+            <a id="logout-btn" class="dropdown-item hidden" href="#"><i class="fas fa-user-slash "></i><span class="my-btn-link"> Log
+                out</span></a>
+            <a id="registration-btn" data-link="registration" class="dropdown-item" href="#"><i class="fas fa-user-plus"></i><span
+                class="my-btn-link">Registration</span></a>
+          </div>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-sm-2" type="search" placeholder="Search">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+      </form>
+    </div>
 </nav>

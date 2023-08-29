@@ -1,9 +1,13 @@
-.my-d-flex {
-    width: 250px;
-    justify-content: space-between;
+.navbar-collapse {
+    justify-content: flex-end;
+    gap: 3%;
 }
 
 .navbar-brand i {
     color: #e2da31;
     font-size: 28px;
+}
+
+.my-btn-link {
+    margin-left: 3%;
 }
