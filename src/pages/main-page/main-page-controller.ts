@@ -92,7 +92,7 @@ export class MainPageController {
             )
             .then((res) => {
                 Promise.all(res).then((res) => this.app?.catalogPage.setContent(res));
-                console.log(res);
+                // console.log(res);
             })
             .catch((err) => console.log(err));
     }
