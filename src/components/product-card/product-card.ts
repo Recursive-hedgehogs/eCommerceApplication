@@ -36,16 +36,17 @@ export class ProductCard {
             tag: 'div',
             classNames: ['product-image'],
             background:
-                data.product.masterData.current.variants[0].images &&
-                data.product.masterData.current.variants[0].images[0]
-                    ? data.product.masterData.current.variants[0].images[0].url
+                data.product.masterData.current.masterVariant.images &&
+                data.product.masterData.current.masterVariant.images[0]
+                    ? data.product.masterData.current.masterVariant.images[0].url
                     : 'none',
         }).getElement();
-        const variant = data.product.masterData.current.variants[0].attributes;
         this.productDescription = new ElementCreator({
             tag: 'p',
             classNames: ['product-description'],
-            innerHTML: variant && variant[0] ? variant[0].name + '   ' + variant[0].value['key'] : '',
+            innerHTML: data.product.masterData.current.description
+                ? data.product.masterData.current.description['en-US']
+                : '',
         }).getElement();
         const prices: Price[] | undefined = data.product.masterData.current.masterVariant.prices;
         this.productPrice = new ElementCreator({
@@ -58,11 +59,17 @@ export class ProductCard {
             | ProductDiscountValueExternal
             | ProductDiscountValueRelative
             | undefined = data.discount?.value;
-        const b = pricesD as unknown as { permyriad: string };
+        const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
         this.productDefaultPrice = new ElementCreator({
             tag: 'p',
             classNames: ['product-price-discount', 'text-warning'],
-            innerHTML: `Discounted price ${pricesD && b.permyriad ? b.permyriad + '€' : ''}`,
+            innerHTML: `Discounted price ${
+                prices && prices[0] && pricesD && b.permyriad
+                    ? prices[0].value.centAmount / 100 -
+                      (+b.permyriad / 10000) * (prices[0].value.centAmount / 100) +
+                      '€'
+                    : ''
+            }`,
         }).getElement();
 
         this._element.append(

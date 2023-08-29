@@ -1,4 +1,3 @@
-import { apiCustomer } from '../../api/api-customer';
 import ElementCreator from '../../utils/template-creation';
 import template from './user-page.html';
 

@@ -1,23 +1,18 @@
 import App from '../app/app';
 import { ROUTE } from '../constants/enums/enum';
-import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
-import {
-    validateDateOfBirth,
-    validateEmail,
-    validateName,
-    validatePassword,
-    validatePostalCode,
-} from '../utils/validations';
 import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
-import { MainPageControllers } from '../pages/main-page/main-page-controllers';
+import { MainPageController } from '../pages/main-page/main-page-controller';
 import { Router } from '../router/router';
-import { NotFoundPageControllers } from '../pages/not-found-page/not-found-page-controllers';
 import { HeaderControllers } from '../components/header/headerControllers';
+import { NotFoundPageController } from '../pages/not-found-page/not-found-page-controller';
+import { LoginPageController } from '../pages/login-page/login-page-controller';
+import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
+import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
+import { ProductPageController } from '../pages/product-page/product-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -35,24 +30,18 @@ export class Controllers {
     public start(app: App): void {
         this.app = app;
         new HeaderControllers();
-        new MainPageControllers();
-        new NotFoundPageControllers();
+        new MainPageController();
+        new NotFoundPageController();
+        new LoginPageController();
+        new RegistrationPageController();
+        new CatalogPageController();
+        new ProductPageController();
         this.addListeners();
     }
 
     public addListeners(): void {
         window.addEventListener('load', this.onFirstLoad);
         window.addEventListener('popstate', this.redirectCallBack);
-
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('submit', this.onRegistrationSubmit);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('change', this.onRegistrationChange);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('input', this.onRegistrationValidate);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.onRegistrationClick);
-        this.app?.view?.pages?.get(ROUTE.REGISTRATION)?.addEventListener('click', this.togglePassword);
-        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('submit', this.onLoginSubmit);
-        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('input', this.onLoginValidate);
-        this.app?.view?.pages?.get(ROUTE.LOGIN)?.addEventListener('click', this.togglePassword);
-        // this.app?.view?.pages?.get(ROUTE.NOT_FOUND)?.addEventListener('click', this.onNotFoundPageClick);
     }
 
     private onFirstLoad = (): void => {
@@ -116,256 +105,8 @@ export class Controllers {
             this.router.navigate(currentPath, e.state.route === currentPath);
         }
     };
-
-    private onRegistrationSubmit = (e: SubmitEvent): void => {
-        const target: EventTarget | null = e.target;
-        if (target instanceof HTMLFormElement) {
-            e.preventDefault();
-            const inputEmail: Element | null = target.querySelector('.email input');
-            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-            const personalFields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.personal');
-            const shippingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.shipping');
-            const billingAddress: NodeListOf<HTMLInputElement> = target.querySelectorAll('.billing');
-            const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
-            const namesFields: string[] = [
-                'email',
-                'password',
-                'firstName',
-                'lastName',
-                'dateOfBirth',
-                'defaultBillingAddress',
-                'defaultShippingAddress',
-                'sameAddress',
-            ];
-            const personalArray: (string | boolean)[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
-                namesFields[i],
-                el.type === 'checkbox' ? el.checked : el.value,
-            ]);
-            const billingArray: string[][] = [...billingAddress].map((el: HTMLInputElement, i: number) => [
-                addressFields[i],
-                el.value,
-            ]);
-            const shippingArray: string[][] = [...shippingAddress].map((el: HTMLInputElement, i: number) => [
-                addressFields[i],
-                el.value,
-            ]);
-            const customerData = Object.fromEntries(personalArray);
-            const billingData = Object.fromEntries(billingArray);
-            const shippingData = Object.fromEntries(shippingArray);
-
-            billingData.country = this.app?.getCodeFromCountryName(billingData.country);
-            shippingData.country = this.app?.getCodeFromCountryName(shippingData.country);
-
-            customerData.addresses = [billingData, shippingData];
-            customerData.shippingAddresses = [1];
-            customerData.billingAddresses = [0];
-
-            customerData.defaultShippingAddress = customerData.defaultShippingAddress ? 1 : null;
-            customerData.defaultBillingAddress = customerData.defaultBillingAddress ? 0 : null;
-
-            if (customerData.sameAddress) {
-                customerData.addresses[1] = customerData.addresses[0];
-                shippingAddress.forEach((el: HTMLInputElement, i: number) => (el.value = billingAddress[i].value));
-                delete customerData.sameAddress;
-            }
-
-            if (
-                validateEmail(customerData.email) ||
-                validatePassword(customerData.password) ||
-                validateName(customerData.addresses[0].city) ||
-                validateName(customerData.addresses[1].city) ||
-                validateName(customerData.addresses[0].streetName) ||
-                validateName(customerData.addresses[1].streetName) ||
-                validateName(customerData.firstName) ||
-                validateName(customerData.lastName) ||
-                validateDateOfBirth(customerData.dateOfBirth) ||
-                validatePostalCode(customerData.addresses[0].postalCode) ||
-                validatePostalCode(customerData.addresses[1].postalCode)
-            ) {
-                return;
-            }
-
-            apiCustomer
-                .createCustomer(customerData)
-                .then((): void => {
-                    this.onLoginSubmit(e); //call auto-login after registration
-                })
-                .then((): void => {
-                    this.app?.showMessage('Your account has been created');
-                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
-                    logoutBtn?.classList.remove('hidden');
-                    loginBtn?.classList.add('hidden');
-                })
-                .catch((): void => {
-                    inputEmail?.classList.add('is-invalid');
-                    if (inputEmail?.nextElementSibling) {
-                        inputEmail.nextElementSibling.innerHTML =
-                            'There is already an existing customer with the provided email.';
-                    }
-                    this.app?.showMessage(
-                        'Something went wrong during the registration process, try again later',
-                        'red'
-                    );
-                });
-        }
-    };
-
-    private onLoginSubmit = (e: SubmitEvent): void => {
-        const target: EventTarget | null = e.target;
-        if (target instanceof HTMLFormElement) {
-            e.preventDefault();
-            const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
-            const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
-            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-            const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
-            const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
-            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
-            const fieldNames: string[] = ['email', 'password'];
-            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
-            const customerData = Object.fromEntries(pairs);
-            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
-                return;
-            }
-            apiCustomer
-                .signIn(customerData)
-                .then((resp: ClientResponse<CustomerSignInResult>) => {
-                    const customer: Customer = resp.body.customer;
-                    return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
-                })
-                .then((): void => {
-                    this.app?.showMessage('You are logged in');
-                    this.app?.setAuthenticationStatus(true); // set authentication state
-                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
-                    logoutBtn?.classList.remove('hidden');
-                    profileBtn?.classList.remove('hidden');
-                    loginBtn?.classList.add('hidden');
-                    registrBtn?.classList.add('hidden');
-                })
-                .catch((): void => {
-                    inputEmail?.forEach((el: Element): void => {
-                        el.classList.add('is-invalid');
-                    });
-                    fail?.forEach((el: HTMLElement): void => {
-                        el.innerText = 'Incorrect email or password - please try again.';
-                    });
-                });
-        }
-    };
-
-    private togglePassword = (e: Event): void => {
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        if (target.id === 'password-icon') {
-            this.app?.loginPage.changePasswordVisibility();
-        } else if (target.id === 'password-icon-registr') {
-            this.app?.registrationPage.changePasswordVisibility();
-        }
-        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
-            this.router.navigate(ROUTE.REGISTRATION);
-        }
-    };
-
-    private onLoginValidate = (e: Event): void => {
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        if (target.id === 'input-login-email') {
-            this.app?.loginPage.onEmailValidate(target);
-        } else if (target.id === 'input-login-password') {
-            this.app?.loginPage.onPasswordValidate(target);
-        }
-    };
-
-    private onRegistrationValidate = (e: Event): void => {
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        const postalCodeInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-postal-code');
-        const postalCodeShipInput: HTMLInputElement = <HTMLInputElement>(
-            document.getElementById('input-postal-code-ship')
-        );
-        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>document.getElementById('input-country');
-        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
-            document.getElementById('input-country-ship')
-        );
-        countrySelect.addEventListener('change', function () {
-            postalCodeInput.value = '';
-        });
-        countryShipSelect.addEventListener('change', function () {
-            postalCodeShipInput.value = '';
-        });
-        switch (target.id) {
-            case 'input-registr-email':
-                this.app?.loginPage.onEmailValidate(target);
-                break;
-            case 'input-registr-password':
-                this.app?.loginPage.onPasswordValidate(target);
-                break;
-            case 'input-first-name':
-            case 'input-last-name':
-                this.app?.registrationPage.onNameValidate(target);
-                break;
-            case 'input-date-birth':
-                this.app?.registrationPage.onDateDateOfBirth(target);
-                break;
-            case 'input-city':
-            case 'input-city-ship':
-                this.app?.registrationPage.onNameValidate(target);
-                break;
-            case 'input-street':
-            case 'input-street-ship':
-                this.app?.registrationPage.onNameValidate(target);
-                break;
-            case 'input-postal-code':
-                this.checkCountry(target, countrySelect);
-                this.app?.registrationPage.onPostalValidate(target);
-                break;
-            case 'input-postal-code-ship':
-                this.checkCountry(target, countryShipSelect);
-                this.app?.registrationPage.onPostalValidate(target);
-                break;
-            default:
-                break;
-        }
-    };
-
-    private onRegistrationChange = (e: Event): void => {
-        const target: EventTarget | null = e.target;
-        if (target instanceof HTMLElement && target.id === 'checkSame') {
-            const shippingContainer: HTMLElement | null | undefined = this.app?.view?.pages
-                ?.get(ROUTE.REGISTRATION)
-                ?.querySelector('.shipping-address');
-            const billingContainer: HTMLElement | null | undefined = this.app?.view?.pages
-                ?.get(ROUTE.REGISTRATION)
-                ?.querySelector('.billing-address');
-            shippingContainer?.classList.toggle('hidden');
-
-            const shippingAddress: NodeListOf<HTMLInputElement> | undefined =
-                shippingContainer?.querySelectorAll('.shipping');
-            shippingAddress?.forEach((el: HTMLInputElement): boolean => (el.required = false));
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            if (billingContainer) {
-                shippingContainer?.classList.contains('hidden')
-                    ? (billingContainer.style.width = '100%')
-                    : (billingContainer.style.width = '50%');
-            }
-        }
-    };
-
-    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
-        target.addEventListener('keypress', (event) => {
-            if (country.value === 'Poland') {
-                this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
-            } else if (country.value === 'Germany') {
-                this.app?.registrationPage.formatPostalCode(event, target, '', 5);
-            }
-        });
-    }
-
-    private onRegistrationClick = (e: Event): void => {
-        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.LOGIN) {
-            this.router.navigate(ROUTE.LOGIN);
-        }
-    };
 }
+
 function getUser() {
     throw new Error('Function not implemented.');
 }
