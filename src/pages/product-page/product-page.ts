@@ -2,11 +2,14 @@ import ElementCreator from '../../utils/template-creation';
 import template from './product-page.html';
 import './product-page.scss';
 import {
+    Image,
     ProductDiscountValueAbsolute,
     ProductDiscountValueExternal,
     ProductDiscountValueRelative,
 } from '@commercetools/platform-sdk';
 import { IProductWithDiscount } from '../../constants/interfaces/interface';
+import { SwiperContainer } from 'swiper/swiper-element';
+import { SwiperOptions } from 'swiper/types';
 
 export default class ProductPage {
     public element!: HTMLElement;
@@ -16,6 +19,7 @@ export default class ProductPage {
     private productPrice!: HTMLElement;
     private productPriceDiscount!: HTMLElement;
     private static singleton: ProductPage;
+    private productInf!: HTMLElement;
 
     constructor() {
         if (ProductPage.singleton) {
@@ -23,15 +27,15 @@ export default class ProductPage {
         }
         this.element = new ElementCreator({
             tag: 'section',
-            classNames: ['product-page'],
+            classNames: ['product-page', 'flex-grow-1', 'p-3'],
             innerHTML: template,
         }).getElement();
-        this.productName = this.element.querySelector('.product-name') as HTMLElement;
         this.productImage = this.element.querySelector('.product-image') as HTMLElement;
+        this.productInf = this.element.querySelector('.product-information') as HTMLElement;
+        this.productName = this.element.querySelector('.product-name') as HTMLElement;
         this.productDescription = this.element.querySelector('.product-description') as HTMLElement;
         this.productPrice = this.element.querySelector('.product-price') as HTMLElement;
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
-
         ProductPage.singleton = this;
     }
 
@@ -42,9 +46,14 @@ export default class ProductPage {
     public setContent(data: IProductWithDiscount): void {
         this.productName.innerText = data.product.masterData.current.name['en-US'];
         if (data.product.masterData.current.masterVariant.images) {
-            this.productImage.style.background = `url('${data.product.masterData.current.masterVariant.images[0].url}') no-repeat`;
-            this.productImage.style.backgroundSize = 'contain';
+            // this.productImage.style.background = `url('${data.product.masterData.current.masterVariant.images[0].url}') no-repeat`;
+            // this.productImage.style.backgroundSize = 'contain';
+            const imagesArray: HTMLElement[] = this.getImages(data.product.masterData.current.masterVariant.images);
+            this.productImage.innerHTML = '';
+            this.productImage.append(...imagesArray);
+            this.createSlider();
         }
+
         if (data.product.masterData.current.description) {
             this.productDescription.innerText = data.product.masterData.current.description['en-US'];
         }
@@ -69,5 +78,39 @@ export default class ProductPage {
 
             this.productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
         }
+    }
+
+    public getImages(images: Image[]): HTMLElement[] {
+        return images.map((image: Image) =>
+            new ElementCreator({
+                tag: 'swiper-slide',
+                classNames: ['product-images'],
+                background: image.url,
+            }).getElement()
+        );
+    }
+
+    private createSlider() {
+        const swiperEl: SwiperContainer = this.element.querySelector('swiper-container') as SwiperContainer;
+        const swiperParams: SwiperOptions = {
+            navigation: true,
+            pagination: true,
+            slidesPerView: 1,
+            // breakpoints: {
+            //     640: {
+            //         slidesPerView: 2,
+            //     },
+            //     1024: {
+            //         slidesPerView: 3,
+            //     },
+            // },
+            on: {
+                init() {
+                    // ...
+                },
+            },
+        };
+        Object.assign(swiperEl, swiperParams);
+        swiperEl.initialize();
     }
 }

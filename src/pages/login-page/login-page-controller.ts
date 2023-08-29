@@ -53,6 +53,8 @@ export class LoginPageController {
             const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
             const loginBtn: HTMLElement | null = document.getElementById('login-btn');
             const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+            const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
+            const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
             const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
             const fieldNames: string[] = ['email', 'password'];
             const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
@@ -71,7 +73,9 @@ export class LoginPageController {
                     this.app?.setAuthenticationStatus(true); // set authentication state
                     this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
                     logoutBtn?.classList.remove('hidden');
+                    profileBtn?.classList.remove('hidden');
                     loginBtn?.classList.add('hidden');
+                    registrBtn?.classList.add('hidden');
                 })
                 .catch((): void => {
                     inputEmail?.forEach((el: Element): void => {

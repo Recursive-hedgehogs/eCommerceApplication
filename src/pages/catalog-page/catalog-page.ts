@@ -37,6 +37,9 @@ export default class CatalogPage {
         });
         const productElements: HTMLElement[] = this.products.map((el: ProductCard) => el.element) as HTMLElement[];
         console.log(productElements, this.catalogContainer);
-        this.catalogContainer?.append(...productElements);
+        if (this.catalogContainer) {
+            this.catalogContainer.innerHTML = '';
+            this.catalogContainer.append(...productElements);
+        }
     }
 }

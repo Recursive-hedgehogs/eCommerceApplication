@@ -1,4 +1,15 @@
 .product-image {
-  height: 200px;
+  height: 350px;
   width: 230px;
+}
+
+.product-images {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.product-information {
+  display: flex;
+  flex-direction: column;
 }

@@ -71,7 +71,7 @@ export class MainPageController {
         }
     };
 
-    private showCatalog(): void {
+    public showCatalog(): void {
         this.apiProduct
             .getProducts()
             ?.then((resp: ClientResponse<ProductPagedQueryResponse>) => resp.body.results)
