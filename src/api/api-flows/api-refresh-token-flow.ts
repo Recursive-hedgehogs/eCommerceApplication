@@ -1,6 +1,6 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { IRefreshAuthMiddlewareOptions } from '../constants/interfaces/interface';
-import { environment } from '../environment/environment';
+import { IRefreshAuthMiddlewareOptions } from '../../constants/interfaces/interface';
+import { environment } from '../../environment/environment';
 import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 

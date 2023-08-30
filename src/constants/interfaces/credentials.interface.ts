@@ -14,6 +14,10 @@ export interface IUserCredentials extends IClientCredentials {
     user: IUser;
 }
 
+export interface IAnonymusCredentials extends IClientCredentials {
+    anonymousId?: string;
+}
+
 export interface ICreateCustomerCredentials {
     email: string;
     password: string;

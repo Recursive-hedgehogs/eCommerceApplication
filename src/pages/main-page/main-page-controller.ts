@@ -8,7 +8,7 @@ import {
     ProductPagedQueryResponse,
 } from '@commercetools/platform-sdk';
 import App from '../../app/app';
-import { ApiProduct } from '../../api/products/api-products';
+import { ApiProduct } from '../../api/api-products/api-products';
 import { Router } from '../../router/router';
 
 export class MainPageController {

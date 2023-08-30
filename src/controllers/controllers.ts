@@ -1,9 +1,9 @@
 import App from '../app/app';
 import { ROUTE } from '../constants/enums/enum';
-import { ApiRefreshTokenFlow } from '../api/api-refresh-token-flow';
+import { ApiRefreshTokenFlow } from '../api/api-flows/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { environment } from '../environment/environment';
-import { ApiExistingTokenFlow } from '../api/api-existing-token-flow';
+import { ApiExistingTokenFlow } from '../api/api-flows/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
 import { MainPageController } from '../pages/main-page/main-page-controller';
 import { Router } from '../router/router';
