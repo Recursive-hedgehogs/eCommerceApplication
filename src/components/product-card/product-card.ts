@@ -54,23 +54,30 @@ export class ProductCard {
             classNames: ['product-price'],
             innerHTML: `Original price ${prices && prices[0] ? prices[0].value.centAmount / 100 + '€' : ''}`,
         }).getElement();
+        this.productDefaultPrice = new ElementCreator({
+            tag: 'p',
+            classNames: ['product-price-discount', 'text-warning'],
+            // innerHTML: ,
+        }).getElement();
         const pricesD:
             | ProductDiscountValueAbsolute
             | ProductDiscountValueExternal
             | ProductDiscountValueRelative
             | undefined = data.discount?.value;
-        const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
-        this.productDefaultPrice = new ElementCreator({
-            tag: 'p',
-            classNames: ['product-price-discount', 'text-warning'],
-            innerHTML: `Discounted price ${
+        if (pricesD) {
+            const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
+            this.productDefaultPrice.innerText = `Discounted price ${
                 prices && prices[0] && pricesD && b.permyriad
                     ? prices[0].value.centAmount / 100 -
                       (+b.permyriad / 10000) * (prices[0].value.centAmount / 100) +
                       '€'
                     : ''
-            }`,
-        }).getElement();
+            }`;
+            this.productPrice.classList.add('text-decoration-line-through');
+        } else {
+            this.productDefaultPrice.innerText = '';
+            this.productPrice.classList.remove('text-decoration-line-through');
+        }
 
         this._element.append(
             this.productName,

@@ -31,7 +31,7 @@ export default class ProductPage {
             classNames: ['product-page', 'flex-grow-1', 'p-3'],
             innerHTML: template,
         }).getElement();
-        this.productImage = this.element.querySelector('.product-image') as HTMLElement;
+        this.productImage = this.element.querySelector('.product-image-container') as HTMLElement;
         this.productInf = this.element.querySelector('.product-information') as HTMLElement;
         this.productName = this.element.querySelector('.product-name') as HTMLElement;
         this.productDescription = this.element.querySelector('.product-description') as HTMLElement;
@@ -70,12 +70,6 @@ export default class ProductPage {
                 | undefined = data.discount?.value;
             const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
 
-            const priceDiscount =
-                b && b.permyriad
-                    ? data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
-                      (+b.permyriad / 10000) *
-                          (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100)
-                    : '';
             if (b && b.permyriad) {
                 const priceDiscount =
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
