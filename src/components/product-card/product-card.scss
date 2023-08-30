@@ -1,8 +1,22 @@
 .product {
-  border: 2px #052f5b solid;
+  width: 300px;
+  padding: 15px;
+  border: 1px var(--bs-primary) solid;
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px var(--bs-primary);
 }
 
-  .product-image {
-    background-size: contain;
+.product-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.product-image {
+    height: 350px;
+    width: 100%;
+    background-size: cover;
     background-repeat: no-repeat;
-  }
+    background-position: center;
+    border: 1px solid;
+}

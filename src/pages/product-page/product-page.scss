@@ -1,9 +1,10 @@
-.product-image {
+.product-image-container {
   height: 350px;
   width: 230px;
 }
 
 .product-images {
+  min-width: 230px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

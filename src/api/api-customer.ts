@@ -4,10 +4,10 @@ import {
     ILoginCredentials,
 } from '../constants/interfaces/credentials.interface';
 import { apiRoot } from './api-client';
-import { ApiPasswordFlow } from './api-password-flow';
+import { ApiPasswordFlow } from './api-flows/api-password-flow';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
-import { ApiExistingTokenFlow } from './api-existing-token-flow';
+import { ApiRefreshTokenFlow } from './api-flows/api-refresh-token-flow';
+import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
 
 class ApiCustomer {
     private apiPasswordFlow: ApiPasswordFlow;

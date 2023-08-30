@@ -36,7 +36,7 @@ export default class CatalogPage {
             return productCard;
         });
         const productElements: HTMLElement[] = this.products.map((el: ProductCard) => el.element) as HTMLElement[];
-        console.log(productElements, this.catalogContainer);
+        // console.log(productElements, this.catalogContainer);
         if (this.catalogContainer) {
             this.catalogContainer.innerHTML = '';
             this.catalogContainer.append(...productElements);

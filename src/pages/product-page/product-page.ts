@@ -16,10 +16,11 @@ export default class ProductPage {
     private productName!: HTMLElement;
     private productImage!: HTMLElement;
     private productDescription!: HTMLElement;
+    private productFullDescription!: HTMLElement;
     private productPrice!: HTMLElement;
     private productPriceDiscount!: HTMLElement;
-    private static singleton: ProductPage;
     private productInf!: HTMLElement;
+    private static singleton: ProductPage;
 
     constructor() {
         if (ProductPage.singleton) {
@@ -30,12 +31,14 @@ export default class ProductPage {
             classNames: ['product-page', 'flex-grow-1', 'p-3'],
             innerHTML: template,
         }).getElement();
-        this.productImage = this.element.querySelector('.product-image') as HTMLElement;
+        this.productImage = this.element.querySelector('.product-image-container') as HTMLElement;
         this.productInf = this.element.querySelector('.product-information') as HTMLElement;
         this.productName = this.element.querySelector('.product-name') as HTMLElement;
         this.productDescription = this.element.querySelector('.product-description') as HTMLElement;
+        this.productFullDescription = this.element.querySelector('.product-full-description') as HTMLElement;
         this.productPrice = this.element.querySelector('.product-price') as HTMLElement;
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
+        // this.productPublish = this.element.querySelector('.product-publish') as HTMLElement;
         ProductPage.singleton = this;
         this.showPopup();
     }
@@ -47,8 +50,6 @@ export default class ProductPage {
     public setContent(data: IProductWithDiscount): void {
         this.productName.innerText = data.product.masterData.current.name['en-US'];
         if (data.product.masterData.current.masterVariant.images) {
-            // this.productImage.style.background = `url('${data.product.masterData.current.masterVariant.images[0].url}') no-repeat`;
-            // this.productImage.style.backgroundSize = 'contain';
             const imagesArray: HTMLElement[] = this.getImages(data.product.masterData.current.masterVariant.images);
             this.productImage.innerHTML = '';
             this.productImage.append(...imagesArray);
@@ -70,15 +71,24 @@ export default class ProductPage {
                 | undefined = data.discount?.value;
             const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
 
-            const priceDiscount =
-                b && b.permyriad
-                    ? data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
-                      (+b.permyriad / 10000) *
-                          (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100)
-                    : '';
-
-            this.productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
+            if (b && b.permyriad) {
+                const priceDiscount =
+                    data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
+                    (+b.permyriad / 10000) *
+                        (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
+                this.productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
+                this.productPrice.classList.add('text-decoration-line-through');
+            } else {
+                this.productPriceDiscount.innerText = '';
+                this.productPrice.classList.remove('text-decoration-line-through');
+            }
         }
+        if (data.product.masterData.current.metaDescription) {
+            this.productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
+        }
+        // if (data.product.masterData.current.metaTitle) {
+        //     this.productPublish.innerText = data.product.masterData.current.metaTitle['en-US'];
+        // }
     }
 
     public getImages(images: Image[]): HTMLElement[] {

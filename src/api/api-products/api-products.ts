@@ -1,13 +1,29 @@
-import { ApiExistingTokenFlow } from '../api-existing-token-flow';
+import { ApiExistingTokenFlow } from '../api-flows/api-existing-token-flow';
+import { ApiAnonymousSessionFlow } from '../api-flows/api-anonymous-session-flow';
+import { ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 
 export class ApiProduct {
     private apiExistingTokenFlow: ApiExistingTokenFlow;
+    private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
 
     constructor() {
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
+        this.apiAnonymousSessionFlow = new ApiAnonymousSessionFlow();
     }
 
     public getProducts = () => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.products()
+            .get()
+            .execute()
+            .then((el) => {
+                return el as ClientResponse<ProductPagedQueryResponse>;
+            })
+            .catch((err) => {
+                throw new Error(err);
+            });
+    };
+    public getProductsFromApiExistingTokenFlow = () => {
         return this.apiExistingTokenFlow.apiRoot
             ?.products()
             .get()
@@ -28,7 +44,7 @@ export class ApiProduct {
     };
 
     public getProductById = (ID: string) => {
-        return this.apiExistingTokenFlow.apiRoot
+        return this.apiAnonymousSessionFlow.apiRoot
             ?.products()
             .withId({ ID })
             .get()
@@ -39,7 +55,7 @@ export class ApiProduct {
     };
 
     public getProductDiscountById = (ID: string) => {
-        return this.apiExistingTokenFlow.apiRoot
+        return this.apiAnonymousSessionFlow.apiRoot
             ?.productDiscounts()
             .withId({ ID })
             .get()
