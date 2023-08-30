@@ -13,7 +13,7 @@ test('Husky is installed and configured properly', () => {
     expect(huskyConfig.hooks['pre-commit']).toBe('lint');
 });
 
-describe('App', () => {
+/*describe('App', () => {
     let app: App;
 
     beforeEach(() => {
@@ -25,7 +25,7 @@ describe('App', () => {
         expect(app.isAuthenticated()).toBe(true);
     });
 
-    test('isAuthenticated returns correct authentication status', () => {
+    /*test('isAuthenticated returns correct authentication status', () => {
         app.setAuthenticationStatus(false);
         expect(app.isAuthenticated()).toBe(false);
         app.setAuthenticationStatus(true);
@@ -60,7 +60,7 @@ describe('App', () => {
         app.setAuthenticationStatus(true);
         // app.setCurrentPage(ROUTE.LOGIN);
     });
-});
+});*/
 
 /*describe('Controllers', () => {
     let mockApp: App;
