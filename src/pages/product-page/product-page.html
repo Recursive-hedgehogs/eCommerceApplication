@@ -1,11 +1,17 @@
-<h3>Product</h3>
 <div class="d-flex flex-row gap-2">
-    <swiper-container class="product-image" init="false"></swiper-container>
+    <swiper-container class="product-image-container" init="false"></swiper-container>
     <div class="product-information flex-grow-1">
-        <h5 class="product-name"></h5>
-        <p class="product-description"></p>
-        <p class="product-price"></p>
-        <p class="product-price-discount text-warning"></p>
+        <h4 class="product-name"></h4>
+        <div class="d-flex flex-row column-gap-2">
+            <h5>By</h5>
+            <h5 class="product-description text-primary"></h5>
+        </div>
+        <div class="product-price-container d-flex flex-row column-gap-2">
+            <p class="product-price text-secondary"></p>
+            <p class="product-price-discount text-warning"></p>
+        </div>
+        <p class="product-full-description"></p>
+        <p class="product-publish"></p>
     </div>
 </div>
 

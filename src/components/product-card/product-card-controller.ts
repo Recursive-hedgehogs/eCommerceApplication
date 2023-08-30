@@ -1,7 +1,7 @@
 import { ProductCard } from './product-card';
 import { Router } from '../../router/router';
 import { ROUTE } from '../../constants/enums/enum';
-import { ApiProduct } from '../../api/products/api-products';
+import { ApiProduct } from '../../api/api-products/api-products';
 import App from '../../app/app';
 import { ClientResponse, Price, ProductDiscount } from '@commercetools/platform-sdk';
 
