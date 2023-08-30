@@ -37,6 +37,7 @@ export default class ProductPage {
         this.productPrice = this.element.querySelector('.product-price') as HTMLElement;
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
         ProductPage.singleton = this;
+        this.showPopup();
     }
 
     public getElement(): HTMLElement {
@@ -112,5 +113,42 @@ export default class ProductPage {
         };
         Object.assign(swiperEl, swiperParams);
         swiperEl.initialize();
+    }
+
+    public showPopup(): void {
+        this.productImage.addEventListener('click', this.openModal); //add Listener for image
+    }
+
+    private openModal = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+
+        if (target.classList.contains('product-image')) {
+            const swiperSlide = target.querySelector('.swiper-slide-active');
+            if (swiperSlide instanceof HTMLElement) {
+                const imageUrl = swiperSlide.style.backgroundImage.slice(4, -1).replace(/"/g, '');
+                this.showModal(imageUrl);
+            }
+        }
+    };
+
+    private showModal(imageUrl: string) {
+        const modal = document.getElementById('product-modal') as HTMLElement;
+        const modalImage = document.getElementById('modal-product-image') as HTMLImageElement;
+
+        console.log('Modal image URL:', imageUrl);
+
+        modalImage.src = imageUrl;
+        modal.style.display = 'block';
+
+        const closeModal = modal.querySelector('.close') as HTMLElement;
+        closeModal.onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = (event: MouseEvent) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
     }
 }
