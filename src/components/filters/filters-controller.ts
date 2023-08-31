@@ -13,16 +13,24 @@ export class FiltersController {
     }
 
     private onSubmit = (e: SubmitEvent) => {
+        const filterResult = document.querySelector('.filters-result');
         const map = new Map();
+        const filtersArray: string[] = [];
         e.preventDefault();
         console.log(this.filters.element);
         const inputs = this.filters.element?.querySelectorAll('input');
         inputs?.forEach((el) => {
             if (el.name && el.checked) {
-                map.set(el.name, el.checked);
+                filtersArray.push(el.name);
+                // map.set(el.name, el.checked);
+                // if (filterResult) {
+                //     filterResult.innerHTML = el.name
+                // }
             }
         });
-
-        console.log(map);
+        if (filterResult) {
+            filterResult.innerHTML = filtersArray.join(' ')
+        }
+        console.log(filtersArray);
     };
 }

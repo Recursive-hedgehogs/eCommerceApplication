@@ -1,3 +1,4 @@
+<div class="d-flex flex-row column-gap-3">
 <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
         Genre
@@ -23,15 +24,15 @@
     </form>
 </div>
 <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
         Author
     </button>
     <form class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
         <div class="mb-3">
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="dropdownCheck">
+                <input type="checkbox" class="form-check-input" id="dropdownCheck" name="Tolkien">
                 <label class="form-check-label" for="dropdownCheck">
-                    T
+                    Tolkien
                 </label>
             </div>
         </div>
@@ -39,28 +40,36 @@
     </form>
 </div>
 <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
         Price
     </button>
     <form class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+        <label for="customRange" class="form-label"></label>
+        <input type="range" class="form-range" min="5" max="50" step="1" id="customRange">
         <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+    <form class="multi-range-field my-5 pb-5">
+        <input id="multi6" class="multi-range mult6" type="range" />
     </form>
 </div>
 <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
         Language
     </button>
     <form class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
         <div class="mb-3">
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="dropdownEn">
+                <input type="checkbox" class="form-check-input" id="dropdownEn" name="english">
                 <label class="form-check-label" for="dropdownEn">English</label>
             </div>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="dropdownBel">
+                <input type="checkbox" class="form-check-input" id="dropdownBel" name="belarusian">
                 <label class="form-check-label" for="dropdownBel">Belarusian</label>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Apply</button>
     </form>
 </div>
+<button class="btn btn-primary">Reset filters</button>
+</div>
+<div class="filters-result"></div>

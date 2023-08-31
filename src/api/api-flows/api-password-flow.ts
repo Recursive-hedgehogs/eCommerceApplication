@@ -11,21 +11,21 @@ import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
 export class ApiPasswordFlow {
     private static singleton: ApiPasswordFlow;
     private httpMiddlewareOptions: HttpMiddlewareOptions = {
-        host: environment.apiURL,
+        host: process.env.CTP_API_URL ?? '',
         fetch,
     };
     private passwordAuthMiddlewareOptions: IPasswordAuthMiddlewareOptions = {
-        host: environment.authURL,
-        projectKey: environment.projectKey,
+        host: process.env.TP_AUTH_URL ?? '',
+        projectKey: process.env.CTP_PROJECT_KEY ?? '',
         credentials: {
-            clientId: environment.clientID,
-            clientSecret: environment.clientSecret,
+            clientId: process.env.CTP_CLIENT_ID ?? '',
+            clientSecret: process.env.CTP_CLIENT_SECRET ?? '',
             user: {
                 username: '',
                 password: '',
             },
         },
-        scopes: [environment.scope],
+        scopes: [process.env.CTP_SCOPES ?? ''],
         fetch,
     };
     private client?: Client;

@@ -1,5 +1,4 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { environment } from '../../environment/environment';
 import {
     Client,
     ClientBuilder,
@@ -11,7 +10,7 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 export class ApiExistingTokenFlow {
     private static singleton: ApiExistingTokenFlow;
     private httpMiddlewareOptions: HttpMiddlewareOptions = {
-        host: environment.apiURL,
+        host: process.env.CTP_API_URL ?? '',
         fetch,
     };
     private authorization = '';
@@ -32,7 +31,7 @@ export class ApiExistingTokenFlow {
             .withExistingTokenFlow(this.authorization, this.existingTokenMiddlewareOptions)
             .build();
         this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
-            projectKey: environment.projectKey,
+            projectKey: process.env.CTP_PROJECT_KEY ?? '',
         });
     }
 }

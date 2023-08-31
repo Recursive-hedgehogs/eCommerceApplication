@@ -39,7 +39,7 @@ export default class CatalogPage {
 
     public start(): void {
         if (this.filters?.element) {
-            this.catalogPageContainer?.append(this.filters.element);
+            this.catalogPageContainer?.prepend(this.filters.element);
         }
     }
 

@@ -6,7 +6,7 @@ export class Filters {
     constructor() {
         this._element = new ElementCreator({
             tag: 'div',
-            classNames: ['filters-container', 'd-flex', 'column-gap-3'],
+            classNames: ['filters-container', 'd-flex', 'flex-column'],
             innerHTML: template,
         }).getElement();
     }
@@ -14,4 +14,6 @@ export class Filters {
     public get element(): HTMLElement | null {
         return this._element;
     }
+
+
 }
