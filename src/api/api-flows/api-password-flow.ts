@@ -1,6 +1,5 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { IPasswordAuthMiddlewareOptions } from '../../constants/interfaces/interface';
-import { environment } from '../../environment/environment';
 import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import SdkAuth from '@commercetools/sdk-auth';
@@ -41,14 +40,14 @@ export class ApiPasswordFlow {
 
     public setUserData(email: string, password: string): void {
         const authClient = new SdkAuth({
-            host: environment.authURL,
-            projectKey: environment.projectKey,
+            host: process.env.CTP_AUTH_URL,
+            projectKey: process.env.CTP_PROJECT_KEY,
             disableRefreshToken: false,
             credentials: {
-                clientId: environment.clientID,
-                clientSecret: environment.clientSecret,
+                clientId: process.env.CTP_CLIENT_ID,
+                clientSecret: process.env.CTP_CLIENT_SECRET,
             },
-            scopes: [environment.scope],
+            scopes: [process.env.CTP_SCOPES],
             fetch,
         });
         this.passwordAuthMiddlewareOptions.credentials.user.password = password;
@@ -59,7 +58,7 @@ export class ApiPasswordFlow {
             .withPasswordFlow(this.passwordAuthMiddlewareOptions)
             .build();
         this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
-            projectKey: environment.projectKey,
+            projectKey: process.env.CTP_PROJECT_KEY ?? '',
         });
         authClient
             .customerPasswordFlow(

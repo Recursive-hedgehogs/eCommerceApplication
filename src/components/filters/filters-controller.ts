@@ -29,7 +29,7 @@ export class FiltersController {
             }
         });
         if (filterResult) {
-            filterResult.innerHTML = filtersArray.join(' ')
+            filterResult.innerHTML = filtersArray.join(' ');
         }
         console.log(filtersArray);
     };

@@ -14,6 +14,4 @@ export class Filters {
     public get element(): HTMLElement | null {
         return this._element;
     }
-
-
 }
