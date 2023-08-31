@@ -44,8 +44,12 @@
         Price
     </button>
     <form class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-        <label for="customRange" class="form-label"></label>
-        <input type="range" class="form-range" min="5" max="50" step="1" id="customRange">
+        <label for="customRangeMin" class="form-label"></label>
+        <input type="range" class="form-range min-slider" value="0" min="0" max="100" step="10" id="customRangeMin" name="minimum">
+        <div class="min-result">0</div>
+        <label for="customRangeMax" class="form-label"></label>
+        <input type="range" class="form-range  max-slider" value="100" min="0" max="100" step="10" id="customRangeMax" name="maximum">
+        <div class="max-result">100</div>
         <button type="submit" class="btn btn-primary">Apply</button>
     </form>
 </div>

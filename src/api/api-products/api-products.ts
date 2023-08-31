@@ -75,7 +75,7 @@ export class ApiProduct {
             });
     };
 
-    public getProductProjection = () => {
+    public getProductProjection = (filter: string[]) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
 
@@ -85,12 +85,13 @@ export class ApiProduct {
                     staged: true,
                     // priceCurrency: 'DJF',
                     // filter: {"variants.price.centAmount": ''}
-                    filter: [
-                        // 'variants.price.centAmount: range (* to 2000)',
-                        // ,
-                        // 'categories.id:"96df4d23-484f-4ec0-a1c1-39c077a3aefd"'
-                        'variants.attributes.kids:"true"',
-                    ],
+                    filter,
+                    // [
+                    // 'variants.price.centAmount: range (* to 2000)',
+                    // ,
+                    // 'categories.id:"96df4d23-484f-4ec0-a1c1-39c077a3aefd"'
+                    // 'variants.attributes.kids:"true"'
+                    // ],
                 },
             })
 
