@@ -95,5 +95,9 @@ export class MainPageController {
                 // console.log(res);
             })
             .catch((err) => console.log(err));
+        this.apiProduct
+            .getProductProjection()
+            ?.then((res) => console.log(res))
+            .catch((err) => console.log(err));
     }
 }

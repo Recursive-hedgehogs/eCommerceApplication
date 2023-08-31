@@ -74,4 +74,29 @@ export class ApiProduct {
                 throw Error(err);
             });
     };
+
+    public getProductProjection = () => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.productProjections()
+
+            .search()
+            .get({
+                queryArgs: {
+                    staged: true,
+                    // priceCurrency: 'DJF',
+                    // filter: {"variants.price.centAmount": ''}
+                    filter: [
+                        // 'variants.price.centAmount: range (* to 2000)',
+                        // ,
+                        // 'categories.id:"96df4d23-484f-4ec0-a1c1-39c077a3aefd"'
+                        'variants.attributes.kids:"true"',
+                    ],
+                },
+            })
+
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
 }
