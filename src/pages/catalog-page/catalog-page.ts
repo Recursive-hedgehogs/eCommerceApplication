@@ -4,12 +4,16 @@ import './catalog-page.scss';
 import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardController } from '../../components/product-card/product-card-controller';
 import { IProductWithDiscount } from '../../constants/interfaces/interface';
+import { Filters } from '../../components/filters/filters';
+import { FiltersController } from '../../components/filters/filters-controller';
 
 export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
     private products?: ProductCard[];
     private static singleton: CatalogPage;
+    private catalogPageContainer?: Element | null;
+    private filters?: Filters;
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -21,12 +25,22 @@ export default class CatalogPage {
             classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row', 'column-gap-4'],
             innerHTML: template,
         }).getElement();
+        this.catalogPageContainer = this.element.querySelector('.catalog-page-container');
         this.catalogContainer = this.element.querySelector('.catalog-container');
+        this.filters = new Filters();
+        new FiltersController(this.filters);
+        this.start();
         CatalogPage.singleton = this;
     }
 
     public getElement(): HTMLElement {
         return this.element;
+    }
+
+    public start(): void {
+        if (this.filters?.element) {
+            this.catalogPageContainer?.append(this.filters.element);
+        }
     }
 
     public setContent(products: IProductWithDiscount[]): void {

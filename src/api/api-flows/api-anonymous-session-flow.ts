@@ -11,7 +11,7 @@ import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/dec
 export class ApiAnonymousSessionFlow {
     private static singleton: ApiAnonymousSessionFlow;
     private options: AnonymousAuthMiddlewareOptions = {
-        host: environment.authURL,
+        host: process.env.CTP_AUTH_URL ?? '',
         projectKey: environment.projectKey,
         credentials: {
             clientId: environment.clientID,
