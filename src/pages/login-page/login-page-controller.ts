@@ -69,8 +69,6 @@ export class LoginPageController {
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
-                    console.log(customer);
-                    this.userPage.getUserData(customer.id);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((): void => {
@@ -82,7 +80,8 @@ export class LoginPageController {
                     loginBtn?.classList.add('hidden');
                     registrBtn?.classList.add('hidden');
                 })
-                .catch((): void => {
+                .catch((err: Error): void => {
+                    console.log(err);
                     inputEmail?.forEach((el: Element): void => {
                         el.classList.add('is-invalid');
                     });

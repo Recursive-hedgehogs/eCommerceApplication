@@ -4,6 +4,7 @@ const { resolve: _resolve } = require('path');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const baseConfig = {
     entry: _resolve(__dirname, './src/index'),
@@ -53,6 +54,7 @@ const baseConfig = {
             filename: 'index.html',
         }),
         new CleanWebpackPlugin(),
+        new Dotenv(),
     ],
 };
 
