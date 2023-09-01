@@ -25,12 +25,20 @@ export default class UserPage {
 
     public showUserData(id: string) {
         apiCustomer.getUser(id)?.then((res) => {
-            const userData = res.body; // Assuming userData is an object with properties like firstName and lastName
+            const userData = res.body;
             document.getElementById('user-first-name')?.setAttribute('value', userData.firstName || '');
             document.getElementById('user-last-name')?.setAttribute('value', userData.lastName || '');
             document.getElementById('user-date-of-birth')?.setAttribute('value', userData.dateOfBirth || '');
             document.getElementById('user-email')?.setAttribute('value', userData.email || '');
             document.getElementById('user-password')?.setAttribute('value', userData.password || '');
+            const billingDefaultCheckbox: HTMLInputElement = <HTMLInputElement>(
+                document.getElementById('switchDefaultAddress')
+            );
+            const shippingDefaultCheckbox: HTMLInputElement = <HTMLInputElement>(
+                document.getElementById('switchDefaultAddressShipping')
+            );
+            const billingLabel = document.querySelector('label[for="switchDefaultAddress"]');
+            const shippingLabel = document.querySelector('label[for="switchDefaultAddressShipping"]');
 
             function fillAddressFields(address: Address) {
                 if (address.id) {
@@ -63,6 +71,24 @@ export default class UserPage {
                             optionToSelect?.setAttribute('selected', 'selected');
                         }
                     }
+
+                    // const isBillingDefault = userData.defaultBillingAddressId === address.id;
+                    // const isShippingDefault = userData.defaultShippingAddressId === address.id;
+
+                    // billingDefaultCheckbox.checked = isBillingDefault;
+                    // shippingDefaultCheckbox.checked = isShippingDefault;
+
+                    // if (billingLabel && isBillingDefault) {
+                    //     billingLabel.textContent = 'This address set as the default';
+                    // } else if (billingLabel) {
+                    //     billingLabel.textContent = 'Set the address as the default';
+                    // }
+
+                    // if (shippingLabel && isShippingDefault) {
+                    //     shippingLabel.textContent = 'This address set as the default';
+                    // } else if (shippingLabel) {
+                    //     shippingLabel.textContent = 'Set the address as the default';
+                    // }
                 }
             }
 
@@ -71,5 +97,24 @@ export default class UserPage {
                 fillAddressFields(address);
             });
         });
+    }
+
+    // Helper function to set value for an element by ID
+    private setValueById(elementId: string, value: string) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.setAttribute('value', value || '');
+        }
+    }
+
+    // Helper function to set selected option for a select element by value
+    private setSelectedOptionByValue(selectId: string, value: string) {
+        const select = document.getElementById(selectId);
+        if (select) {
+            const option = select.querySelector(`option[value="${value}"]`);
+            if (option) {
+                option.setAttribute('selected', 'selected');
+            }
+        }
     }
 }
