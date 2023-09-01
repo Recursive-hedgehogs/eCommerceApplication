@@ -21,6 +21,7 @@ export default class ProductPage {
     private productPriceDiscount!: HTMLElement;
     private productInf!: HTMLElement;
     private static singleton: ProductPage;
+    private data?: IProductWithDiscount; //temporary container for response data
 
     constructor() {
         if (ProductPage.singleton) {
@@ -48,21 +49,13 @@ export default class ProductPage {
     }
 
     public setContent(data: IProductWithDiscount): void {
+        this.data = data;
         this.productName.innerText = data.product.masterData.current.name['en-US'];
         if (data.product.masterData.current.masterVariant.images) {
             const imagesArray: HTMLElement[] = this.getImages(data.product.masterData.current.masterVariant.images);
             this.productImage.innerHTML = '';
-            imagesArray.forEach((image: HTMLElement) => {
-                const imageUrl = this.getBackgroundImageUrl(image);
-                if (imageUrl) {
-                    image.addEventListener('click', () => {
-                        this.openModal(imageUrl);
-                    });
-                }
-            });
-
             this.productImage.append(...imagesArray);
-            this.createSlider();
+            this.createSlider('.product-image-container');
         }
 
         if (data.product.masterData.current.description) {
@@ -110,8 +103,8 @@ export default class ProductPage {
         );
     }
 
-    private createSlider(): void {
-        const swiperEl: SwiperContainer = this.element.querySelector('swiper-container') as SwiperContainer;
+    private createSlider(containerSelector: string): void {
+        const swiperEl: SwiperContainer = this.element.querySelector(containerSelector) as SwiperContainer;
         const swiperParams: SwiperOptions = {
             navigation: true,
             pagination: true,
@@ -126,22 +119,28 @@ export default class ProductPage {
         swiperEl.initialize();
     }
 
-    public openModal(imageUrl: string) {
-        const modal = this.getModalElement();
-        const modalImage = this.getModalImageElement();
+    public openModal() {
+        const modalProductImage = this.element.querySelector('.product-modal-image-container') as HTMLElement;
+        const modal = document.getElementById('product-modal');
+        const imagesArray: HTMLElement[] = this.data
+            ? this.getImages(this.data.product.masterData.current.masterVariant.images!)
+            : [];
+        modalProductImage.innerHTML = '';
+        modalProductImage.append(...imagesArray);
 
-        if (modal && modalImage) {
+        if (modal) {
             modal.style.display = 'block';
-            modalImage.src = imageUrl;
+            //modalImage.style.backgroundImage = imageUrl;
             const closeButton = this.getCloseButtonElement();
 
             if (closeButton) {
                 closeButton.addEventListener('click', this.closeModal.bind(this));
             }
+            this.createSlider('.product-modal-image-container');
         }
     }
 
-    public closeModal() {
+    public closeModal(): void {
         const closeButton = this.getCloseButtonElement();
         const modal = this.getModalElement();
 
@@ -155,12 +154,11 @@ export default class ProductPage {
 
         if (productImageContainer) {
             productImageContainer.addEventListener('click', (event) => {
-                console.log('Container clicked');
                 const target = event.target as HTMLElement;
                 if (target.classList.contains('product-images')) {
                     const imageUrl = this.getBackgroundImageUrl(target);
                     if (imageUrl) {
-                        this.openModal(imageUrl);
+                        this.openModal();
                     }
                 }
             });
@@ -183,10 +181,6 @@ export default class ProductPage {
 
     private getModalElement(): HTMLElement | null {
         return document.getElementById('product-modal');
-    }
-
-    private getModalImageElement(): HTMLImageElement | null {
-        return document.getElementById('modal-image') as HTMLImageElement | null;
     }
 
     private getCloseButtonElement(): HTMLElement | null {
