@@ -8,6 +8,9 @@ import { environment } from '../environment/environment';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
+// console.log(environment.apiURL);
+// console.log(process.env.CTP_API_URL);
+
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
     host: environment.authURL,

@@ -85,8 +85,8 @@ export default class ProductPage {
         if (data.product.masterData.current.metaDescription) {
             this.productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
         }
-        // if (data.product.masterData.current.metaTitle) {
-        //     this.productPublish.innerText = data.product.masterData.current.metaTitle['en-US'];
+        // if (data.product.metaTitle) {
+        //     this.productPublish.innerText = data.product.metaTitle['en-US'];
         // }
     }
 
@@ -100,23 +100,15 @@ export default class ProductPage {
         );
     }
 
-    private createSlider() {
+    private createSlider(): void {
         const swiperEl: SwiperContainer = this.element.querySelector('swiper-container') as SwiperContainer;
         const swiperParams: SwiperOptions = {
             navigation: true,
             pagination: true,
             slidesPerView: 1,
-            // breakpoints: {
-            //     640: {
-            //         slidesPerView: 2,
-            //     },
-            //     1024: {
-            //         slidesPerView: 3,
-            //     },
-            // },
             on: {
                 init() {
-                    // ...
+                    //
                 },
             },
         };
