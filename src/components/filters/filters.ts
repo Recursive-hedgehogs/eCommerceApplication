@@ -37,8 +37,10 @@ export class Filters {
                     result.push('variants.attributes.english:"true"');
             }
         });
-        result.push(`categories.id:"${categories.join('", "')}"`);
-        console.log(result);
+        if (categories.length) {
+            result.push(`categories.id:"${categories.join('", "')}"`);
+        }
+        console.log(result, '!!!');
         return result;
     }
 }

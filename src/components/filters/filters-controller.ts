@@ -16,6 +16,7 @@ export class FiltersController {
     private addListeners(): void {
         this.filters.element?.addEventListener('submit', this.onSubmit);
         this.filters.element?.addEventListener('change', this.onChange);
+        this.filters.element?.addEventListener('click', this.onClick);
     }
 
     private onChange = (e: Event) => {
@@ -57,7 +58,10 @@ export class FiltersController {
             }
         });
         inputsRange?.forEach((el: HTMLInputElement) => {
-            if (el.name && el.value) {
+            if (
+                el.value &&
+                ((el.name === 'minimum' && el.value !== '0') || (el.name === 'maximum' && el.value !== '100'))
+            ) {
                 filtersArray.push(el.name);
                 map.set(el.name, el.value);
             }
@@ -65,7 +69,6 @@ export class FiltersController {
         if (filterResult) {
             filterResult.innerHTML = filtersArray.join(' ');
         }
-        console.log(map);
         const productProjectionFilters = this.filters.convertToFilter(map);
         this.apiProduct
             .getProductProjection(productProjectionFilters)
@@ -74,5 +77,19 @@ export class FiltersController {
                 this.catalogPage.setContent(res.body.results);
             })
             .catch((err) => console.log(err));
+    };
+
+    public onClick = (e: Event) => {
+        const target = e.target as HTMLButtonElement;
+        if (target.id === 'filters-reset') {
+            this.apiProduct
+                .getProductProjection()
+                ?.then((res) => {
+                    this.catalogPage.setContent(res.body.results);
+                })
+                .catch((err) => console.log(err));
+        }
+        const filterResult = document.querySelector('.filters-result') as HTMLElement;
+        filterResult.innerHTML = '';
     };
 }
