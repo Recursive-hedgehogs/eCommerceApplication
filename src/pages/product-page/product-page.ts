@@ -40,6 +40,7 @@ export default class ProductPage {
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
         // this.productPublish = this.element.querySelector('.product-publish') as HTMLElement;
         ProductPage.singleton = this;
+        this.showModalWindow();
     }
 
     public getElement(): HTMLElement {
@@ -51,6 +52,15 @@ export default class ProductPage {
         if (data.product.masterData.current.masterVariant.images) {
             const imagesArray: HTMLElement[] = this.getImages(data.product.masterData.current.masterVariant.images);
             this.productImage.innerHTML = '';
+            imagesArray.forEach((image: HTMLElement) => {
+                const imageUrl = this.getBackgroundImageUrl(image);
+                if (imageUrl) {
+                    image.addEventListener('click', () => {
+                        this.openModal(imageUrl);
+                    });
+                }
+            });
+
             this.productImage.append(...imagesArray);
             this.createSlider();
         }
@@ -114,5 +124,76 @@ export default class ProductPage {
         };
         Object.assign(swiperEl, swiperParams);
         swiperEl.initialize();
+    }
+
+    public openModal(imageUrl: string) {
+        const modal = this.getModalElement();
+        const modalImage = this.getModalImageElement();
+
+        if (modal && modalImage) {
+            modal.style.display = 'block';
+            modalImage.src = imageUrl;
+            const closeButton = this.getCloseButtonElement();
+
+            if (closeButton) {
+                closeButton.addEventListener('click', this.closeModal.bind(this));
+            }
+        }
+    }
+
+    public closeModal() {
+        const closeButton = this.getCloseButtonElement();
+        const modal = this.getModalElement();
+
+        if (closeButton && modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    public showModalWindow() {
+        const productImageContainer = this.getProductImageContainer();
+
+        if (productImageContainer) {
+            productImageContainer.addEventListener('click', (event) => {
+                console.log('Container clicked');
+                const target = event.target as HTMLElement;
+                if (target.classList.contains('product-images')) {
+                    const imageUrl = this.getBackgroundImageUrl(target);
+                    if (imageUrl) {
+                        this.openModal(imageUrl);
+                    }
+                }
+            });
+        }
+
+        const closeButton = this.getCloseButtonElement();
+
+        if (closeButton) {
+            closeButton.addEventListener('click', this.closeModal.bind(this));
+        }
+    }
+
+    private getBackgroundImageUrl(element: HTMLElement): string | undefined {
+        const style = getComputedStyle(element);
+        const backgroundImage = style.getPropertyValue('background-image');
+        const match = backgroundImage.match(/url\("(.+)"\)/);
+
+        return match ? match[1] : undefined;
+    }
+
+    private getModalElement(): HTMLElement | null {
+        return document.getElementById('product-modal');
+    }
+
+    private getModalImageElement(): HTMLImageElement | null {
+        return document.getElementById('modal-image') as HTMLImageElement | null;
+    }
+
+    private getCloseButtonElement(): HTMLElement | null {
+        return document.querySelector('.close') as HTMLElement | null;
+    }
+
+    private getProductImageContainer(): HTMLElement | null {
+        return this.element.querySelector('.product-image-container') as HTMLElement | null;
     }
 }
