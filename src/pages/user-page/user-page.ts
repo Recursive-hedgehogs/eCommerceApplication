@@ -15,14 +15,13 @@ export default class UserPage {
         }).getElement();
         this.userData = null;
         this.firstName = null;
-        console.log('hghjghghg');
     }
 
     public getElement(): HTMLElement {
         return this.element;
     }
 
-    public showUserData(id: string) {
+    public showUserData(id: string): void {
         apiCustomer.getUser(id)?.then((res) => console.log(res));
     }
 }

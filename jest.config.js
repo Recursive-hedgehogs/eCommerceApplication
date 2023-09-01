@@ -8,4 +8,5 @@ module.exports = {
         "\\.(css|scss|html)$": '<rootDir>/testIgnore.ts',
         '.*iso.*3166.*': '<rootDir>/testIgnore.ts',
     },
+    globals: { fetch }
 };

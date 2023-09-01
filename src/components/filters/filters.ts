@@ -1,10 +1,8 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './filters.html';
-import { ApiProduct } from '../../api/api-products/api-products';
 
 export class Filters {
     private readonly _element: HTMLElement;
-    private apiProduct = new ApiProduct();
 
     constructor() {
         this._element = new ElementCreator({
@@ -20,22 +18,27 @@ export class Filters {
 
     public convertToFilter(data: Map<string, string | boolean>) {
         const result: string[] = [];
+        const categories: string[] = [];
         [...data.keys()].forEach((el) => {
             switch (el) {
                 case 'fantasy':
-                    result.push('categories.id:"96df4d23-484f-4ec0-a1c1-39c077a3aefd"');
+                    categories.push('96df4d23-484f-4ec0-a1c1-39c077a3aefd');
+                    break;
+                case 'classic':
+                    categories.push('fd19acd7-7680-46ea-b265-3557e2bd37e9');
                     break;
                 case 'minimum':
                     result.push(`variants.price.centAmount: range (${Number(data.get(el)) * 100} to *)`);
+                    break;
+                case 'maximum':
+                    result.push(`variants.price.centAmount: range (* to ${Number(data.get(el)) * 100})`);
                     break;
                 case 'english':
                     result.push('variants.attributes.english:"true"');
             }
         });
+        result.push(`categories.id:"${categories.join('", "')}"`);
         console.log(result);
-        this.apiProduct
-            .getProductProjection(result)
-            ?.then((res) => console.log(res))
-            .catch((err) => console.log(err));
+        return result;
     }
 }

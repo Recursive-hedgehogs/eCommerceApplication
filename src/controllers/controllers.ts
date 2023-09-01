@@ -108,7 +108,3 @@ export class Controllers {
         }
     };
 }
-
-function getUser() {
-    throw new Error('Function not implemented.');
-}

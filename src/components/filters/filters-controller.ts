@@ -1,10 +1,15 @@
 import { Filters } from './filters';
+import { ApiProduct } from '../../api/api-products/api-products';
+import CatalogPage from '../../pages/catalog-page/catalog-page';
 
 export class FiltersController {
     private filters: Filters;
+    private apiProduct = new ApiProduct();
+    private catalogPage: CatalogPage;
 
-    constructor(filters: Filters) {
+    constructor(filters: Filters, catalogPage: CatalogPage) {
         this.filters = filters;
+        this.catalogPage = catalogPage;
         this.addListeners();
     }
 
@@ -61,6 +66,13 @@ export class FiltersController {
             filterResult.innerHTML = filtersArray.join(' ');
         }
         console.log(map);
-        this.filters.convertToFilter(map);
+        const productProjectionFilters = this.filters.convertToFilter(map);
+        this.apiProduct
+            .getProductProjection(productProjectionFilters)
+            ?.then((res) => {
+                console.log(res);
+                this.catalogPage.setContent(res.body.results);
+            })
+            .catch((err) => console.log(err));
     };
 }

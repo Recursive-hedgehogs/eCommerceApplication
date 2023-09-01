@@ -1,7 +1,7 @@
 import { Controllers } from '../../controllers/controllers';
 import { TokenCache } from '@commercetools/sdk-client-v2';
 import { IAnonymusCredentials, IClientCredentials, IUserCredentials } from './credentials.interface';
-import { Product, ProductDiscount } from '@commercetools/platform-sdk';
+import { DiscountedPrice, Product, ProductDiscount, ProductProjection } from '@commercetools/platform-sdk';
 
 export interface IView {
     build(): void;
@@ -62,4 +62,9 @@ export interface IAnonymousAuthMiddlewareOptions {
 export interface IProductWithDiscount {
     product: Product;
     discount?: ProductDiscount;
+}
+
+export interface IProductProjectionWithDiscount {
+    product: ProductProjection;
+    discount?: DiscountedPrice;
 }
