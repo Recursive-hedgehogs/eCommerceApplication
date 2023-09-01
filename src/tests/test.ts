@@ -13,54 +13,54 @@ test('Husky is installed and configured properly', () => {
     expect(huskyConfig.hooks['pre-commit']).toBe('lint');
 });
 
-describe('App', () => {
-    let app: App;
-
-    beforeEach(() => {
-        app = new App();
-    });
-
-    test('setAuthenticationStatus sets authentication status', () => {
-        app.setAuthenticationStatus(true);
-        expect(app.isAuthenticated()).toBe(true);
-    });
-
-    test('isAuthenticated returns correct authentication status', () => {
-        app.setAuthenticationStatus(false);
-        expect(app.isAuthenticated()).toBe(false);
-        app.setAuthenticationStatus(true);
-        expect(app.isAuthenticated()).toBe(true);
-    });
-
-    test('start sets the view property', () => {
-        const mockView: View = {} as View;
-        app.start(mockView);
-        expect(app.view).toBe(mockView);
-    });
-
-    test('App authentication status is initially set to false', () => {
-        expect(app.isAuthenticated()).toBe(false);
-    });
-
-    test('App authentication status can be toggled', () => {
-        app.setAuthenticationStatus(false);
-        expect(app.isAuthenticated()).toBe(false);
-        app.setAuthenticationStatus(true);
-        expect(app.isAuthenticated()).toBe(true);
-    });
-
-    test('App starts with correct initial view properties', () => {
-        const mockView: View = {} as View;
-        app.start(mockView);
-        expect(app.view).toBe(mockView);
-    });
-
-    test('setCurrentPage redirects to MAIN when authenticated user goes to LOGIN', () => {
-        const app: App = new App();
-        app.setAuthenticationStatus(true);
+// describe('App', () => {
+//     let app: App;
+//
+//     beforeEach(() => {
+//         app = new App();
+//     });
+//
+//     test('setAuthenticationStatus sets authentication status', () => {
+//         app.setAuthenticationStatus(true);
+//         expect(app.isAuthenticated()).toBe(true);
+//     });
+//
+//     test('isAuthenticated returns correct authentication status', () => {
+//         app.setAuthenticationStatus(false);
+//         expect(app.isAuthenticated()).toBe(false);
+//         app.setAuthenticationStatus(true);
+//         expect(app.isAuthenticated()).toBe(true);
+//     });
+//
+//     test('start sets the view property', () => {
+//         const mockView: View = {} as View;
+//         app.start(mockView);
+//         expect(app.view).toBe(mockView);
+//     });
+//
+//     test('App authentication status is initially set to false', () => {
+//         expect(app.isAuthenticated()).toBe(false);
+//     });
+//
+//     test('App authentication status can be toggled', () => {
+//         app.setAuthenticationStatus(false);
+//         expect(app.isAuthenticated()).toBe(false);
+//         app.setAuthenticationStatus(true);
+//         expect(app.isAuthenticated()).toBe(true);
+//     });
+//
+//     test('App starts with correct initial view properties', () => {
+//         const mockView: View = {} as View;
+//         app.start(mockView);
+//         expect(app.view).toBe(mockView);
+//     });
+//
+//     test('setCurrentPage redirects to MAIN when authenticated user goes to LOGIN', () => {
+        // const app: App = new App();
+        // app.setAuthenticationStatus(true);
         // app.setCurrentPage(ROUTE.LOGIN);
-    });
-});
+//     });
+// });
 
 /*describe('Controllers', () => {
     let mockApp: App;

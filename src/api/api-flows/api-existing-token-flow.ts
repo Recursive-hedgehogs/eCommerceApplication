@@ -33,5 +33,6 @@ export class ApiExistingTokenFlow {
         this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
             projectKey: process.env.CTP_PROJECT_KEY ?? '',
         });
+        console.log(this.client, this.apiRoot);
     }
 }

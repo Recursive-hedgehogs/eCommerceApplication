@@ -77,7 +77,8 @@ export class LoginPageController {
                     loginBtn?.classList.add('hidden');
                     registrBtn?.classList.add('hidden');
                 })
-                .catch((): void => {
+                .catch((err: Error): void => {
+                    console.log(err);
                     inputEmail?.forEach((el: Element): void => {
                         el.classList.add('is-invalid');
                     });

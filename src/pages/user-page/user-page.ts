@@ -1,5 +1,6 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './user-page.html';
+import { apiCustomer } from '../../api/api-customer';
 
 export default class UserPage {
     element: HTMLElement;
@@ -14,13 +15,14 @@ export default class UserPage {
         }).getElement();
         this.userData = null;
         this.firstName = null;
+        console.log('hghjghghg');
     }
 
     public getElement(): HTMLElement {
         return this.element;
     }
 
-    private showUserData() {
-        // apiCustomer.getUser();
+    public showUserData(id: string) {
+        apiCustomer.getUser(id)?.then((res) => console.log(res));
     }
 }

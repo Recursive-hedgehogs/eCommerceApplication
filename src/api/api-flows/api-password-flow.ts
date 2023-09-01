@@ -14,7 +14,7 @@ export class ApiPasswordFlow {
         fetch,
     };
     private passwordAuthMiddlewareOptions: IPasswordAuthMiddlewareOptions = {
-        host: process.env.TP_AUTH_URL ?? '',
+        host: process.env.CTP_AUTH_URL ?? '',
         projectKey: process.env.CTP_PROJECT_KEY ?? '',
         credentials: {
             clientId: process.env.CTP_CLIENT_ID ?? '',
