@@ -27,6 +27,15 @@ export class Filters {
                 case 'classic':
                     categories.push('fd19acd7-7680-46ea-b265-3557e2bd37e9');
                     break;
+                case 'biography':
+                    categories.push('67b55a80-6240-4f8d-bbde-cf9280bb8acb');
+                    break;
+                case 'thriller':
+                    categories.push('4bc97f8a-d44a-47ea-b5d8-82d80579c33f');
+                    break;
+                case 'tolkien':
+                    result.push('variants.attributes.author:"tolkien"');
+                    break;
                 case 'minimum':
                     result.push(`variants.price.centAmount: range (${Number(data.get(el)) * 100} to *)`);
                     break;
@@ -35,6 +44,10 @@ export class Filters {
                     break;
                 case 'english':
                     result.push('variants.attributes.english:"true"');
+                    break;
+                case 'belarusian':
+                    result.push('variants.attributes.belarusian:"true"');
+                    break;
             }
         });
         if (categories.length) {
