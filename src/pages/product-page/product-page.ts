@@ -48,22 +48,34 @@ export default class ProductPage {
         return this.element;
     }
 
-    public setContent(data: IProductWithDiscount): void {
+    public retrieveContent(data: IProductWithDiscount): void {
         this.data = data;
-        this.productName.innerText = data.product.masterData.current.name['en-US'];
-        if (data.product.masterData.current.masterVariant.images) {
+    } //separation for responsibility to get data
+
+    public setContent(): void {
+        const {
+            data,
+            productName,
+            productImage,
+            productDescription,
+            productPrice,
+            productPriceDiscount,
+            productFullDescription,
+        } = this; //refactoring code: destructuring assignment
+        productName.innerText = data?.product.masterData.current.name['en-US'] ?? '';
+        if (data?.product.masterData.current.masterVariant.images) {
             const imagesArray: HTMLElement[] = this.getImages(data.product.masterData.current.masterVariant.images);
-            this.productImage.innerHTML = '';
-            this.productImage.append(...imagesArray);
+            productImage.innerHTML = '';
+            productImage.append(...imagesArray);
             this.createSlider('.product-image-container');
         }
 
-        if (data.product.masterData.current.description) {
-            this.productDescription.innerText = data.product.masterData.current.description['en-US'];
+        if (data?.product.masterData.current.description) {
+            productDescription.innerText = data.product.masterData.current.description['en-US'];
         }
 
-        if (data.product.masterData.current.masterVariant.prices) {
-            this.productPrice.innerText = `Original price: ${
+        if (data?.product.masterData.current.masterVariant.prices) {
+            productPrice.innerText = `Original price: ${
                 data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100
             }€`;
             const pricesD:
@@ -78,15 +90,15 @@ export default class ProductPage {
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
                     (+b.permyriad / 10000) *
                         (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
-                this.productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
-                this.productPrice.classList.add('text-decoration-line-through');
+                productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
+                productPrice.classList.add('text-decoration-line-through');
             } else {
-                this.productPriceDiscount.innerText = '';
-                this.productPrice.classList.remove('text-decoration-line-through');
+                productPriceDiscount.innerText = '';
+                productPrice.classList.remove('text-decoration-line-through');
             }
         }
-        if (data.product.masterData.current.metaDescription) {
-            this.productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
+        if (data?.product.masterData.current.metaDescription) {
+            productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
         }
         // if (data.product.metaTitle) {
         //     this.productPublish.innerText = data.product.metaTitle['en-US'];
@@ -120,17 +132,16 @@ export default class ProductPage {
     }
 
     public openModal() {
-        const modalProductImage = this.element.querySelector('.product-modal-image-container') as HTMLElement;
+        const { element, data } = this; //local variable initialization
+        const modalProductImage = element.querySelector('.product-modal-image-container') as HTMLElement;
+        const images: Image[] = data?.product.masterData.current.masterVariant.images ?? [];
         const modal = document.getElementById('product-modal');
-        const imagesArray: HTMLElement[] = this.data
-            ? this.getImages(this.data.product.masterData.current.masterVariant.images!)
-            : [];
+        const imagesArray: HTMLElement[] = this.data ? this.getImages(images) : [];
         modalProductImage.innerHTML = '';
         modalProductImage.append(...imagesArray);
 
         if (modal) {
             modal.style.display = 'block';
-            //modalImage.style.backgroundImage = imageUrl;
             const closeButton = this.getCloseButtonElement();
 
             if (closeButton) {
