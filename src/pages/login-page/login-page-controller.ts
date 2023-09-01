@@ -5,16 +5,19 @@ import { Router } from '../../router/router';
 import { validateEmail, validatePassword } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
+import UserPage from '../user-page/user-page';
 
 export class LoginPageController {
     private app: App;
     private loinPage: LoginPage;
     private router: Router;
+    userPage: UserPage;
 
     constructor() {
         this.app = new App();
         this.loinPage = this.app.loginPage;
         this.router = new Router();
+        this.userPage = new UserPage();
         this.addListeners();
     }
 
@@ -66,6 +69,8 @@ export class LoginPageController {
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
+                    console.log(customer);
+                    this.userPage.getUserData(customer.id);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((): void => {

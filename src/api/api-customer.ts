@@ -9,7 +9,7 @@ import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/dec
 import { ApiRefreshTokenFlow } from './api-flows/api-refresh-token-flow';
 import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
 
-class ApiCustomer {
+export class ApiCustomer {
     private apiPasswordFlow: ApiPasswordFlow;
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
