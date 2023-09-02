@@ -1,13 +1,12 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './user-page.html';
-import { apiCustomer, ApiCustomer } from '../../api/api-customer';
+import { apiCustomer } from '../../api/api-customer';
 import { ICreateCustomerCredentials } from '../../constants/interfaces/credentials.interface';
-import { Address } from '@commercetools/platform-sdk';
+import { Address, Customer } from '@commercetools/platform-sdk';
 
 export default class UserPage {
     element: HTMLElement;
     userData: ICreateCustomerCredentials | null;
-    apiCustomer: ApiCustomer;
 
     constructor() {
         this.element = new ElementCreator({
@@ -16,7 +15,6 @@ export default class UserPage {
             innerHTML: template,
         }).getElement();
         this.userData = null;
-        this.apiCustomer = apiCustomer;
     }
 
     public getElement(): HTMLElement {
@@ -25,7 +23,7 @@ export default class UserPage {
 
     public showUserData(id: string) {
         apiCustomer.getUser(id)?.then((res) => {
-            const userData = res.body;
+            const userData: Customer = res.body;
             document.getElementById('user-first-name')?.setAttribute('value', userData.firstName || '');
             document.getElementById('user-last-name')?.setAttribute('value', userData.lastName || '');
             document.getElementById('user-date-of-birth')?.setAttribute('value', userData.dateOfBirth || '');
@@ -111,14 +109,10 @@ export default class UserPage {
     private setSelectedOptionByValue(selectId: string, value: string) {
         const select = document.getElementById(selectId);
         if (select) {
-            const option = select.querySelector(`option[value="${ value }"]`);
+            const option = select.querySelector(`option[value="${value}"]`);
             if (option) {
                 option.setAttribute('selected', 'selected');
             }
         }
-    }
-
-    public showUserDataO(id: string): void {
-        apiCustomer.getUser(id)?.then((res) => console.log(res));
     }
 }

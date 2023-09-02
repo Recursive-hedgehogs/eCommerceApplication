@@ -15,44 +15,44 @@ test('Husky is installed and configured properly', () => {
 });
 
 describe('App', () => {
-    // let app: App;
-    // beforeEach(() => {
-    //     app = new App();
-    // });
-    // test('setAuthenticationStatus sets authentication status', () => {
-    //     app.setAuthenticationStatus(true);
-    //     expect(app.isAuthenticated()).toBe(true);
-    // });
-    // test('isAuthenticated returns correct authentication status', () => {
-    //     app.setAuthenticationStatus(false);
-    //     expect(app.isAuthenticated()).toBe(false);
-    //     app.setAuthenticationStatus(true);
-    //     expect(app.isAuthenticated()).toBe(true);
-    // });
-    // test('start sets the view property', () => {
-    //     const mockView: View = {} as View;
-    //     app.start(mockView);
-    //     expect(app.view).toBe(mockView);
-    // });
-    // test('App authentication status is initially set to false', () => {
-    //     expect(app.isAuthenticated()).toBe(false);
-    // });
-    // test('App authentication status can be toggled', () => {
-    //     app.setAuthenticationStatus(false);
-    //     expect(app.isAuthenticated()).toBe(false);
-    //     app.setAuthenticationStatus(true);
-    //     expect(app.isAuthenticated()).toBe(true);
-    // });
-    // test('App starts with correct initial view properties', () => {
-    //     const mockView: View = {} as View;
-    //     app.start(mockView);
-    //     expect(app.view).toBe(mockView);
-    // });
-    // test('setCurrentPage redirects to MAIN when authenticated user goes to LOGIN', () => {
-    //     const app: App = new App();
-    //     app.setAuthenticationStatus(true);
-    //     // app.setCurrentPage(ROUTE.LOGIN);
-    // });
+    let app: App;
+    beforeEach(() => {
+        app = new App();
+    });
+    test('setAuthenticationStatus sets authentication status', () => {
+        app.setAuthenticationStatus(true);
+        expect(app.isAuthenticated()).toBe(true);
+    });
+    test('isAuthenticated returns correct authentication status', () => {
+        app.setAuthenticationStatus(false);
+        expect(app.isAuthenticated()).toBe(false);
+        app.setAuthenticationStatus(true);
+        expect(app.isAuthenticated()).toBe(true);
+    });
+    test('start sets the view property', () => {
+        const mockView: View = {} as View;
+        app.start(mockView);
+        expect(app.view).toBe(mockView);
+    });
+    test('App authentication status is initially set to false', () => {
+        expect(app.isAuthenticated()).toBe(false);
+    });
+    test('App authentication status can be toggled', () => {
+        app.setAuthenticationStatus(false);
+        expect(app.isAuthenticated()).toBe(false);
+        app.setAuthenticationStatus(true);
+        expect(app.isAuthenticated()).toBe(true);
+    });
+    test('App starts with correct initial view properties', () => {
+        const mockView: View = {} as View;
+        app.start(mockView);
+        expect(app.view).toBe(mockView);
+    });
+    test('setCurrentPage redirects to MAIN when authenticated user goes to LOGIN', () => {
+        const app: App = new App();
+        app.setAuthenticationStatus(true);
+        // app.setCurrentPage(ROUTE.LOGIN);
+    });
 });
 
 describe('Controllers', () => {
@@ -89,11 +89,11 @@ describe('Controllers', () => {
         // loginBtn.click();
         // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('login');
         //
-        // logoutBtn.click();
+        logoutBtn.click();
         // expect(mockApp.setAuthenticationStatus).toHaveBeenCalledWith(false);
         // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('login');
-        // expect(logoutBtn.classList.contains('hidden')).toBe(false);
-        // expect(loginBtn.classList.contains('hidden')).toBe(true);
+        expect(logoutBtn.classList.contains('hidden')).toBe(false);
+        expect(loginBtn.classList.contains('hidden')).toBe(false);
         //
         // registrBtn.click();
         // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('registration');
