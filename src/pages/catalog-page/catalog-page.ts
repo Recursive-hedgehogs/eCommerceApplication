@@ -21,7 +21,7 @@ export default class CatalogPage {
 
         this.element = new ElementCreator({
             tag: 'section',
-            classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row', 'column-gap-4'],
+            classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row'],
             innerHTML: template,
         }).getElement();
         this.catalogContainer = this.element.querySelector('.catalog-container');

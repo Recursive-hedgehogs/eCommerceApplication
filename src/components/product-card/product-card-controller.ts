@@ -25,7 +25,7 @@ export class ProductCardController {
 
     public onClick = (e: Event): void => {
         console.log(this.productCard);
-        this.router.navigate(ROUTE.PRODUCT);
+        this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
         if (e.target) {
             this.apiProduct
                 .getProductById(this.productCard.productId)

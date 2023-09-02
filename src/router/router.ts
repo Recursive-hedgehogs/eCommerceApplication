@@ -14,22 +14,28 @@ export class Router {
     }
 
     public navigate(route: string, isUpdate?: boolean): void {
-        const currentPath = window.location.pathname.slice(1);
+        const currentPath: string = window.location.pathname;
         if (this.app?.view && this.app?.view.pages) {
             if (route === ROUTE.LOGIN && this.app.isAuthenticated()) {
                 route = ROUTE.MAIN;
             }
-            const page: HTMLElement | undefined = this.app?.view.pages.has(route)
+            console.log(route);
+            const isProductPageRegex = /product\/[\w\d-]*/;
+            const isProductPage = isProductPageRegex.test(route);
+            let page: HTMLElement | undefined = this.app?.view.pages.has(route)
                 ? this.app?.view.pages.get(route)
                 : this.app?.view.pages.get(ROUTE.NOT_FOUND);
+            if (isProductPage) {
+                page = this.app?.view.pages.get(ROUTE.PRODUCT);
+            }
             this.app?.main.setContent(page);
         }
 
-        if (currentPath !== route) {
+        if (currentPath !== `/${route}`) {
             if (isUpdate) {
-                history.replaceState({ route }, '', route);
+                history.replaceState({ route }, '', `/${route}`);
             } else {
-                history.pushState({ route }, '', route);
+                history.pushState({ route }, '', `/${route}`);
             }
         }
     }

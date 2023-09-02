@@ -33,8 +33,20 @@ export class Filters {
                 case 'thriller':
                     categories.push('4bc97f8a-d44a-47ea-b5d8-82d80579c33f');
                     break;
+                case 'novel':
+                    categories.push('9178d2f4-2949-405b-9a5e-4c50499bf1b6');
+                    break;
+                case 'psychology':
+                    categories.push('4e796ae1-83e1-4a6d-86a0-b4d61a05cca1');
+                    break;
+                case 'business':
+                    categories.push('8640c4c7-fffb-474b-947b-6d4699b613db');
+                    break;
                 case 'tolkien':
                     result.push('variants.attributes.author:"tolkien"');
+                    break;
+                case 'isaacson':
+                    result.push('variants.attributes.author:"isaacson"');
                     break;
                 case 'minimum':
                     result.push(`variants.price.centAmount: range (${Number(data.get(el)) * 100} to *)`);
