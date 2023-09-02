@@ -13,6 +13,7 @@ import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 import { ProductPageController } from '../pages/product-page/product-page-controller';
+import { UserPageController } from '../pages/user-page/user-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -36,6 +37,7 @@ export class Controllers {
         new RegistrationPageController();
         new CatalogPageController();
         new ProductPageController();
+        new UserPageController();
         this.addListeners();
     }
 
