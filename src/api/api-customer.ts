@@ -81,7 +81,7 @@ class ApiCustomer {
             });
     };
 
-    public getUser(ID: string) {
+    public getUser = (ID: string) => {
         return this.apiExistingTokenFlow.apiRoot
             ?.customers()
             .withId({ ID })
@@ -90,6 +90,6 @@ class ApiCustomer {
             .catch((err) => {
                 throw Error(err);
             });
-    }
+    };
 }
 export const apiCustomer: ApiCustomer = new ApiCustomer();

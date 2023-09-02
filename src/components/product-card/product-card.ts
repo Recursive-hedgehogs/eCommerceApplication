@@ -1,7 +1,7 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './product-card.html';
 import './product-card.scss';
-import { Price, ProductProjection } from '@commercetools/platform-sdk';
+import { DiscountedPrice, Price, ProductProjection } from '@commercetools/platform-sdk';
 
 export class ProductCard {
     private readonly _element: HTMLElement | null = null;
@@ -46,9 +46,9 @@ export class ProductCard {
         this.productDefaultPrice = new ElementCreator({
             tag: 'p',
             classNames: ['product-price-discount', 'text-warning'],
-            // innerHTML: ,
         }).getElement();
-        const discount = prices && prices[0] && prices[0].discounted ? prices[0].discounted : '';
+        const discount: DiscountedPrice | null =
+            prices && prices[0] && prices[0].discounted ? prices[0].discounted : null;
         const priceD: number | null = discount ? discount.value.centAmount : null;
         if (priceD) {
             this.productDefaultPrice.innerText = `Discounted price ${priceD / 100}€`;
@@ -57,26 +57,6 @@ export class ProductCard {
             this.productDefaultPrice.innerText = '';
             this.productPrice.classList.remove('text-decoration-line-through');
         }
-
-        // const pricesD:
-        //     | ProductDiscountValueAbsolute
-        //     | ProductDiscountValueExternal
-        //     | ProductDiscountValueRelative
-        //     | undefined = data.discount?.value;
-        // if (pricesD) {
-        //     const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
-        //     this.productDefaultPrice.innerText = `Discounted price ${
-        //         prices && prices[0] && pricesD && b.permyriad
-        //             ? prices[0].value.centAmount / 100 -
-        //               (+b.permyriad / 10000) * (prices[0].value.centAmount / 100) +
-        //               '€'
-        //             : ''
-        //     }`;
-        //     this.productPrice.classList.add('text-decoration-line-through');
-        // } else {
-        //     this.productDefaultPrice.innerText = '';
-        //     this.productPrice.classList.remove('text-decoration-line-through');
-        // }
 
         this._element.append(
             this.productName,

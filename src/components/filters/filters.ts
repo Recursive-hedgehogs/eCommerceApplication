@@ -16,10 +16,10 @@ export class Filters {
         return this._element;
     }
 
-    public convertToFilter(data: Map<string, string | boolean>) {
+    public convertToFilter(data: Map<string, string | boolean>): string[] {
         const result: string[] = [];
         const categories: string[] = [];
-        [...data.keys()].forEach((el) => {
+        [...data.keys()].forEach((el: string): void => {
             switch (el) {
                 case 'fantasy':
                     categories.push('96df4d23-484f-4ec0-a1c1-39c077a3aefd');
@@ -65,7 +65,6 @@ export class Filters {
         if (categories.length) {
             result.push(`categories.id:"${categories.join('", "')}"`);
         }
-        console.log(result, '!!!');
         return result;
     }
 }

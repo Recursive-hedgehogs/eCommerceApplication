@@ -4,28 +4,24 @@ import {
     type AuthMiddlewareOptions,
     type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
-import { environment } from '../environment/environment';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
-// console.log(environment.apiURL);
-// console.log(process.env.CTP_API_URL);
-
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
-    host: environment.authURL,
-    projectKey: environment.projectKey,
+    host: process.env.CTP_AUTH_URL ?? '',
+    projectKey: process.env.CTP_PROJECT_KEY ?? '',
     credentials: {
-        clientId: environment.clientID,
-        clientSecret: environment.clientSecret,
+        clientId: process.env.CTP_CLIENT_ID ?? '',
+        clientSecret: process.env.CTP_CLIENT_SECRET ?? '',
     },
-    scopes: [environment.scope],
+    scopes: [process.env.CTP_SCOPES ?? ''],
     fetch,
 };
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-    host: environment.apiURL,
+    host: process.env.CTP_API_URL ?? '',
     fetch,
 };
 
@@ -37,5 +33,5 @@ export const ctpClient: Client = new ClientBuilder()
     .build();
 
 export const apiRoot: ByProjectKeyRequestBuilder = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
-    projectKey: environment.projectKey,
+    projectKey: process.env.CTP_PROJECT_KEY ?? '',
 });
