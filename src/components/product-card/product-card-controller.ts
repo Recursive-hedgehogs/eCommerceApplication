@@ -45,7 +45,8 @@ export class ProductCardController {
                 })
                 .then((resp) => {
                     console.log(resp);
-                    this.app?.productPage.setContent(resp);
+                    this.app?.productPage.retrieveContent(resp);
+                    this.app?.productPage.setContent();
                 });
         }
     };

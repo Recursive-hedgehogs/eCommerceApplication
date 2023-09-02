@@ -21,6 +21,7 @@ export default class ProductPage {
     private productPriceDiscount!: HTMLElement;
     private productInf!: HTMLElement;
     private static singleton: ProductPage;
+    private data?: IProductWithDiscount; //temporary container for response data
 
     constructor() {
         if (ProductPage.singleton) {
@@ -40,27 +41,41 @@ export default class ProductPage {
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
         // this.productPublish = this.element.querySelector('.product-publish') as HTMLElement;
         ProductPage.singleton = this;
+        this.showModalWindow();
     }
 
     public getElement(): HTMLElement {
         return this.element;
     }
 
-    public setContent(data: IProductWithDiscount): void {
-        this.productName.innerText = data.product.masterData.current.name['en-US'];
-        if (data.product.masterData.current.masterVariant.images) {
+    public retrieveContent(data: IProductWithDiscount): void {
+        this.data = data;
+    } //separation for responsibility to get data
+
+    public setContent(): void {
+        const {
+            data,
+            productName,
+            productImage,
+            productDescription,
+            productPrice,
+            productPriceDiscount,
+            productFullDescription,
+        } = this; //refactoring code: destructuring assignment
+        productName.innerText = data?.product.masterData.current.name['en-US'] ?? '';
+        if (data?.product.masterData.current.masterVariant.images) {
             const imagesArray: HTMLElement[] = this.getImages(data.product.masterData.current.masterVariant.images);
-            this.productImage.innerHTML = '';
-            this.productImage.append(...imagesArray);
-            this.createSlider();
+            productImage.innerHTML = '';
+            productImage.append(...imagesArray);
+            this.createSlider('.product-image-container');
         }
 
-        if (data.product.masterData.current.description) {
-            this.productDescription.innerText = data.product.masterData.current.description['en-US'];
+        if (data?.product.masterData.current.description) {
+            productDescription.innerText = data.product.masterData.current.description['en-US'];
         }
 
-        if (data.product.masterData.current.masterVariant.prices) {
-            this.productPrice.innerText = `Original price: ${
+        if (data?.product.masterData.current.masterVariant.prices) {
+            productPrice.innerText = `Original price: ${
                 data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100
             }€`;
             const pricesD:
@@ -75,15 +90,15 @@ export default class ProductPage {
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
                     (+b.permyriad / 10000) *
                         (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
-                this.productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
-                this.productPrice.classList.add('text-decoration-line-through');
+                productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
+                productPrice.classList.add('text-decoration-line-through');
             } else {
-                this.productPriceDiscount.innerText = '';
-                this.productPrice.classList.remove('text-decoration-line-through');
+                productPriceDiscount.innerText = '';
+                productPrice.classList.remove('text-decoration-line-through');
             }
         }
-        if (data.product.masterData.current.metaDescription) {
-            this.productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
+        if (data?.product.masterData.current.metaDescription) {
+            productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
         }
         // if (data.product.metaTitle) {
         //     this.productPublish.innerText = data.product.metaTitle['en-US'];
@@ -100,8 +115,8 @@ export default class ProductPage {
         );
     }
 
-    private createSlider(): void {
-        const swiperEl: SwiperContainer = this.element.querySelector('swiper-container') as SwiperContainer;
+    private createSlider(containerSelector: string): void {
+        const swiperEl: SwiperContainer = this.element.querySelector(containerSelector) as SwiperContainer;
         const swiperParams: SwiperOptions = {
             navigation: true,
             pagination: true,
@@ -114,5 +129,76 @@ export default class ProductPage {
         };
         Object.assign(swiperEl, swiperParams);
         swiperEl.initialize();
+    }
+
+    public openModal() {
+        const { element, data } = this; //local variable initialization
+        const modalProductImage = element.querySelector('.product-modal-image-container') as HTMLElement;
+        const images: Image[] = data?.product.masterData.current.masterVariant.images ?? [];
+        const modal = document.getElementById('product-modal');
+        const imagesArray: HTMLElement[] = this.data ? this.getImages(images) : [];
+        modalProductImage.innerHTML = '';
+        modalProductImage.append(...imagesArray);
+
+        if (modal) {
+            modal.style.display = 'block';
+            const closeButton = this.getCloseButtonElement();
+
+            if (closeButton) {
+                closeButton.addEventListener('click', this.closeModal.bind(this));
+            }
+            this.createSlider('.product-modal-image-container');
+        }
+    }
+
+    public closeModal(): void {
+        const closeButton = this.getCloseButtonElement();
+        const modal = this.getModalElement();
+
+        if (closeButton && modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    public showModalWindow() {
+        const productImageContainer = this.getProductImageContainer();
+
+        if (productImageContainer) {
+            productImageContainer.addEventListener('click', (event) => {
+                const target = event.target as HTMLElement;
+                if (target.classList.contains('product-images')) {
+                    const imageUrl = this.getBackgroundImageUrl(target);
+                    if (imageUrl) {
+                        this.openModal();
+                    }
+                }
+            });
+        }
+
+        const closeButton = this.getCloseButtonElement();
+
+        if (closeButton) {
+            closeButton.addEventListener('click', this.closeModal.bind(this));
+        }
+    }
+
+    private getBackgroundImageUrl(element: HTMLElement): string | undefined {
+        const style = getComputedStyle(element);
+        const backgroundImage = style.getPropertyValue('background-image');
+        const match = backgroundImage.match(/url\("(.+)"\)/);
+
+        return match ? match[1] : undefined;
+    }
+
+    private getModalElement(): HTMLElement | null {
+        return document.getElementById('product-modal');
+    }
+
+    private getCloseButtonElement(): HTMLElement | null {
+        return document.querySelector('.close') as HTMLElement | null;
+    }
+
+    private getProductImageContainer(): HTMLElement | null {
+        return this.element.querySelector('.product-image-container') as HTMLElement | null;
     }
 }

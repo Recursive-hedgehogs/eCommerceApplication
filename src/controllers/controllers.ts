@@ -62,8 +62,10 @@ export class Controllers {
             });
             authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
                 this.apiExistingTokenFlow.setUserData(resp.access_token);
-                const id = resp.scope.split(' ')[0].split(':')[1];
-                this.app?.userPage.showUserData(id);
+                const scopes = resp.scope.split(' ');
+                const customerIdScope = scopes.find((scope) => scope.startsWith('customer_id:'));
+                const customerId = customerIdScope ? customerIdScope.split(':')[1] : null;
+                if (customerId) this.app?.userPage.showUserData(customerId);
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
                     this.router.navigate(ROUTE.MAIN); //add redirection from login to MAIN page
