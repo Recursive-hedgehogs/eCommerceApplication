@@ -1,24 +1,23 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { IRefreshAuthMiddlewareOptions } from '../../constants/interfaces/interface';
-import { environment } from '../../environment/environment';
 import { Client, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
 export class ApiRefreshTokenFlow {
     private static singleton: ApiRefreshTokenFlow;
     private httpMiddlewareOptions: HttpMiddlewareOptions = {
-        host: environment.apiURL,
+        host: process.env.CTP_API_URL ?? '',
         fetch,
     };
     private refreshAuthMiddlewareOptions: IRefreshAuthMiddlewareOptions = {
-        host: environment.authURL,
-        projectKey: environment.projectKey,
+        host: process.env.CTP_AUTH_URL ?? '',
+        projectKey: process.env.CTP_PROJECT_KEY ?? '',
         credentials: {
-            clientId: environment.clientID,
-            clientSecret: environment.clientSecret,
+            clientId: process.env.CTP_CLIENT_ID ?? '',
+            clientSecret: process.env.CTP_CLIENT_SECRET ?? '',
         },
         refreshToken: '',
-        scopes: [environment.scope],
+        scopes: [process.env.CTP_SCOPES ?? ''],
         fetch,
     };
     private client?: Client;
@@ -36,7 +35,7 @@ export class ApiRefreshTokenFlow {
             .withRefreshTokenFlow(this.refreshAuthMiddlewareOptions)
             .build();
         this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
-            projectKey: environment.projectKey,
+            projectKey: process.env.CTP_PROJECT_KEY ?? '',
         });
     }
 }

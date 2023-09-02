@@ -3,13 +3,16 @@ import template from './catalog-page.html';
 import './catalog-page.scss';
 import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardController } from '../../components/product-card/product-card-controller';
-import { IProductWithDiscount } from '../../constants/interfaces/interface';
+import { Filters } from '../../components/filters/filters';
+import { FiltersController } from '../../components/filters/filters-controller';
+import { ProductProjection } from '@commercetools/platform-sdk';
 
 export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
     private products?: ProductCard[];
     private static singleton: CatalogPage;
+    private readonly filters?: Filters;
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -22,6 +25,9 @@ export default class CatalogPage {
             innerHTML: template,
         }).getElement();
         this.catalogContainer = this.element.querySelector('.catalog-container');
+        this.filters = new Filters();
+        new FiltersController(this.filters, this);
+        this.start();
         CatalogPage.singleton = this;
     }
 
@@ -29,14 +35,20 @@ export default class CatalogPage {
         return this.element;
     }
 
-    public setContent(products: IProductWithDiscount[]): void {
-        this.products = products.map((product: IProductWithDiscount) => {
+    public start(): void {
+        const catalogFilters = this.element.querySelector('.catalog-filters');
+        if (catalogFilters && this.filters?.element) {
+            catalogFilters.append(this.filters.element);
+        }
+    }
+
+    public setContent(products: ProductProjection[]): void {
+        this.products = products.map((product: ProductProjection) => {
             const productCard: ProductCard = new ProductCard(product);
             new ProductCardController(productCard);
             return productCard;
         });
         const productElements: HTMLElement[] = this.products.map((el: ProductCard) => el.element) as HTMLElement[];
-        // console.log(productElements, this.catalogContainer);
         if (this.catalogContainer) {
             this.catalogContainer.innerHTML = '';
             this.catalogContainer.append(...productElements);

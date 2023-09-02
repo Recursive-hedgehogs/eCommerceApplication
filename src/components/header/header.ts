@@ -3,7 +3,7 @@ import template from './header.template.html';
 import './header.scss';
 
 export default class Header {
-    element: HTMLElement;
+    private readonly element: HTMLElement;
 
     constructor() {
         this.element = new ElementCreator({

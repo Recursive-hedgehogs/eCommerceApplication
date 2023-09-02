@@ -111,10 +111,14 @@ export default class UserPage {
     private setSelectedOptionByValue(selectId: string, value: string) {
         const select = document.getElementById(selectId);
         if (select) {
-            const option = select.querySelector(`option[value="${value}"]`);
+            const option = select.querySelector(`option[value="${ value }"]`);
             if (option) {
                 option.setAttribute('selected', 'selected');
             }
         }
+    }
+
+    public showUserDataO(id: string): void {
+        apiCustomer.getUser(id)?.then((res) => console.log(res));
     }
 }

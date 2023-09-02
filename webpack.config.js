@@ -1,5 +1,4 @@
 require('@babel/register');
-require('dotenv').config();
 const { resolve: _resolve } = require('path');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');

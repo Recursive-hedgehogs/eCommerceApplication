@@ -74,4 +74,22 @@ export class ApiProduct {
                 throw Error(err);
             });
     };
+
+    public getProductProjection = (filter?: string[]) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.productProjections()
+
+            .search()
+            .get({
+                queryArgs: {
+                    staged: true,
+                    filter,
+                },
+            })
+
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
 }
