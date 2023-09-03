@@ -24,10 +24,9 @@ export default class ProductPage {
     private productFullDescription!: HTMLElement;
     private productPrice!: HTMLElement;
     private productPriceDiscount!: HTMLElement;
-    private productInf!: HTMLElement;
-    private static singleton: ProductPage;
     private data?: IProductWithDiscount; //temporary container for response data
     private apiProduct: ApiProduct = new ApiProduct();
+    private static singleton: ProductPage;
 
     constructor() {
         if (ProductPage.singleton) {
@@ -39,7 +38,6 @@ export default class ProductPage {
             innerHTML: template,
         }).getElement();
         this.productImage = this.element.querySelector('.product-image-container') as HTMLElement;
-        this.productInf = this.element.querySelector('.product-information') as HTMLElement;
         this.productName = this.element.querySelector('.product-name') as HTMLElement;
         this.productDescription = this.element.querySelector('.product-description') as HTMLElement;
         this.productFullDescription = this.element.querySelector('.product-full-description') as HTMLElement;
@@ -90,7 +88,7 @@ export default class ProductPage {
                 | undefined = data.discount?.value;
             const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
             if (b && b.permyriad) {
-                const priceDiscount =
+                const priceDiscount: number =
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
                     (+b.permyriad / 10000) *
                         (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
@@ -117,19 +115,19 @@ export default class ProductPage {
     }
 
     private createSlider(containerSelector: string): void {
-        const swiperEl: SwiperContainer = this.element.querySelector(containerSelector) as SwiperContainer;
+        const swiperContainer: SwiperContainer = this.element.querySelector(containerSelector) as SwiperContainer;
         const swiperParams: SwiperOptions = {
             navigation: true,
             pagination: true,
             slidesPerView: 1,
             on: {
-                init() {
+                init(): void {
                     //
                 },
             },
         };
-        Object.assign(swiperEl, swiperParams);
-        swiperEl.initialize();
+        Object.assign(swiperContainer, swiperParams);
+        swiperContainer.initialize();
     }
 
     public openModal(): void {
@@ -207,7 +205,7 @@ export default class ProductPage {
         this.apiProduct
             .getProductById(productId)
             ?.then((resp: ClientResponse<Product>) => resp.body)
-            .then(async (product: Product) => {
+            .then(async (product: Product): Promise<IProductWithDiscount> => {
                 const a: Price[] | undefined = product.masterData.current.masterVariant.prices;
                 const b: string | undefined =
                     a && a[0] && a[0].discounted?.discount.id ? a[0].discounted?.discount.id : '';
@@ -220,7 +218,7 @@ export default class ProductPage {
                     return { product };
                 }
             })
-            .then((resp) => {
+            .then((resp: { product: Product; discount: ProductDiscount | undefined } | { product: Product }): void => {
                 this.retrieveContent(resp);
                 this.setContent();
             });

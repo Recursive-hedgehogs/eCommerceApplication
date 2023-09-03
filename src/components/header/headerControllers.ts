@@ -1,34 +1,26 @@
 import App from '../../app/app';
 import { ROUTE } from '../../constants/enums/enum';
 import { Router } from '../../router/router';
-import { ApiProduct } from '../../api/api-products/api-products';
-import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Header from './header';
 export class HeaderControllers {
     private app: App;
     private router: Router;
-    private apiProduct = new ApiProduct();
     private header: Header;
 
-    constructor(header: Header) {
-        this.header = header;
+    constructor() {
         this.app = new App();
+        this.header = this.app.header;
         this.router = new Router();
         this.addListeners();
     }
 
     addListeners(): void {
-        const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-        const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-        const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
-        const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
-        const logoLink: HTMLElement | null = document.getElementById('main-logo');
+        const loginBtn: HTMLElement | null = this.header.getElement().querySelector('#login-btn');
+        const logoutBtn: HTMLElement | null = this.header.getElement().querySelector('#logout-btn');
+        const registrBtn: HTMLElement | null = this.header.getElement().querySelector('#registration-btn');
+        const profileBtn: HTMLElement | null = this.header.getElement().querySelector('#profile-btn');
+        const logoLink: HTMLElement | null = this.header.getElement().querySelector('#main-logo');
         loginBtn?.addEventListener('click', (): void => {
-            if (this.app?.isAuthenticated()) {
-                this.router.navigate(ROUTE.MAIN); //redirecting to the Main page, if user is authenticated
-            } else {
-                this.router.navigate(ROUTE.LOGIN); // else to the login page
-            }
             this.router.navigate(ROUTE.LOGIN);
         });
         logoutBtn?.addEventListener('click', (): void => {
@@ -47,9 +39,7 @@ export class HeaderControllers {
             e.preventDefault();
             this.router.navigate(ROUTE.MAIN);
         });
-        this.header.getElement().addEventListener('submit', this.onSearchSubmit);
-        const header: Element | null = document.querySelector('.header');
-        header?.addEventListener('click', this.onHeaderClick);
+        this.header.getElement().addEventListener('click', this.onHeaderClick);
     }
 
     private onHeaderClick = (e: Event): void => {
@@ -92,18 +82,5 @@ export class HeaderControllers {
                     break;
             }
         }
-    };
-
-    private onSearchSubmit = (e: Event): void => {
-        console.log('fdh');
-        e.preventDefault();
-        const target = e.target as HTMLElement;
-        const searchInput = target.querySelector('.search-input') as HTMLInputElement;
-        const value = searchInput.value;
-        this.apiProduct
-            .getProductProjection(undefined, undefined, value)
-            ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
-                this.app.catalogPage.setContent(res.body.results);
-            });
     };
 }

@@ -23,7 +23,25 @@ export default class UserPage {
 
     public showUserData(id: string) {
         apiCustomer.getUser(id)?.then((res) => {
+            console.log(res.body);
             const userData: Customer = res.body;
+            console.log(userData.version);
+            // const data: CustomerUpdate = {
+            //     version: userData.version,
+            //     actions: [ {
+            //     action : "removeAddress",
+            //     address : {
+            //         streetName : "Any Street",
+            //         streetNumber : "1337",
+            //         postalCode : "11111",
+            //         city : "Any City",
+            //         country : "US"
+            //     }
+            // } ]
+            // }
+            //
+            // apiCustomer.updateUser(data, id)?.then((res) => console.log(res))
+
             document.getElementById('user-first-name')?.setAttribute('value', userData.firstName || '');
             document.getElementById('user-last-name')?.setAttribute('value', userData.lastName || '');
             document.getElementById('user-date-of-birth')?.setAttribute('value', userData.dateOfBirth || '');

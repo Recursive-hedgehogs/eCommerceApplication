@@ -4,13 +4,12 @@ import { ApiRefreshTokenFlow } from '../api/api-flows/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
 import { ApiExistingTokenFlow } from '../api/api-flows/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
-import { MainPageController } from '../pages/main-page/main-page-controller';
 import { Router } from '../router/router';
 import { NotFoundPageController } from '../pages/not-found-page/not-found-page-controller';
 import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
+import { HeaderControllers } from '../components/header/headerControllers';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
-import { ProductPageController } from '../pages/product-page/product-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -27,13 +26,11 @@ export class Controllers {
 
     public start(app: App): void {
         this.app = app;
-        // new HeaderControllers();
-        new MainPageController();
+        new HeaderControllers();
         new NotFoundPageController();
         new LoginPageController();
         new RegistrationPageController();
         new CatalogPageController();
-        new ProductPageController();
         this.addListeners();
     }
 
