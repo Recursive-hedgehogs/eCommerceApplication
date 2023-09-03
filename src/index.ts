@@ -14,6 +14,5 @@ const controllers: Controllers = new Controllers();
 const router: Router = new Router();
 
 app.start(view);
-// view.start(app);
 router.start(app);
 controllers.start(app);

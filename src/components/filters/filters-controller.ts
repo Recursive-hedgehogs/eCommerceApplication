@@ -1,10 +1,11 @@
 import { Filters } from './filters';
 import { ApiProduct } from '../../api/api-products/api-products';
 import CatalogPage from '../../pages/catalog-page/catalog-page';
+import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 
 export class FiltersController {
     private filters: Filters;
-    private apiProduct = new ApiProduct();
+    private apiProduct: ApiProduct = new ApiProduct();
     private catalogPage: CatalogPage;
 
     constructor(filters: Filters, catalogPage: CatalogPage) {
@@ -19,12 +20,12 @@ export class FiltersController {
         this.filters.element?.addEventListener('click', this.onClick);
     }
 
-    private onChange = (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        const minResult = this.filters.element?.querySelector('.min-result');
-        const maxResult = this.filters.element?.querySelector('.max-result');
-        const minSlider = this.filters.element?.querySelector('.min-slider') as HTMLInputElement;
-        const maxSlider = this.filters.element?.querySelector('.max-slider') as HTMLInputElement;
+    private onChange = (e: Event): void => {
+        const target: HTMLInputElement = e.target as HTMLInputElement;
+        const minResult: HTMLInputElement = this.filters.element?.querySelector('.min-result') as HTMLInputElement;
+        const maxResult: HTMLInputElement = this.filters.element?.querySelector('.max-result') as HTMLInputElement;
+        const minSlider: HTMLInputElement = this.filters.element?.querySelector('.min-slider') as HTMLInputElement;
+        const maxSlider: HTMLInputElement = this.filters.element?.querySelector('.max-slider') as HTMLInputElement;
         if (minResult && target.id === 'customRangeMin') {
             minResult.innerHTML = target.value;
             maxSlider.min = target.value;
@@ -41,9 +42,9 @@ export class FiltersController {
         }
     };
 
-    private onSubmit = (e: SubmitEvent) => {
-        const filterResult = document.querySelector('.filters-result');
-        const map = new Map();
+    private onSubmit = (e: SubmitEvent): void => {
+        const filterResult: Element | null = document.querySelector('.filters-result');
+        const map: Map<string, string | boolean> = new Map();
         const filtersArray: string[] = [];
         e.preventDefault();
         console.log(this.filters.element);
@@ -51,13 +52,13 @@ export class FiltersController {
             this.filters.element?.querySelectorAll('input[type=checkbox]');
         const inputsRange: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=range]');
-        inputsCheck?.forEach((el: HTMLInputElement) => {
+        inputsCheck?.forEach((el: HTMLInputElement): void => {
             if (el.name && el.checked) {
                 filtersArray.push(el.name);
                 map.set(el.name, el.checked);
             }
         });
-        inputsRange?.forEach((el: HTMLInputElement) => {
+        inputsRange?.forEach((el: HTMLInputElement): void => {
             if (
                 el.value &&
                 ((el.name === 'minimum' && el.value !== '0') || (el.name === 'maximum' && el.value !== '100'))
@@ -69,27 +70,26 @@ export class FiltersController {
         if (filterResult) {
             filterResult.innerHTML = filtersArray.join(' ');
         }
-        const productProjectionFilters = this.filters.convertToFilter(map);
+        const productProjectionFilters: string[] = this.filters.convertToFilter(map);
         this.apiProduct
             .getProductProjection(productProjectionFilters)
-            ?.then((res) => {
-                console.log(res);
+            ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
                 this.catalogPage.setContent(res.body.results);
             })
             .catch((err) => console.log(err));
     };
 
-    public onClick = (e: Event) => {
-        const target = e.target as HTMLButtonElement;
+    public onClick = (e: Event): void => {
+        const target: HTMLButtonElement = e.target as HTMLButtonElement;
         if (target.id === 'filters-reset') {
             this.apiProduct
                 .getProductProjection()
-                ?.then((res) => {
+                ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
                     this.catalogPage.setContent(res.body.results);
                 })
                 .catch((err) => console.log(err));
         }
-        const filterResult = document.querySelector('.filters-result') as HTMLElement;
+        const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
         filterResult.innerHTML = '';
     };
 }

@@ -1,17 +1,13 @@
 import App from '../../app/app';
 import { ROUTE } from '../../constants/enums/enum';
 import { Router } from '../../router/router';
-import { MainPageController } from '../../pages/main-page/main-page-controller';
-
 export class HeaderControllers {
     private app: App;
     private router: Router;
-    private mainPageController: MainPageController;
 
     constructor() {
         this.app = new App();
         this.router = new Router();
-        this.mainPageController = new MainPageController();
         this.addListeners();
     }
 
@@ -66,7 +62,7 @@ export class HeaderControllers {
                     this.router.navigate(ROUTE.CATALOG);
                     document.title = 'storiesShelf store | Catalog';
                     if (e.target) {
-                        this.mainPageController.showCatalog();
+                        this.app?.catalogPage.showCatalog();
                     }
                     break;
                 case ROUTE.USER:

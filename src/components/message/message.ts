@@ -15,8 +15,4 @@ export class Message {
     public get element(): HTMLElement | null {
         return this._element;
     }
-
-    public removeElement() {
-        this._element = null;
-    }
 }
