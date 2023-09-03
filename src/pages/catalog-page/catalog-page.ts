@@ -7,7 +7,7 @@ import { Filters } from '../../components/filters/filters';
 import { FiltersController } from '../../components/filters/filters-controller';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import { Sort } from '../../components/sort/sort';
-//import { SortController } from '../../components/sort/sort-controller';
+import { SortController } from '../../components/sort/sort-controller';
 
 export default class CatalogPage {
     public element!: HTMLElement;
@@ -32,7 +32,7 @@ export default class CatalogPage {
         this.filters = new Filters();
         new FiltersController(this.filters, this);
         this.sort = new Sort();
-        //new SortController(this.sort, this);
+        new SortController(this.sort, this);
         this.start();
         CatalogPage.singleton = this;
     }

@@ -1,4 +1,4 @@
-/*import { ApiProduct } from '../../api/api-products/api-products';
+import { ApiProduct } from '../../api/api-products/api-products';
 import CatalogPage from '../../pages/catalog-page/catalog-page';
 import { ProductCard } from '../product-card/product-card';
 import { Sort } from './sort';
@@ -21,6 +21,9 @@ export class SortController {
         if (sortSelect) {
             sortSelect.addEventListener('change', (e) => {
                 const selectedOption = sortSelect.value;
+                if (selectedOption !== '') {
+                    sortSelect.querySelector('option[value=""]')?.setAttribute('disabled', 'true');
+                }
                 this.sortProducts(selectedOption);
             });
         }
@@ -33,24 +36,36 @@ export class SortController {
             switch (option) {
                 case 'price-asc':
                     products.sort((a, b) => {
-                        const priceA = a.prices && a.prices[0] ? a.prices[0].value.centAmount : 0;
-                        const priceB = b.prices && b.prices[0] ? b.prices[0].value.centAmount : 0;
+                        const priceA =
+                            a.masterVariant.prices && a.masterVariant.prices[0]
+                                ? a.masterVariant.prices[0].value.centAmount
+                                : 0;
+                        const priceB =
+                            b.masterVariant.prices && b.masterVariant.prices[0]
+                                ? b.masterVariant.prices[0].value.centAmount
+                                : 0;
                         return priceA - priceB;
                     });
                     break;
                 case 'price-desc':
                     products.sort((a, b) => {
-                        const priceA = a.prices && a.prices[0] ? a.prices[0].value.centAmount : 0;
-                        const priceB = b.prices && b.prices[0] ? b.prices[0].value.centAmount : 0;
+                        const priceA =
+                            a.masterVariant.prices && a.masterVariant.prices[0]
+                                ? a.masterVariant.prices[0].value.centAmount
+                                : 0;
+                        const priceB =
+                            b.masterVariant.prices && b.masterVariant.prices[0]
+                                ? b.masterVariant.prices[0].value.centAmount
+                                : 0;
                         return priceB - priceA;
                     });
                     break;
-                case 'name-asc':
-                    products.sort((a, b) => a.productName.localeCompare(b.productName));
+                /*case 'name-asc':
+                    products.sort((a, b) => a.masterVariant.productName.localeCompare(b.masterVariant.productName));
                     break;
                 case 'name-desc':
-                    products.sort((a, b) => b.productName.localeCompare(a.productName));
-                    break;
+                    products.sort((a, b) => b.masterVariant.productName.localeCompare(a.masterVariant.productName));
+                    break;*/
                 default:
                     break;
             }
@@ -58,4 +73,4 @@ export class SortController {
             this.catalogPage.setContent(products);
         }
     }
-}*/
+}
