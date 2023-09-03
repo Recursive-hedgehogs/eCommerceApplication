@@ -1,12 +1,11 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
-import { ICreateCustomerCredentials } from '../../constants/interfaces/credentials.interface';
 import { Address, Customer } from '@commercetools/platform-sdk';
 
 export default class UserPage {
     element: HTMLElement;
-    userData: ICreateCustomerCredentials | null;
+    userData: Customer | null;
 
     constructor() {
         this.element = new ElementCreator({
@@ -21,98 +20,100 @@ export default class UserPage {
         return this.element;
     }
 
-    public showUserData(id: string) {
+    public showUserData(id: string): void {
         apiCustomer.getUser(id)?.then((res) => {
-            const userData: Customer = res.body;
-            document.getElementById('user-first-name')?.setAttribute('value', userData.firstName || '');
-            document.getElementById('user-last-name')?.setAttribute('value', userData.lastName || '');
-            document.getElementById('user-date-of-birth')?.setAttribute('value', userData.dateOfBirth || '');
-            document.getElementById('user-email')?.setAttribute('value', userData.email || '');
-            document.getElementById('user-password')?.setAttribute('value', userData.password || '');
-            const billingDefaultCheckbox: HTMLInputElement = <HTMLInputElement>(
-                document.getElementById('switchDefaultAddress')
-            );
-            const shippingDefaultCheckbox: HTMLInputElement = <HTMLInputElement>(
-                document.getElementById('switchDefaultAddressShipping')
-            );
-            const billingLabel = document.querySelector('label[for="switchDefaultAddress"]');
-            const shippingLabel = document.querySelector('label[for="switchDefaultAddressShipping"]');
-
-            function fillAddressFields(address: Address) {
+            this.userData = res.body;
+            this.fillMainFields();
+            this.userData.addresses.forEach((address) => {
                 if (address.id) {
-                    if (userData?.billingAddressIds?.includes(address.id)) {
-                        // Set address values in the form fields
-                        document.getElementById('input-street')?.setAttribute('value', address.streetName || '');
-                        document.getElementById('input-postal-code')?.setAttribute('value', address.postalCode || '');
-                        document.getElementById('input-city')?.setAttribute('value', address.city || '');
-                        const billingCountry = document.getElementById('input-country');
-                        if (address.country === 'PL') {
-                            const optionToSelect = billingCountry?.querySelector('option[value="Poland"]');
-                            optionToSelect?.setAttribute('selected', 'selected');
-                        } else {
-                            const optionToSelect = billingCountry?.querySelector('option[value="Germany"]');
-                            optionToSelect?.setAttribute('selected', 'selected');
-                        }
-                    } else if (userData?.shippingAddressIds?.includes(address.id)) {
-                        // Set address values in the form fields
-                        document.getElementById('input-street-ship')?.setAttribute('value', address.streetName || '');
-                        document
-                            .getElementById('input-postal-code-ship')
-                            ?.setAttribute('value', address.postalCode || '');
-                        document.getElementById('input-city-ship')?.setAttribute('value', address.city || '');
-                        const shippingCountry = document.getElementById('input-country-ship');
-                        if (address.country === 'PL') {
-                            const optionToSelect = shippingCountry?.querySelector('option[value="Poland"]');
-                            optionToSelect?.setAttribute('selected', 'selected');
-                        } else {
-                            const optionToSelect = shippingCountry?.querySelector('option[value="Germany"]');
-                            optionToSelect?.setAttribute('selected', 'selected');
-                        }
+                    if (this.userData?.billingAddressIds?.includes(address.id)) {
+                        this.fillBillingAddressFields(address);
+                    } else if (this.userData?.shippingAddressIds?.includes(address.id)) {
+                        this.fillShippingAddressFields(address);
                     }
-
-                    // const isBillingDefault = userData.defaultBillingAddressId === address.id;
-                    // const isShippingDefault = userData.defaultShippingAddressId === address.id;
-
-                    // billingDefaultCheckbox.checked = isBillingDefault;
-                    // shippingDefaultCheckbox.checked = isShippingDefault;
-
-                    // if (billingLabel && isBillingDefault) {
-                    //     billingLabel.textContent = 'This address set as the default';
-                    // } else if (billingLabel) {
-                    //     billingLabel.textContent = 'Set the address as the default';
-                    // }
-
-                    // if (shippingLabel && isShippingDefault) {
-                    //     shippingLabel.textContent = 'This address set as the default';
-                    // } else if (shippingLabel) {
-                    //     shippingLabel.textContent = 'Set the address as the default';
-                    // }
                 }
-            }
-
-            userData.addresses.forEach((address) => {
-                console.log(address);
-                fillAddressFields(address);
             });
         });
     }
 
-    // Helper function to set value for an element by ID
-    private setValueById(elementId: string, value: string) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.setAttribute('value', value || '');
+    private fillMainFields(): void {
+        const firstName: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-first-name');
+        firstName.value = this.userData?.firstName || '';
+        const lastName: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-last-name');
+        lastName.value = this.userData?.lastName || '';
+        const dateOfBirth: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-date-of-birth');
+        dateOfBirth.value = this.userData?.dateOfBirth || '';
+        const email: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-email');
+        email.value = this.userData?.email || '';
+        const password: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-password');
+        password.value = this.userData?.password || '';
+    }
+
+    private fillAddressFields(address: Address, isBilling: boolean): void {
+        const prefix = isBilling ? '' : '-ship';
+        const checkboxId = isBilling ? 'switchDefaultAddress' : 'switchDefaultAddressShipping';
+        this.element.querySelector(`#input-street${prefix}`)?.setAttribute('value', address.streetName || '');
+        this.element.querySelector(`#input-postal-code${prefix}`)?.setAttribute('value', address.postalCode || '');
+        this.element.querySelector(`#input-city${prefix}`)?.setAttribute('value', address.city || '');
+        this.setSelectedOptionByValue(`#input-country${prefix}`, address.country === 'PL' ? 'Poland' : 'Germany');
+
+        const checkbox: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#${checkboxId}`);
+        const label = this.element.querySelector(`label[for="${checkboxId}"]`);
+        //check if address set as the default
+        const isDefault = isBilling
+            ? this.userData?.defaultBillingAddressId === address.id
+            : this.userData?.defaultShippingAddressId === address.id;
+
+        checkbox.checked = isDefault;
+        if (label) {
+            label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
         }
     }
 
+    private fillBillingAddressFields(address: Address): void {
+        this.fillAddressFields(address, true);
+    }
+
+    private fillShippingAddressFields(address: Address): void {
+        this.fillAddressFields(address, false);
+    }
+
     // Helper function to set selected option for a select element by value
-    private setSelectedOptionByValue(selectId: string, value: string) {
-        const select = document.getElementById(selectId);
+    private setSelectedOptionByValue(selectId: string, value: string): void {
+        const select = this.element.querySelector(selectId);
         if (select) {
             const option = select.querySelector(`option[value="${value}"]`);
             if (option) {
                 option.setAttribute('selected', 'selected');
             }
         }
+    }
+
+    public openMaintoEdit(): void {
+        const cancelButton = this.element.querySelector('#btn-cancel-main');
+        const saveButton = this.element.querySelector('#btn-save-main');
+        const editButton = this.element.querySelector('#btn-edit-main');
+        const inputFields = this.element.querySelectorAll('.main-info input');
+        for (const inputField of inputFields) {
+            if (inputField instanceof HTMLInputElement) {
+                inputField.disabled = !inputField.disabled;
+            }
+        }
+        cancelButton?.classList.remove('hidden');
+        saveButton?.classList.remove('hidden');
+        editButton?.classList.add('hidden');
+    }
+
+    public closeMaintoEdit(): void {
+        this.fillMainFields();
+        const inputFields = this.element.querySelectorAll('.main-info input');
+        for (const inputField of inputFields) {
+            if (inputField instanceof HTMLInputElement) {
+                inputField.disabled = !inputField.disabled;
+            }
+        }
+        this.element.querySelector('#btn-cancel-main')?.classList.add('hidden');
+        this.element.querySelector('#btn-save-main')?.classList.add('hidden');
+        this.element.querySelector('#btn-edit-main')?.classList.remove('hidden');
     }
 }

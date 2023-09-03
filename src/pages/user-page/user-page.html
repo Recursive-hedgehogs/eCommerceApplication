@@ -29,35 +29,43 @@
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade active show" id="main" role="tabpanel">
+                    <div class="tab-pane main-info fade active show" id="main" role="tabpanel">
                         <div class="row mt-2">
                             <div class="col-md-6"><label class="labels">Name</label>
-                                <div class="input-group">
-                                    <input id="user-first-name" type="text" class="form-control first-name"
+                                <div class="form-item">
+                                    <input id="user-first-name" type="text" class="form-control first-name personal"
                                         placeholder="first name" value="" disabled>
-                                    <!-- <div class="input-group-text hidden">
-                                        <span class="password-icon-container">
-                                            <i id="password-icon" class="fas fa-pen"></i>
-                                        </span>
-                                    </div>
-                                    <div class="input-group-text hidden">
-                                        <span class="password-icon-container">
-                                            <i id="password-icon" class="fas fa-check"></i>
-                                        </span>
-                                        <span class="password-icon-container">
-                                            <i id="password-icon" class="fas fa-times"></i>
-                                        </span>
-                                    </div> -->
                                 </div>
                             </div>
-                            <div class="col-md-6"><label class="labels">Surname</label><input id="user-last-name"
-                                    type="text" class="form-control" value="" placeholder="surname" disabled></div>
+                            <div class="col-md-6"><label class="labels">Surname</label>
+                                <div class="form-item">
+                                    <input id="user-last-name" type="text" class="form-control personal" value=""
+                                        placeholder="surname" disabled>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-12 mt-2"><label class="labels">Date of birth</label><input
-                                id="user-date-of-birth" type="date" class="form-control" placeholder="date of birth"
-                                value="" disabled></div>
-                        <div class="col-md-6"><label class="labels">Email</label><input id="user-email" type="text"
-                                class="form-control" value="" placeholder="surname" disabled></div>
+                        <div class="col-md-12 mt-2"><label class="labels">Date of birth</label>
+                            <div class="form-item">
+                                <input id="user-date-of-birth" type="date" class="form-control personal"
+                                    placeholder="date of birth" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="mt-2"><label class="labels">Email</label>
+                            <div class="form-item">
+                                <input id="user-email" type="email" class="form-control personal" value=""
+                                    placeholder="surname" disabled>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col mt-3 text-center">
+                            <button id="btn-edit-main" class="btn btn-warning" type="button" style="width:25%"><i
+                                    class="fas fa-pen"></i><span class="offset-1">Edit</span></button>
+                            <button id="btn-cancel-main" class="btn btn-warning hidden" type="button"
+                                style="width:25%"><i class="fas fa-times"></i><span
+                                    class="offset-1">Cancel</span></button>
+                            <button id="btn-save-main" class="btn btn-success hidden" type="submit" style="width:25%"><i
+                                    class="fas fa-check"></i><span class="offset-1">Save</span></button>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="billing" role="tabpanel">
                         <div class="billing-address rounded-1 p-2">
@@ -85,7 +93,7 @@
                                     placeholder="Enter your postal code" required disabled>
                             </div>
                             <div class="form-check form-switch">
-                                <input class="form-check-input personal" type="checkbox" name="default" role="switch"
+                                <input class="form-check-input" type="checkbox" name="default" role="switch"
                                     id="switchDefaultAddress" disabled>
                                 <label class="form-check-label label-small" for="switchDefaultAddress">Set the address
                                     as the
@@ -119,7 +127,7 @@
                                     placeholder="Enter your postal code" required disabled>
                             </div>
                             <div class="form-check form-switch">
-                                <input class="form-check-input personal" type="checkbox" name="default" role="switch"
+                                <input class="form-check-input" type="checkbox" name="default" role="switch"
                                     id="switchDefaultAddressShipping" disabled>
                                 <label class="form-check-label label-small" for="switchDefaultAddressShipping">Set the
                                     address as the
@@ -128,21 +136,13 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="password" role="tabpanel">
-                        <div class="col-md-6 mt-2"><label class="labels">Current password</label><input id="user-password"
-                                type="password" class="form-control" value="" disabled></div>
+                        <div class="col-md-6 mt-2"><label class="labels">Current password</label><input
+                                id="user-password" type="password" class="form-control" value="" disabled></div>
                         <div class="col-md-6 mt-2"><label class="labels">New password</label><input id="user-password"
                                 type="password" class="form-control" value="" disabled></div>
-                        <div class="col-md-6 mt-2"><label class="labels">Confirm new password</label><input id="user-password"
-                                type="password" class="form-control" value="" disabled></div>
+                        <div class="col-md-6 mt-2"><label class="labels">Confirm new password</label><input
+                                id="user-password" type="password" class="form-control" value="" disabled></div>
                     </div>
-                </div>
-                <div class="row mt-2">
-                </div>
-                <div class="row mt-3">
-                    <div class="two-column text-center"><button class="btn btn-warning profile-button"
-                            type="button">Edit Profile</button></div>
-                    <div class="two-column text-center"><button class="btn btn-success profile-button"
-                            type="button">Save Profile</button></div>
                 </div>
             </div>
         </div>
