@@ -1,15 +1,15 @@
 export const validateEmail = (s: string): string | null => {
-    const hasNoSpaces = /^\S+$/.test(s);
+    const hasNoSpaces: boolean = /^\S+$/.test(s);
     if (!hasNoSpaces) {
         return 'Email should not contain spaces';
     }
 
-    const hasAtSymbol = /@/.test(s);
+    const hasAtSymbol: boolean = /@/.test(s);
     if (!hasAtSymbol) {
         return "Email should contain an '@' symbol";
     }
 
-    const hasValidDomain =
+    const hasValidDomain: boolean =
         /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/.test(
             s
         );
@@ -27,27 +27,27 @@ export const validatePassword = (password: string): string | null => {
         return `Password should be at least ${minLength} characters long`;
     }
 
-    const hasUppercase = /[A-Z]/.test(password);
+    const hasUppercase: boolean = /[A-Z]/.test(password);
     if (!hasUppercase) {
         return 'Password should contain at least one uppercase letter';
     }
 
-    const hasLowercase = /[a-z]/.test(password);
+    const hasLowercase: boolean = /[a-z]/.test(password);
     if (!hasLowercase) {
         return 'Password should contain at least one lowercase letter';
     }
 
-    const hasDigit = /\d/.test(password);
+    const hasDigit: boolean = /\d/.test(password);
     if (!hasDigit) {
         return 'Password should contain at least one digit';
     }
 
-    const hasSpecialCharacter = /[!@#$%^&*]/.test(password);
+    const hasSpecialCharacter: boolean = /[!@#$%^&*]/.test(password);
     if (!hasSpecialCharacter) {
         return 'Password should contain at least one special character';
     }
 
-    const hasNoWhitespace = /^\S+$/.test(password);
+    const hasNoWhitespace: boolean = /^\S+$/.test(password);
     if (!hasNoWhitespace) {
         return 'Password should not contain whitespaces';
     }
@@ -57,8 +57,8 @@ export const validatePassword = (password: string): string | null => {
 };
 
 export const validateName = (userName: string): string | null => {
-    const hasValidCharacters = /^[A-Za-zА-Яа-яЁё]+$/.test(userName);
-    const hasAtLeastOneCharacter = userName.length > 0;
+    const hasValidCharacters: boolean = /^[A-Za-zА-Яа-яЁё]+$/.test(userName);
+    const hasAtLeastOneCharacter: boolean = userName.length > 0;
     if (!hasAtLeastOneCharacter) {
         return 'Should contain at least one character';
     } else if (!hasValidCharacters) {
@@ -69,12 +69,12 @@ export const validateName = (userName: string): string | null => {
 };
 
 export const validateDateOfBirth = (dateBirth: string): string | null => {
-    const currentDate = new Date();
-    const inputDate = new Date(dateBirth);
+    const currentDate: Date = new Date();
+    const inputDate: Date = new Date(dateBirth);
 
     // Calculate the user's age in years
-    const ageInMilliseconds = currentDate.getTime() - inputDate.getTime();
-    const ageInYears = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25);
+    const ageInMilliseconds: number = currentDate.getTime() - inputDate.getTime();
+    const ageInYears: number = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25);
 
     // Check if the input is a valid date
     if (ageInYears > 110) {

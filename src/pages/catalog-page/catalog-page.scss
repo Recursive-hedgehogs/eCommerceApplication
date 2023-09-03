@@ -1,15 +1,15 @@
 .catalog-image {
   width: 20%;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   background: url("../../assets/images/book-catalog.jpg") no-repeat;
   background-size: cover;
   background-position: center;
 }
 
-.catalog-page-container {
-  width: 80%;
-}
-
 .catalog-container {
+  justify-content: space-evenly;
   width: 100%;
   gap: 20px;
 }

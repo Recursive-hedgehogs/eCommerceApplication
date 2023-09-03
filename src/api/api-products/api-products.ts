@@ -32,16 +32,6 @@ export class ApiProduct {
                 throw Error(err);
             });
     };
-    public getProductByKey = (key: string) => {
-        return this.apiExistingTokenFlow.apiRoot
-            ?.products()
-            .withKey({ key })
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
 
     public getProductById = (ID: string) => {
         return this.apiAnonymousSessionFlow.apiRoot
@@ -65,20 +55,9 @@ export class ApiProduct {
             });
     };
 
-    public getProductDiscounts = () => {
-        return this.apiExistingTokenFlow.apiRoot
-            ?.productDiscounts()
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
     public getProductProjection = (filter?: string[]) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
-
             .search()
             .get({
                 queryArgs: {
@@ -86,7 +65,6 @@ export class ApiProduct {
                     filter,
                 },
             })
-
             .execute()
             .catch((err) => {
                 throw Error(err);

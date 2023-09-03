@@ -2,7 +2,11 @@ import ElementCreator from '../../utils/template-creation';
 import template from './product-page.html';
 import './product-page.scss';
 import {
+    ClientResponse,
     Image,
+    Price,
+    Product,
+    ProductDiscount,
     ProductDiscountValueAbsolute,
     ProductDiscountValueExternal,
     ProductDiscountValueRelative,
@@ -10,6 +14,7 @@ import {
 import { IProductWithDiscount } from '../../constants/interfaces/interface';
 import { SwiperContainer } from 'swiper/swiper-element';
 import { SwiperOptions } from 'swiper/types';
+import { ApiProduct } from '../../api/api-products/api-products';
 
 export default class ProductPage {
     public element!: HTMLElement;
@@ -22,6 +27,7 @@ export default class ProductPage {
     private productInf!: HTMLElement;
     private static singleton: ProductPage;
     private data?: IProductWithDiscount; //temporary container for response data
+    private apiProduct: ApiProduct = new ApiProduct();
 
     constructor() {
         if (ProductPage.singleton) {
@@ -200,5 +206,28 @@ export default class ProductPage {
 
     private getProductImageContainer(): HTMLElement | null {
         return this.element.querySelector('.product-image-container') as HTMLElement | null;
+    }
+
+    public getData(productId: string): void {
+        this.apiProduct
+            .getProductById(productId)
+            ?.then((resp: ClientResponse<Product>) => resp.body)
+            .then(async (product: Product) => {
+                const a: Price[] | undefined = product.masterData.current.masterVariant.prices;
+                const b: string | undefined =
+                    a && a[0] && a[0].discounted?.discount.id ? a[0].discounted?.discount.id : '';
+                try {
+                    const discountResponse: ClientResponse<ProductDiscount> | undefined =
+                        await this.apiProduct.getProductDiscountById(b);
+                    const discount: ProductDiscount | undefined = discountResponse?.body;
+                    return { product, discount };
+                } catch {
+                    return { product };
+                }
+            })
+            .then((resp) => {
+                this.retrieveContent(resp);
+                this.setContent();
+            });
     }
 }

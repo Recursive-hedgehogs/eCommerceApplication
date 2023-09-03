@@ -62,9 +62,11 @@ export class Controllers {
             });
             authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
                 this.apiExistingTokenFlow.setUserData(resp.access_token);
-                const scopes = resp.scope.split(' ');
-                const customerIdScope = scopes.find((scope) => scope.startsWith('customer_id:'));
-                const customerId = customerIdScope ? customerIdScope.split(':')[1] : null;
+                const scopes: string[] = resp.scope.split(' ');
+                const customerIdScope: string | undefined = scopes.find((scope: string) =>
+                    scope.startsWith('customer_id:')
+                );
+                const customerId: string | null = customerIdScope ? customerIdScope.split(':')[1] : null;
                 if (customerId) this.app?.userPage.showUserData(customerId);
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
@@ -99,6 +101,8 @@ export class Controllers {
             // .catch((err) => {
             //     throw Error(err);
             // });
+        } else if (window.location.pathname.slice(1) === ROUTE.USER) {
+            this.router.navigate(ROUTE.LOGIN); //add redirection from user to LOGIN page
         }
         window.removeEventListener('load', this.onFirstLoad);
     };
