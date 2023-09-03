@@ -2,7 +2,6 @@ import App from '../app/app';
 import { ROUTE } from '../constants/enums/enum';
 import { ApiRefreshTokenFlow } from '../api/api-flows/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
-import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-flows/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
 import { MainPageController } from '../pages/main-page/main-page-controller';
@@ -50,14 +49,14 @@ export class Controllers {
         const refreshToken: string | null = localStorage.getItem('refreshToken');
         if (refreshToken) {
             const authClient = new SdkAuth({
-                host: environment.authURL,
-                projectKey: environment.projectKey,
+                host: process.env.CTP_AUTH_URL,
+                projectKey: process.env.CTP_PROJECT_KEY,
                 disableRefreshToken: false,
                 credentials: {
-                    clientId: environment.clientID,
-                    clientSecret: environment.clientSecret,
+                    clientId: process.env.CTP_CLIENT_ID,
+                    clientSecret: process.env.CTP_CLIENT_SECRET,
                 },
-                scopes: [environment.scope],
+                scopes: [process.env.CTP_SCOPES],
                 fetch,
             });
             authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {

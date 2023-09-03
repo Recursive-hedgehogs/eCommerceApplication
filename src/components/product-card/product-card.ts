@@ -33,7 +33,7 @@ export class ProductCard {
                 data.masterVariant.images && data.masterVariant.images[0] ? data.masterVariant.images[0].url : 'none',
         }).getElement();
         this.productDescription = new ElementCreator({
-            tag: 'p',
+            tag: 'h6',
             classNames: ['product-description'],
             innerHTML: data.description ? data.description['en-US'] : '',
         }).getElement();
