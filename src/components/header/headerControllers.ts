@@ -1,11 +1,17 @@
 import App from '../../app/app';
 import { ROUTE } from '../../constants/enums/enum';
 import { Router } from '../../router/router';
+import { ApiProduct } from '../../api/api-products/api-products';
+import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import Header from './header';
 export class HeaderControllers {
     private app: App;
     private router: Router;
+    private apiProduct = new ApiProduct();
+    private header: Header;
 
-    constructor() {
+    constructor(header: Header) {
+        this.header = header;
         this.app = new App();
         this.router = new Router();
         this.addListeners();
@@ -41,6 +47,7 @@ export class HeaderControllers {
             e.preventDefault();
             this.router.navigate(ROUTE.MAIN);
         });
+        this.header.getElement().addEventListener('submit', this.onSearchSubmit);
         const header: Element | null = document.querySelector('.header');
         header?.addEventListener('click', this.onHeaderClick);
     }
@@ -85,5 +92,18 @@ export class HeaderControllers {
                     break;
             }
         }
+    };
+
+    private onSearchSubmit = (e: Event): void => {
+        console.log('fdh');
+        e.preventDefault();
+        const target = e.target as HTMLElement;
+        const searchInput = target.querySelector('.search-input') as HTMLInputElement;
+        const value = searchInput.value;
+        this.apiProduct
+            .getProductProjection(undefined, undefined, value)
+            ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
+                this.app.catalogPage.setContent(res.body.results);
+            });
     };
 }

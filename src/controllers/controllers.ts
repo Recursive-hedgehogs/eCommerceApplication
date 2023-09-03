@@ -6,7 +6,6 @@ import { ApiExistingTokenFlow } from '../api/api-flows/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
 import { MainPageController } from '../pages/main-page/main-page-controller';
 import { Router } from '../router/router';
-import { HeaderControllers } from '../components/header/headerControllers';
 import { NotFoundPageController } from '../pages/not-found-page/not-found-page-controller';
 import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
@@ -28,7 +27,7 @@ export class Controllers {
 
     public start(app: App): void {
         this.app = app;
-        new HeaderControllers();
+        // new HeaderControllers();
         new MainPageController();
         new NotFoundPageController();
         new LoginPageController();
