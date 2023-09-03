@@ -82,7 +82,7 @@ class ApiCustomer {
             });
     };
 
-    public getUser(ID: string) {
+    public getUser = (ID: string) => {
         return this.apiExistingTokenFlow.apiRoot
             ?.customers()
             .withId({ ID })
