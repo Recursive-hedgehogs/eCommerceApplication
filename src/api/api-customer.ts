@@ -91,7 +91,7 @@ class ApiCustomer {
             .catch((err) => {
                 throw Error(err);
             });
-    }
+    };
 
     public updateUser = (data: CustomerUpdate, ID: string) => {
         return this.apiExistingTokenFlow.apiRoot
