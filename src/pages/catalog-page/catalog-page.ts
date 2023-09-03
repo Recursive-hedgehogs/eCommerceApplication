@@ -6,13 +6,17 @@ import { ProductCardController } from '../../components/product-card/product-car
 import { Filters } from '../../components/filters/filters';
 import { FiltersController } from '../../components/filters/filters-controller';
 import { ProductProjection } from '@commercetools/platform-sdk';
+import { Sort } from '../../components/sort/sort';
+//import { SortController } from '../../components/sort/sort-controller';
 
 export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
-    private products?: ProductCard[];
+    public products?: ProductCard[];
     private static singleton: CatalogPage;
     private readonly filters?: Filters;
+    private readonly sort?: Sort;
+    public originalProducts: ProductProjection[] = [];
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -27,6 +31,8 @@ export default class CatalogPage {
         this.catalogContainer = this.element.querySelector('.catalog-container');
         this.filters = new Filters();
         new FiltersController(this.filters, this);
+        this.sort = new Sort();
+        //new SortController(this.sort, this);
         this.start();
         CatalogPage.singleton = this;
     }
@@ -40,10 +46,16 @@ export default class CatalogPage {
         if (catalogFilters && this.filters?.element) {
             catalogFilters.append(this.filters.element);
         }
+
+        const catalogSorting = this.element.querySelector('.catalog-sorting');
+        if (catalogSorting && this.sort?.element) {
+            catalogSorting.append(this.sort.element);
+        }
     }
 
     public setContent(products: ProductProjection[]): void {
-        this.products = products.map((product: ProductProjection) => {
+        this.originalProducts = products;
+        this.products = this.originalProducts.map((product: ProductProjection) => {
             const productCard: ProductCard = new ProductCard(product);
             new ProductCardController(productCard);
             return productCard;
