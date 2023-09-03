@@ -84,6 +84,7 @@ export class ApiProduct {
                 queryArgs: {
                     staged: true,
                     filter,
+                    sort: 'createdAt asc',
                 },
             })
 

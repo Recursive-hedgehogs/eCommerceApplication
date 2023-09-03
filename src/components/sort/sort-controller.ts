@@ -21,8 +21,9 @@ export class SortController {
         if (sortSelect) {
             sortSelect.addEventListener('change', (e) => {
                 const selectedOption = sortSelect.value;
-                if (selectedOption !== '') {
-                    sortSelect.querySelector('option[value=""]')?.setAttribute('disabled', 'true');
+                const emptyOption = sortSelect.querySelector('option[value=""]');
+                if (emptyOption) {
+                    emptyOption.setAttribute('disabled', 'true');
                 }
                 this.sortProducts(selectedOption);
             });
@@ -30,12 +31,13 @@ export class SortController {
     }
 
     public sortProducts(option: string): void {
-        const products = this.catalogPage.originalProducts.slice();
+        const originalProducts = this.catalogPage.originalProducts.slice();
 
-        if (products) {
+        if (originalProducts) {
+            const sort: string[] | undefined = undefined;
             switch (option) {
                 case 'price-asc':
-                    products.sort((a, b) => {
+                    originalProducts.sort((a, b) => {
                         const priceA =
                             a.masterVariant.prices && a.masterVariant.prices[0]
                                 ? a.masterVariant.prices[0].value.centAmount
@@ -48,7 +50,7 @@ export class SortController {
                     });
                     break;
                 case 'price-desc':
-                    products.sort((a, b) => {
+                    originalProducts.sort((a, b) => {
                         const priceA =
                             a.masterVariant.prices && a.masterVariant.prices[0]
                                 ? a.masterVariant.prices[0].value.centAmount
@@ -60,17 +62,23 @@ export class SortController {
                         return priceB - priceA;
                     });
                     break;
-                /*case 'name-asc':
-                    products.sort((a, b) => a.masterVariant.productName.localeCompare(b.masterVariant.productName));
+                case 'name-asc':
+                    originalProducts.sort((a, b) => a.name['en-US'].localeCompare(b.name['en-US']));
                     break;
-                case 'name-desc':
-                    products.sort((a, b) => b.masterVariant.productName.localeCompare(a.masterVariant.productName));
-                    break;*/
                 default:
                     break;
             }
 
-            this.catalogPage.setContent(products);
+            if (sort) {
+                this.apiProduct
+                    .getProductProjection(sort)
+                    ?.then((res) => {
+                        this.catalogPage.setContent(res.body.results);
+                    })
+                    .catch((err) => console.log(err));
+            } else {
+                this.catalogPage.setContent(originalProducts);
+            }
         }
     }
 }
