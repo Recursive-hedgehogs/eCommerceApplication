@@ -93,30 +93,17 @@ class ApiCustomer {
             });
     }
 
-    public updateUser(ID: string) {
-        console.log(this.apiExistingTokenFlow.apiRoot?.customers().withId({ ID }));
-        // return this.apiExistingTokenFlow.apiRoot
-        //     ?.customers()
-        //     .withId({ ID })
-        //     .post({
-        //         body: updatedData,
-        //     })
-        //     .execute()
-        //     .catch((err) => {
-        //         throw Error(err);
-        //     });
-    }
-
-    // public createCustomer = (data: ICreateCustomerCredentials) => {
-    //     return apiRoot
-    //         .customers()
-    //         .post({
-    //             body: data,
-    //         })
-    //         .execute()
-    //         .catch((err) => {
-    //             throw Error(err);
-    //         });
-    // };
+    public updateUser = (data: CustomerUpdate, ID: string) => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.customers()
+            .withId({ ID })
+            .post({
+                body: data,
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
 }
 export const apiCustomer: ApiCustomer = new ApiCustomer();

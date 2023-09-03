@@ -1,26 +1,16 @@
 import App from '../../app/app';
-import { Router } from '../../router/router';
 import UserPage from './user-page';
-import {
-    validateDateOfBirth,
-    validateEmail,
-    validateName,
-    validatePassword,
-    validatePostalCode,
-} from '../../utils/validations';
+import { validateDateOfBirth, validateEmail, validateName } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
-import { ROUTE } from '../../constants/enums/enum';
+import { CustomerUpdate } from '@commercetools/platform-sdk';
 
 export class UserPageController {
     private app: App;
     private userPage: UserPage;
-    private router: Router;
 
     constructor() {
         this.app = new App();
         this.userPage = this.app.userPage;
-        this.router = new Router();
         this.addListeners();
     }
 
@@ -32,7 +22,6 @@ export class UserPageController {
         editMainBtn?.addEventListener('click', this.openMaintoEdit);
         cancelMainBtn?.addEventListener('click', this.closeMaintoEdit);
         saveMainBtn?.addEventListener('click', this.saveUpdatedMain);
-        // this.userPage.element.addEventListener('submit', this.onEditSubmit);
     }
 
     private openMaintoEdit = (): void => {
@@ -70,16 +59,13 @@ export class UserPageController {
     };
 
     private saveUpdatedMain = (): void => {
-        // const inputEmail: Element | null = target.querySelector('.email input');
         const personalFields: NodeListOf<HTMLInputElement> = this.userPage.element.querySelectorAll('.personal');
-        console.log(personalFields);
         const namesFields: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email'];
         const personalArray: string[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
             namesFields[i],
             el.value,
         ]);
         const customerData = Object.fromEntries(personalArray);
-        console.log(customerData);
         if (
             validateEmail(customerData.email) ||
             validateName(customerData.firstName) ||
@@ -88,26 +74,45 @@ export class UserPageController {
         ) {
             return;
         }
-        // apiCustomer
-        //     .signIn(customerData)
-        //     .then((resp: ClientResponse<CustomerSignInResult>) => {
-        //         const customer: Customer = resp.body.customer;
-        //         this.app?.userPage.showUserData(customer.id);
-        //         return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
-        //     })
-        //     .then((): void => {
-        //         this.app?.showMessage('You are logged in');
-        //         this.app?.setAuthenticationStatus(true); // set authentication state
-        //         this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
-        //     })
-        //     .catch((err: Error): void => {
-        //         console.log(err);
-        //         // inputEmail?.forEach((el: Element): void => {
-        //         //     el.classList.add('is-invalid');
-        //         // });
-        //         // fail?.forEach((el: HTMLElement): void => {
-        //         //     el.innerText = 'Incorrect email or password - please try again.';
-        //         // });
-        //     });
+        const userID: string = <string>this.app.userPage.userData?.id;
+        const userVersion: number = <number>this.app.userPage.userData?.version;
+        const data: CustomerUpdate = {
+            version: userVersion,
+            actions: [
+                {
+                    action: 'setFirstName',
+                    firstName: customerData.firstName,
+                },
+                {
+                    action: 'setLastName',
+                    lastName: customerData.lastName,
+                },
+                {
+                    action: 'setDateOfBirth',
+                    dateOfBirth: customerData.dateOfBirth,
+                },
+                {
+                    action: 'changeEmail',
+                    email: customerData.email,
+                },
+            ],
+        };
+        apiCustomer
+            .updateUser(data, userID)
+            ?.then((res): void => {
+                this.app?.showMessage('You have successfully changed your personal data');
+                this.app.userPage.userData = res.body;
+            })
+            .then((): void => {
+                this.closeMaintoEdit();
+            })
+            .catch((): void => {
+                customerData.email?.classList.add('is-invalid');
+                if (customerData.email?.nextElementSibling) {
+                    customerData.email.nextElementSibling.innerHTML =
+                        'There is already an existing customer with the provided email.';
+                }
+                this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
+            });
     };
 }
