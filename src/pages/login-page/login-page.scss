@@ -47,8 +47,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    padding: 40px;
 }
 
 .modal-body {
@@ -60,9 +58,7 @@
 }
 
 .form-item {
-    margin: 0 0 30px;
     width: 100%;
-    max-width: 340px;
 }
 
 .btn-modal-container {
@@ -99,10 +95,6 @@
 
 .password {
     position: relative;
-}
-
-.form-item {
-    height: 43px;
 }
 
 .invalid-feedback {
