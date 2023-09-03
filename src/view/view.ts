@@ -1,10 +1,8 @@
 import { IView } from '../constants/interfaces/interface';
-import Header from '../components/header/header';
 import { ROUTE } from '../constants/enums/enum';
 import { Main } from '../components/main/main';
 import App from '../app/app';
 import { Message } from '../components/message/message';
-
 class View implements IView {
     private _pages?: Map<string, HTMLElement>;
     private readonly main: Main;
@@ -22,9 +20,9 @@ class View implements IView {
     }
 
     public build(): void {
-        const header: HTMLElement = new Header().getElement();
+        const headerElement: HTMLElement = this.app.header.getElement();
         const mainElement: HTMLElement = this.main.getElement();
-        document.body.append(header, mainElement);
+        document.body.append(headerElement, mainElement);
     }
 
     public setPages(): void {

@@ -12,9 +12,9 @@ export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
     private products?: ProductCard[];
-    private static singleton: CatalogPage;
     private readonly filters?: Filters;
     private apiProduct: ApiProduct = new ApiProduct();
+    private static singleton: CatalogPage;
 
     constructor() {
         if (CatalogPage.singleton) {

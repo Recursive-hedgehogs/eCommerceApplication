@@ -55,7 +55,7 @@ export class ApiProduct {
             });
     };
 
-    public getProductProjection = (filter?: string[]) => {
+    public getProductProjection = (filter?: string[], sort?: string[], search?: string) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
             .search()
@@ -63,6 +63,8 @@ export class ApiProduct {
                 queryArgs: {
                     staged: true,
                     filter,
+                    'text.en-US': search,
+                    fuzzy: true,
                 },
             })
             .execute()
