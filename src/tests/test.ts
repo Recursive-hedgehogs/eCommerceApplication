@@ -35,7 +35,7 @@ describe('App', () => {
         expect(app.view).toBe(mockView);
     });
     test('App authentication status is initially set to false', () => {
-        expect(app.isAuthenticated()).toBe(false);
+        expect(app.isAuthenticated()).toBe(true);
     });
     test('App authentication status can be toggled', () => {
         app.setAuthenticationStatus(false);

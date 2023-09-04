@@ -5,18 +5,20 @@ import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardController } from '../../components/product-card/product-card-controller';
 import { Filters } from '../../components/filters/filters';
 import { FiltersController } from '../../components/filters/filters-controller';
-import { ProductProjection } from '@commercetools/platform-sdk';
 import { Sort } from '../../components/sort/sort';
 import { SortController } from '../../components/sort/sort-controller';
+import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import { ApiProduct } from '../../api/api-products/api-products';
 
 export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
-    public products?: ProductCard[];
-    private static singleton: CatalogPage;
-    private readonly filters?: Filters;
     private readonly sort?: Sort;
     public originalProducts: ProductProjection[] = [];
+    private products?: ProductCard[];
+    private readonly filters?: Filters;
+    private apiProduct: ApiProduct = new ApiProduct();
+    private static singleton: CatalogPage;
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -25,7 +27,7 @@ export default class CatalogPage {
 
         this.element = new ElementCreator({
             tag: 'section',
-            classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row', 'column-gap-4'],
+            classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row'],
             innerHTML: template,
         }).getElement();
         this.catalogContainer = this.element.querySelector('.catalog-container');
@@ -42,7 +44,7 @@ export default class CatalogPage {
     }
 
     public start(): void {
-        const catalogFilters = this.element.querySelector('.catalog-filters');
+        const catalogFilters: Element | null = this.element.querySelector('.catalog-filters');
         if (catalogFilters && this.filters?.element) {
             catalogFilters.append(this.filters.element);
         }
@@ -65,5 +67,12 @@ export default class CatalogPage {
             this.catalogContainer.innerHTML = '';
             this.catalogContainer.append(...productElements);
         }
+    }
+
+    public showCatalog(): void {
+        this.apiProduct
+            .getProductProjection()
+            ?.then((resp: ClientResponse<ProductProjectionPagedSearchResponse>) => resp.body.results)
+            .then((res: ProductProjection[]) => this.setContent(res));
     }
 }

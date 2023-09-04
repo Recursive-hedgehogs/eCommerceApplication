@@ -9,6 +9,7 @@ import CatalogPage from '../pages/catalog-page/catalog-page';
 import MainPage from '../pages/main-page/main-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
 import UserPage from '../pages/user-page/user-page';
+import Header from '../components/header/header';
 
 class App implements IApp {
     private countriesArray!: Array<ISO31661AssignedEntry>;
@@ -22,6 +23,7 @@ class App implements IApp {
     public mainPage!: MainPage;
     public userPage!: UserPage;
     public notFoundPage!: NotFoundPage;
+    public header!: Header;
     private static singleton: App;
 
     constructor() {
@@ -30,6 +32,7 @@ class App implements IApp {
         }
         this.view = null;
         this.main = new Main();
+        this.header = new Header();
         this.countriesArray = iso31661;
         this.mainPage = new MainPage();
         this.userPage = new UserPage();
@@ -38,11 +41,11 @@ class App implements IApp {
         this.productPage = new ProductPage();
         this.catalogPage = new CatalogPage();
         this.notFoundPage = new NotFoundPage();
+        App.singleton = this;
     }
 
     public start(view: View): void {
         this.view = view;
-        App.singleton = this;
     }
 
     public getCountryFromCode(code: string): string {
@@ -63,18 +66,6 @@ class App implements IApp {
 
     public isAuthenticated(): boolean {
         return this.loggedIn;
-    }
-
-    public setLocalStorage(key: string, value: unknown): void {
-        localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    public getDataFromLocalStorage(key: string): string | null {
-        return localStorage.getItem(key);
-    }
-
-    public removeDataFromLocalStorage(key: string): void {
-        localStorage.removeItem(key);
     }
 }
 

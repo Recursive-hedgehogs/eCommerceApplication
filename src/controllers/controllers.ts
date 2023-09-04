@@ -2,17 +2,15 @@ import App from '../app/app';
 import { ROUTE } from '../constants/enums/enum';
 import { ApiRefreshTokenFlow } from '../api/api-flows/api-refresh-token-flow';
 import SdkAuth from '@commercetools/sdk-auth';
-import { environment } from '../environment/environment';
 import { ApiExistingTokenFlow } from '../api/api-flows/api-existing-token-flow';
 import { ITokenResponse } from '../constants/interfaces/response.interface';
-import { MainPageController } from '../pages/main-page/main-page-controller';
 import { Router } from '../router/router';
 import { HeaderControllers } from '../components/header/headerControllers';
 import { NotFoundPageController } from '../pages/not-found-page/not-found-page-controller';
 import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
-import { ProductPageController } from '../pages/product-page/product-page-controller';
+import { UserPageController } from '../pages/user-page/user-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -30,12 +28,11 @@ export class Controllers {
     public start(app: App): void {
         this.app = app;
         new HeaderControllers();
-        new MainPageController();
         new NotFoundPageController();
         new LoginPageController();
         new RegistrationPageController();
         new CatalogPageController();
-        new ProductPageController();
+        new UserPageController();
         this.addListeners();
     }
 
@@ -50,21 +47,23 @@ export class Controllers {
         const refreshToken: string | null = localStorage.getItem('refreshToken');
         if (refreshToken) {
             const authClient = new SdkAuth({
-                host: environment.authURL,
-                projectKey: environment.projectKey,
+                host: process.env.CTP_AUTH_URL,
+                projectKey: process.env.CTP_PROJECT_KEY,
                 disableRefreshToken: false,
                 credentials: {
-                    clientId: environment.clientID,
-                    clientSecret: environment.clientSecret,
+                    clientId: process.env.CTP_CLIENT_ID,
+                    clientSecret: process.env.CTP_CLIENT_SECRET,
                 },
-                scopes: [environment.scope],
+                scopes: [process.env.CTP_SCOPES],
                 fetch,
             });
             authClient.refreshTokenFlow(refreshToken).then((resp: ITokenResponse): void => {
                 this.apiExistingTokenFlow.setUserData(resp.access_token);
-                const scopes = resp.scope.split(' ');
-                const customerIdScope = scopes.find((scope) => scope.startsWith('customer_id:'));
-                const customerId = customerIdScope ? customerIdScope.split(':')[1] : null;
+                const scopes: string[] = resp.scope.split(' ');
+                const customerIdScope: string | undefined = scopes.find((scope: string) =>
+                    scope.startsWith('customer_id:')
+                );
+                const customerId: string | null = customerIdScope ? customerIdScope.split(':')[1] : null;
                 if (customerId) this.app?.userPage.showUserData(customerId);
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
@@ -99,6 +98,8 @@ export class Controllers {
             // .catch((err) => {
             //     throw Error(err);
             // });
+        } else if (window.location.pathname.slice(1) === ROUTE.USER) {
+            this.router.navigate(ROUTE.LOGIN); //add redirection from user to LOGIN page
         }
         window.removeEventListener('load', this.onFirstLoad);
     };
