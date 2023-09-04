@@ -56,6 +56,16 @@ export class ApiProduct {
             });
     };
 
+    public getProductDiscounts = () => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.productDiscounts()
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
     public getProductProjection = (data: IProductFiltersCredentials) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()

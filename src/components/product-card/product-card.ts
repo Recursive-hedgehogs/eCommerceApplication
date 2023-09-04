@@ -12,8 +12,10 @@ export class ProductCard {
     public productKey: string | undefined;
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
+    public readonly prices: Price[] | undefined;
 
     constructor(data: ProductProjection) {
+        this.prices = data.masterVariant.prices;
         this.productId = data.id;
         this.productKey = data.key;
         this._element = new ElementCreator({
