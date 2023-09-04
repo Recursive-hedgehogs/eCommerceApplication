@@ -40,3 +40,9 @@ export interface IEmailTokenCredentials {
 export interface IPasswordResetTokenCredentials {
     email: string;
 }
+
+export interface IProductFiltersCredentials {
+    filter?: string[];
+    search?: string;
+    sort?: string[];
+}

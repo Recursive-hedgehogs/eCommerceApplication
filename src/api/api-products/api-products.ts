@@ -1,6 +1,7 @@
 import { ApiExistingTokenFlow } from '../api-flows/api-existing-token-flow';
 import { ApiAnonymousSessionFlow } from '../api-flows/api-anonymous-session-flow';
 import { ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import { IProductFiltersCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class ApiProduct {
     private apiExistingTokenFlow: ApiExistingTokenFlow;
@@ -55,18 +56,30 @@ export class ApiProduct {
             });
     };
 
-    public getProductProjection = (filter?: string[], sort?: string[], search?: string) => {
+    public getProductProjection = (data: IProductFiltersCredentials) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
             .search()
             .get({
                 queryArgs: {
                     staged: true,
-                    filter,
-                    'text.en-US': search,
+                    filter: data.filter,
+                    'text.en-US': data.search,
+                    sort: data.sort,
                     fuzzy: true,
+                    limit: 25,
                 },
             })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public getCategories = () => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.categories()
+            .get()
             .execute()
             .catch((err) => {
                 throw Error(err);
