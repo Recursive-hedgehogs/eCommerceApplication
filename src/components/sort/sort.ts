@@ -1,5 +1,6 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './sort.html';
+import './sort.scss';
 
 export class Sort {
     private readonly _element: HTMLElement;
