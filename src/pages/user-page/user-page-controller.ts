@@ -6,9 +6,10 @@ import {
     validateName,
     validatePassword,
     validatePostalCode,
+    validateStreet,
 } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { CustomerUpdate } from '@commercetools/platform-sdk';
+import { BaseAddress, CustomerUpdate, CustomerUpdateAction } from '@commercetools/platform-sdk';
 
 export class UserPageController {
     private app: App;
@@ -21,13 +22,13 @@ export class UserPageController {
     }
 
     private addListeners(): void {
-        const saveButtons = this.userPage.element.querySelectorAll('.btn-save');
-        const addBillingBtn = this.userPage.element.querySelector('#btn-add-billing');
-        const editButtons = this.userPage.element.querySelectorAll('.btn-edit');
-        const cancelButtons = this.userPage.element.querySelectorAll('.btn-cancel');
+        const saveButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-save');
+        const addButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-add');
+        const editButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-edit');
+        const cancelButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-cancel');
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('input', this.onEditValidate);
-        addBillingBtn?.addEventListener('click', this.addNewAddress);
+        console.log(addButtons);
         passwordIcons.forEach((icon) => {
             icon.addEventListener('click', this.togglePassword);
         });
@@ -38,7 +39,21 @@ export class UserPageController {
             cancelButton.addEventListener('click', this.closeEditMode);
         });
         saveButtons.forEach((saveButton) => {
-            saveButton.addEventListener('click', this.saveUpdatedMain);
+            saveButton.addEventListener('click', this.saveUpdatedAddress);
+        });
+        addButtons.forEach((addButton) => {
+            addButton.addEventListener('click', this.addNewAddress);
+        });
+    }
+
+    private addNewListeners(): void {
+        const resetNewAddressBtns = this.userPage.element.querySelectorAll('.btn-reset-new');
+        const saveNewAddressBtns = this.userPage.element.querySelectorAll('.btn-save-new');
+        resetNewAddressBtns.forEach((resetButton) => {
+            resetButton.addEventListener('click', this.resetNewField);
+        });
+        saveNewAddressBtns.forEach((saveButton) => {
+            saveButton.addEventListener('click', this.saveNewAddress);
         });
     }
 
@@ -90,7 +105,7 @@ export class UserPageController {
                 break;
             case 'input-street':
             case 'input-street-ship':
-                this.app?.registrationPage.onNameValidate(target);
+                this.app?.registrationPage.onStreetValidate(target);
                 break;
             case 'input-postal-code':
                 this.checkCountry(target, countrySelect);
@@ -105,7 +120,38 @@ export class UserPageController {
         }
     };
 
-    private saveUpdatedMain = (e: Event): void => {
+    private saveNewAddress = (e: Event): void => {
+        const userID: string = <string>this.app.userPage.userData?.id;
+        const userVersion: number = <number>this.app.userPage.userData?.version;
+        const newAddress: CustomerUpdate = {
+            version: userVersion,
+            actions: [
+                {
+                    action: 'addAddress',
+                    address: {
+                        streetName: 'Any Street',
+                        postalCode: '11111',
+                        city: 'Any City',
+                        country: 'PL',
+                    },
+                },
+            ],
+        };
+        apiCustomer
+            .updateUser(newAddress, userID)
+            ?.then((res): void => {
+                this.app?.showMessage('You have successfully added new address');
+                this.app.userPage.userData = res.body;
+            })
+            .then((): void => {
+                this.closeEditMode(e);
+            })
+            .catch((): void => {
+                this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
+            });
+    };
+
+    private saveUpdatedAddress = (e: Event): void => {
         const customerData = this.userPage.prepareCustomerData();
         const billingData = this.userPage.prepareAddressData('.billing-addresses .address-input');
         const shippingData = this.userPage.prepareAddressData('.shipping-addresses .address-input');
@@ -113,12 +159,18 @@ export class UserPageController {
         billingData.country = this.app?.getCodeFromCountryName(billingData.country);
         shippingData.country = this.app?.getCodeFromCountryName(shippingData.country);
         const allAddresses = [billingData, shippingData];
-
+        console.log(allAddresses[0].streetName);
         if (
             validateEmail(customerData.email) ||
+            validateName(allAddresses[0].city) ||
+            validateName(allAddresses[1].city) ||
+            validateStreet(allAddresses[0].streetName) ||
+            validateStreet(allAddresses[1].streetName) ||
             validateName(customerData.firstName) ||
             validateName(customerData.lastName) ||
-            validateDateOfBirth(customerData.dateOfBirth)
+            validateDateOfBirth(customerData.dateOfBirth) ||
+            validatePostalCode(allAddresses[0].postalCode) ||
+            validatePostalCode(allAddresses[1].postalCode)
         ) {
             return;
         }
@@ -163,8 +215,17 @@ export class UserPageController {
             });
     };
 
-    private addNewAddress = (): void => {
-        this.userPage.showNewAddress();
+    private addNewAddress = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const parentContainer: HTMLElement = <HTMLElement>target.closest('.tab-pane');
+        this.userPage.showNewAddress(parentContainer);
+        this.addNewListeners();
+    };
+
+    private resetNewField = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const card: HTMLElement = <HTMLElement>target.closest('.card');
+        this.userPage.deleteNewAddress(card);
     };
 
     private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {

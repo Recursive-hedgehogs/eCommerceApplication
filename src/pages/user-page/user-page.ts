@@ -141,14 +141,21 @@ export default class UserPage {
         this.showUserData();
     }
 
-    public showNewAddress(): void {
-        const addressesCont: HTMLElement = <HTMLElement>this.element.querySelector('.addresses-container');
+    public showNewAddress(parentContainer: HTMLElement): void {
+        const addressesCont: HTMLElement = <HTMLElement>parentContainer.querySelector('.addresses-container');
         const newAddress = new ElementCreator({
             tag: 'section',
-            classNames: ['billing-address', 'card', 'border-secondary', 'mb-3', 'mt-2'],
+            classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
             innerHTML: addressTemplate,
         }).getElement();
         addressesCont.appendChild(newAddress);
+    }
+
+    public deleteNewAddress(card: HTMLElement): void {
+        const addressesCont: HTMLElement = <HTMLElement>this.element.querySelector('.addresses-container');
+        if (addressesCont.contains(card)) {
+            addressesCont.removeChild(card);
+        }
     }
 
     private changeDisabled(inputFields: NodeListOf<HTMLElement>, selectField?: HTMLSelectElement): void {

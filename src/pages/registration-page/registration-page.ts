@@ -39,6 +39,28 @@ export default class RegistrationPage {
         }
     };
 
+    public onStreetValidate = (nameInput: HTMLInputElement): void => {
+        const parentDiv: Element | null = nameInput.closest('.form-item');
+        if (!parentDiv) return;
+        const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
+        const errorMessage: string | null = validationUtils.validateStreet(nameInput.value);
+        if (errorMessage) {
+            nameInput.classList.add('is-invalid');
+        }
+        if (inputError) {
+            nameInput.classList.add('is-invalid');
+            inputError.textContent = errorMessage;
+            if (!errorMessage) {
+                nameInput.classList.remove('is-invalid');
+            }
+        } else {
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
+            newErrorDiv.classList.add('invalid-feedback');
+            newErrorDiv.textContent = errorMessage;
+            parentDiv.append(newErrorDiv);
+        }
+    };
+
     public onDateDateOfBirth = (nameInput: HTMLInputElement): void => {
         const parentDiv: Element | null = nameInput.closest('.form-item');
         if (!parentDiv) return;
