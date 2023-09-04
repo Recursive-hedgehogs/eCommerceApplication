@@ -7,7 +7,7 @@ export class Filters {
     constructor() {
         this._element = new ElementCreator({
             tag: 'div',
-            classNames: ['filters-container', 'd-flex', 'flex-column'],
+            classNames: ['filters-container', 'd-flex', 'flex-column', 'row-gap-2'],
             innerHTML: template,
         }).getElement();
     }
@@ -47,6 +47,12 @@ export class Filters {
                     break;
                 case 'isaacson':
                     result.push('variants.attributes.author:"isaacson"');
+                    break;
+                case 'forden':
+                    result.push('variants.attributes.author:"forden"');
+                    break;
+                case 'remarque':
+                    result.push('variants.attributes.author:"remarque"');
                     break;
                 case 'minimum':
                     result.push(`variants.price.centAmount: range (${Number(data.get(el)) * 100} to *)`);
