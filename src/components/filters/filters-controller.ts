@@ -53,8 +53,9 @@ export class FiltersController {
         const inputsRange: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=range]');
         inputsCheck?.forEach((el: HTMLInputElement): void => {
+            // const close = this.filters.element?.querySelector('.close') as HTMLElement;
             if (el.name && el.checked) {
-                filtersArray.push(el.name);
+                filtersArray.push(el.name + ' x');
                 map.set(el.name, el.checked);
             }
         });

@@ -13,6 +13,8 @@ import {
     ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 import { ApiProduct } from '../../api/api-products/api-products';
+import { CategoryComponent } from '../../components/category/category';
+import { CategoryController } from '../../components/category/category-controller';
 
 export default class CatalogPage {
     public element!: HTMLElement;
@@ -34,7 +36,9 @@ export default class CatalogPage {
         }).getElement();
         this.catalogContainer = this.element.querySelector('.catalog-container');
         this.filters = new Filters();
+        // this.categories = new Category();
         new FiltersController(this.filters, this);
+        // new CategoryController(this.categories, this);
         this.start();
         CatalogPage.singleton = this;
     }
@@ -48,6 +52,7 @@ export default class CatalogPage {
         if (catalogFilters && this.filters?.element) {
             catalogFilters.append(this.filters.element);
         }
+        this.getCategories();
     }
 
     public setContent(products: ProductProjection[]): void {
@@ -61,7 +66,6 @@ export default class CatalogPage {
             this.catalogContainer.innerHTML = '';
             this.catalogContainer.append(...productElements);
         }
-        this.getCategories()?.then((resp) => this.createCategories(resp));
     }
 
     public showCatalog(): void {
@@ -72,58 +76,21 @@ export default class CatalogPage {
     }
 
     private getCategories() {
-        return this.apiProduct.getCategories()?.then((resp: ClientResponse<CategoryPagedQueryResponse>) => {
-            return resp.body.results;
-            // const categories = allCategories.filter((category) => !category.parent);
-            // const subCategories = allCategories.filter((categories) => categories.parent);
-            // const map: Map<string, Category[]> = new Map();
-            // const obj = {};
-            // subCategories.forEach((el: Category) => {
-            //     if(!map.has(el.parent!.id)) {
-            //         map.set(el.parent!.id, [el]);
-            //     } else {
-            //         map.get(el.parent!.id)?.push(el);
-            //     }
-            // });
-            // console.log(map)
-            //
-        });
+        return this.apiProduct
+            .getCategories()
+            ?.then((resp: ClientResponse<CategoryPagedQueryResponse>) => resp.body.results)
+            .then((categories) => this.createCategories(categories));
     }
 
-    private createCategories(categories: Category[]) {
-        const categoriesContainer = this.element.querySelector('.categories-container') as HTMLElement;
-        const categoriesArray = categories.map((category: Category) => this.createCategory(categories, category));
-        categoriesContainer.append(...categoriesArray);
-    }
-
-    private createCategory(categories: Category[], category: Category) {
-        // const categoryBustton: ElementCreator<HTMLElement> =  new ElementCreator({
-        //     tag: 'button',
-        //     classNames: ['btn', 'btn-secondary'],
-        //     innerHTML: category.name['en-US'],
-        // })
-        const categoryOuter: HTMLElement = new ElementCreator({
-            tag: 'div',
-            classNames: ['btn-group', 'dropend'],
-            innerHTML: `<button class="btn btn-secondary">${category.name['en-US']}</button>`,
-        }).getElement();
-        const childs = categories.filter((el) => el.parent?.id === category.id);
-        if (childs.length) {
-            const categoryArrow = new ElementCreator({
-                tag: 'button',
-                classNames: ['btn', 'btn-secondary', 'dropdown-toggle', 'dropdown-toggle-split'],
-            }).getElement();
-            categoryArrow.setAttribute('data-bs-toggle', 'dropdown');
-            const categoryInner = new ElementCreator({
-                tag: 'ul',
-                classNames: ['dropdown-menu'],
-            }).getElement();
-            childs.forEach((category) => {
-                const childCategory = this.createCategory(categories, category);
-                categoryInner.append(childCategory);
+    private createCategories(categories: Category[]): void {
+        const categoriesContainer: HTMLElement = this.element.querySelector('.categories-container') as HTMLElement;
+        const categoriesArray: HTMLElement[] = categories
+            .filter((category) => !category.parent)
+            .map((category: Category) => {
+                const categoryComponent = new CategoryComponent(category, categories);
+                new CategoryController(categoryComponent);
+                return categoryComponent.element;
             });
-            categoryOuter.append(categoryArrow, categoryInner);
-        }
-        return categoryOuter;
+        categoriesContainer.append(...categoriesArray);
     }
 }
