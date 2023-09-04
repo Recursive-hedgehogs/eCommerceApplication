@@ -75,7 +75,7 @@ export class ApiProduct {
             });
     };
 
-    public getProductProjection = (filter?: string[]) => {
+    public getProductProjection = (filter?: string[], sort?: string[]) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
 
@@ -84,7 +84,7 @@ export class ApiProduct {
                 queryArgs: {
                     staged: true,
                     filter,
-                    sort: 'createdAt asc',
+                    sort: 'name.en-US desc',
                 },
             })
 

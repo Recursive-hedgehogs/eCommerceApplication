@@ -34,51 +34,52 @@ export class SortController {
         const originalProducts = this.catalogPage.originalProducts.slice();
 
         if (originalProducts) {
-            const sort: string[] | undefined = undefined;
-            switch (option) {
-                case 'price-asc':
-                    originalProducts.sort((a, b) => {
-                        const priceA =
-                            a.masterVariant.prices && a.masterVariant.prices[0]
-                                ? a.masterVariant.prices[0].value.centAmount
-                                : 0;
-                        const priceB =
-                            b.masterVariant.prices && b.masterVariant.prices[0]
-                                ? b.masterVariant.prices[0].value.centAmount
-                                : 0;
-                        return priceA - priceB;
-                    });
-                    break;
-                case 'price-desc':
-                    originalProducts.sort((a, b) => {
-                        const priceA =
-                            a.masterVariant.prices && a.masterVariant.prices[0]
-                                ? a.masterVariant.prices[0].value.centAmount
-                                : 0;
-                        const priceB =
-                            b.masterVariant.prices && b.masterVariant.prices[0]
-                                ? b.masterVariant.prices[0].value.centAmount
-                                : 0;
-                        return priceB - priceA;
-                    });
-                    break;
-                case 'name-asc':
-                    originalProducts.sort((a, b) => a.name['en-US'].localeCompare(b.name['en-US']));
-                    break;
-                default:
-                    break;
-            }
+            this.apiProduct
+                .getProductProjection(undefined, [
+                    'variants.price.centAmount asc',
+                    'variants.price.centAmount desc',
+                    'name.en-US desc',
+                ])
+                ?.then((res) => {
+                    const sortedProducts = res.body.results.slice();
 
-            if (sort) {
-                this.apiProduct
-                    .getProductProjection(sort)
-                    ?.then((res) => {
-                        this.catalogPage.setContent(res.body.results);
-                    })
-                    .catch((err) => console.log(err));
-            } else {
-                this.catalogPage.setContent(originalProducts);
-            }
+                    switch (option) {
+                        case 'price-asc':
+                            sortedProducts.sort((a, b) => {
+                                const priceA =
+                                    a.masterVariant.prices && a.masterVariant.prices[0]
+                                        ? a.masterVariant.prices[0].value.centAmount
+                                        : 0;
+                                const priceB =
+                                    b.masterVariant.prices && b.masterVariant.prices[0]
+                                        ? b.masterVariant.prices[0].value.centAmount
+                                        : 0;
+                                return priceA - priceB;
+                            });
+                            break;
+                        case 'price-desc':
+                            sortedProducts.sort((a, b) => {
+                                const priceA =
+                                    a.masterVariant.prices && a.masterVariant.prices[0]
+                                        ? a.masterVariant.prices[0].value.centAmount
+                                        : 0;
+                                const priceB =
+                                    b.masterVariant.prices && b.masterVariant.prices[0]
+                                        ? b.masterVariant.prices[0].value.centAmount
+                                        : 0;
+                                return priceB - priceA;
+                            });
+                            break;
+                        case 'name-asc':
+                            sortedProducts.sort((a, b) => a.name['en-US'].localeCompare(b.name['en-US']));
+                            break;
+                        default:
+                            break;
+                    }
+
+                    this.catalogPage.setContent(sortedProducts);
+                })
+                .catch((err) => console.log(err));
         }
     }
 }
