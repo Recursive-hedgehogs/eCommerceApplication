@@ -36,9 +36,7 @@ export default class CatalogPage {
         }).getElement();
         this.catalogContainer = this.element.querySelector('.catalog-container');
         this.filters = new Filters();
-        // this.categories = new Category();
         new FiltersController(this.filters, this);
-        // new CategoryController(this.categories, this);
         this.start();
         CatalogPage.singleton = this;
     }

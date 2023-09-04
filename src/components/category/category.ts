@@ -1,6 +1,7 @@
 import ElementCreator from '../../utils/template-creation';
 import { Category } from '@commercetools/platform-sdk';
 import { CategoryController } from './category-controller';
+import './category.scss';
 
 export class CategoryComponent {
     private readonly _element: HTMLElement;
@@ -40,7 +41,7 @@ export class CategoryComponent {
             categoryArrow.setAttribute('data-bs-toggle', 'dropdown');
             const categoryInner: HTMLElement = new ElementCreator({
                 tag: 'ul',
-                classNames: ['dropdown-menu'],
+                classNames: ['dropdown-menu', 'bg-semitransparent'],
             }).getElement();
             childs.forEach((category: Category): void => {
                 const childCategory: CategoryComponent = new CategoryComponent(category, this.categories);
