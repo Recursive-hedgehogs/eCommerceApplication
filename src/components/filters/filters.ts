@@ -48,6 +48,12 @@ export class Filters {
                 case 'isaacson':
                     result.push('variants.attributes.author:"isaacson"');
                     break;
+                case 'forden':
+                    result.push('variants.attributes.author:"forden"');
+                    break;
+                case 'remarque':
+                    result.push('variants.attributes.author:"remarque"');
+                    break;
                 case 'minimum':
                     result.push(`variants.price.centAmount: range (${Number(data.get(el)) * 100} to *)`);
                     break;

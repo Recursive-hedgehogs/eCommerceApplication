@@ -65,8 +65,19 @@ export class ApiProduct {
                     filter,
                     'text.en-US': search,
                     fuzzy: true,
+                    limit: 25,
                 },
             })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public getCategories = () => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.categories()
+            .get()
             .execute()
             .catch((err) => {
                 throw Error(err);
