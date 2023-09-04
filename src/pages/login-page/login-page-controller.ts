@@ -19,11 +19,9 @@ export class LoginPageController {
     }
 
     private addListeners(): void {
-        const passwordIcon = this.loginPage.element.querySelector('#password-icon');
         this.loginPage.element.addEventListener('input', this.onLoginValidate);
-        passwordIcon?.addEventListener('click', this.toggle2);
+        this.loginPage.element.addEventListener('click', this.togglePassword);
         this.loginPage.element.addEventListener('submit', this.onLoginSubmit);
-        //почему стрелочные функции вызываются два раза при вызове???
     }
 
     private onLoginValidate = (e: Event): void => {
@@ -34,15 +32,6 @@ export class LoginPageController {
             this.app?.loginPage.onPasswordValidate(target);
         }
     };
-
-    private toggle2(e: Event): void {
-        console.log(this.app);
-        const target: HTMLInputElement = <HTMLInputElement>e.target;
-        if (target.id === 'password-icon') {
-            const passwordInput: HTMLInputElement = <HTMLInputElement>document.querySelector('#input-login-password');
-            this.app?.changePasswordVisibility(passwordInput, target);
-        }
-    }
 
     private togglePassword = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;

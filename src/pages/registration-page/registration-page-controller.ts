@@ -10,19 +10,17 @@ import {
 } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { Router } from '../../router/router';
-import { LoginPageController } from '../login-page/login-page-controller';
+import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
 
 export class RegistrationPageController {
     private app: App;
     private registrationPage: RegistrationPage;
     private router: Router;
-    private loginPageController: LoginPageController;
 
     constructor() {
         this.app = new App();
         this.registrationPage = this.app.registrationPage;
         this.router = new Router();
-        this.loginPageController = new LoginPageController();
         this.addListeners();
     }
 
@@ -194,9 +192,7 @@ export class RegistrationPageController {
             apiCustomer
                 .createCustomer(customerData)
                 .then((): void => {
-                    if (this.loginPageController) {
-                        this.loginPageController.onLoginSubmit(e); //call auto-login after registration
-                    }
+                    this.onLoginSubmit(e);
                 })
                 .then((): void => {
                     this.app?.showMessage('Your account has been created');
@@ -218,13 +214,57 @@ export class RegistrationPageController {
         }
     };
 
-    public togglePassword = (e: Event): void => {
+    private togglePassword = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         if (target.id === 'password-icon-registr') {
             const passwordInput: HTMLInputElement = <HTMLInputElement>(
-                this.registrationPage.element.querySelector('#input-login-password')
+                this.registrationPage.element.querySelector('#input-registr-password')
             );
             this.app?.changePasswordVisibility(passwordInput, target);
+        }
+    };
+
+    private onLoginSubmit = (e: SubmitEvent): void => {
+        const target: EventTarget | null = e.target;
+        if (target instanceof HTMLFormElement) {
+            e.preventDefault();
+            const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
+            const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
+            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+            const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
+            const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
+            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
+            const fieldNames: string[] = ['email', 'password'];
+            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
+            const customerData = Object.fromEntries(pairs);
+            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
+                return;
+            }
+            apiCustomer
+                .signIn(customerData)
+                .then((resp: ClientResponse<CustomerSignInResult>) => {
+                    const customer: Customer = resp.body.customer;
+                    this.app?.userPage.showUserData(customer.id);
+                    return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
+                })
+                .then((): void => {
+                    this.app?.showMessage('You are logged in');
+                    this.app?.setAuthenticationStatus(true); // set authentication state
+                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
+                    logoutBtn?.classList.remove('hidden');
+                    profileBtn?.classList.remove('hidden');
+                    loginBtn?.classList.add('hidden');
+                    registrBtn?.classList.add('hidden');
+                })
+                .catch((): void => {
+                    inputEmail?.forEach((el: Element): void => {
+                        el.classList.add('is-invalid');
+                    });
+                    fail?.forEach((el: HTMLElement): void => {
+                        el.innerText = 'Incorrect email or password - please try again.';
+                    });
+                });
         }
     };
 }
