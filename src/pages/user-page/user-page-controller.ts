@@ -55,6 +55,11 @@ export class UserPageController {
 
     private onEditValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const card: HTMLElement = <HTMLElement>target.closest('.card');
+        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>card.querySelector('#input-country');
+        const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
+            card.querySelector('#input-country-ship')
+        );
         switch (target.id) {
             case 'user-email':
                 this.app?.loginPage.onEmailValidate(target);
@@ -70,6 +75,22 @@ export class UserPageController {
             case 'new-password':
             case 'confirm-new-password':
                 this.app?.loginPage.onPasswordValidate(target);
+                break;
+            case 'input-city':
+            case 'input-city-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-street':
+            case 'input-street-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-postal-code':
+                this.checkCountry(target, countrySelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            case 'input-postal-code-ship':
+                this.checkCountry(target, countryShipSelect);
+                this.app?.registrationPage.onPostalValidate(target);
                 break;
             default:
                 break;
@@ -137,4 +158,14 @@ export class UserPageController {
     private addNewAddress = (): void => {
         this.userPage.showNewAddress();
     };
+
+    private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
+        target.addEventListener('keypress', (event) => {
+            if (country.value === 'Poland') {
+                this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
+            } else if (country.value === 'Germany') {
+                this.app?.registrationPage.formatPostalCode(event, target, '', 5);
+            }
+        });
+    }
 }
