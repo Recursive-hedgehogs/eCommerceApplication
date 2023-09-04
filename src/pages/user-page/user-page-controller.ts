@@ -3,6 +3,8 @@ import UserPage from './user-page';
 import { validateDateOfBirth, validateEmail, validateName } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { CustomerUpdate } from '@commercetools/platform-sdk';
+import addressTemplate from './address-template.html';
+import ElementCreator from '../../utils/template-creation';
 
 export class UserPageController {
     private app: App;
@@ -18,11 +20,14 @@ export class UserPageController {
         const editMainBtn = this.userPage.element.querySelector('#btn-edit-main');
         const cancelMainBtn = this.userPage.element.querySelector('#btn-cancel-main');
         const saveMainBtn = this.userPage.element.querySelector('#btn-save-main');
+        const addBillingBtn = this.userPage.element.querySelector('#btn-add-billing');
+        const addShippingBtn = this.userPage.element.querySelector('#btn-add-shipping');
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('input', this.onEditValidate);
         editMainBtn?.addEventListener('click', this.openMaintoEdit);
         cancelMainBtn?.addEventListener('click', this.closeMaintoEdit);
         saveMainBtn?.addEventListener('click', this.saveUpdatedMain);
+        addBillingBtn?.addEventListener('click', this.addNewAddress);
         passwordIcons.forEach((icon) => {
             icon.addEventListener('click', this.togglePassword);
         });
@@ -130,5 +135,15 @@ export class UserPageController {
                 }
                 this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
             });
+    };
+
+    private addNewAddress = (): void => {
+        const addressesCont: HTMLElement = <HTMLElement>this.userPage.element.querySelector('.addresses-container');
+        const newAddress = new ElementCreator({
+            tag: 'section',
+            classNames: ['billing-address', 'card', 'border-secondary', 'mb-3', 'mt-2'],
+            innerHTML: addressTemplate,
+        }).getElement();
+        addressesCont.appendChild(newAddress);
     };
 }
