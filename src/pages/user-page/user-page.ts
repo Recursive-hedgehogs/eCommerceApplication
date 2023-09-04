@@ -2,6 +2,7 @@ import ElementCreator from '../../utils/template-creation';
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
 import { Address, Customer } from '@commercetools/platform-sdk';
+import './user-page.scss';
 
 export default class UserPage {
     element: HTMLElement;

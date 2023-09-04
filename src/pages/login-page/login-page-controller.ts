@@ -8,20 +8,22 @@ import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/p
 
 export class LoginPageController {
     private app: App;
-    private loinPage: LoginPage;
+    private loginPage: LoginPage;
     private router: Router;
 
     constructor() {
         this.app = new App();
-        this.loinPage = this.app.loginPage;
+        this.loginPage = this.app.loginPage;
         this.router = new Router();
         this.addListeners();
     }
 
     private addListeners(): void {
-        this.loinPage.element.addEventListener('input', this.onLoginValidate);
-        this.loinPage.element.addEventListener('click', this.togglePassword);
-        this.loinPage.element.addEventListener('submit', this.onLoginSubmit);
+        const passwordIcon = this.loginPage.element.querySelector('#password-icon');
+        this.loginPage.element.addEventListener('input', this.onLoginValidate);
+        passwordIcon?.addEventListener('click', this.toggle2);
+        this.loginPage.element.addEventListener('submit', this.onLoginSubmit);
+        //почему стрелочные функции вызываются два раза при вызове???
     }
 
     private onLoginValidate = (e: Event): void => {
@@ -33,15 +35,20 @@ export class LoginPageController {
         }
     };
 
-    public togglePassword = (e: Event): void => {
+    private toggle2(e: Event): void {
+        console.log(this.app);
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         if (target.id === 'password-icon') {
-            this.app?.loginPage.changePasswordVisibility();
-        } else if (target.id === 'password-icon-registr') {
-            this.app?.registrationPage.changePasswordVisibility();
+            const passwordInput: HTMLInputElement = <HTMLInputElement>document.querySelector('#input-login-password');
+            this.app?.changePasswordVisibility(passwordInput, target);
         }
-        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
-            this.router.navigate(ROUTE.REGISTRATION);
+    }
+
+    private togglePassword = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'password-icon') {
+            const passwordInput: HTMLInputElement = <HTMLInputElement>document.querySelector('#input-login-password');
+            this.app?.changePasswordVisibility(passwordInput, target);
         }
     };
 
@@ -78,8 +85,7 @@ export class LoginPageController {
                     loginBtn?.classList.add('hidden');
                     registrBtn?.classList.add('hidden');
                 })
-                .catch((err: Error): void => {
-                    console.log(err);
+                .catch((): void => {
                     inputEmail?.forEach((el: Element): void => {
                         el.classList.add('is-invalid');
                     });

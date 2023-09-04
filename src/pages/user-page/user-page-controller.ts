@@ -18,11 +18,22 @@ export class UserPageController {
         const editMainBtn = this.userPage.element.querySelector('#btn-edit-main');
         const cancelMainBtn = this.userPage.element.querySelector('#btn-cancel-main');
         const saveMainBtn = this.userPage.element.querySelector('#btn-save-main');
+        const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('input', this.onEditValidate);
         editMainBtn?.addEventListener('click', this.openMaintoEdit);
         cancelMainBtn?.addEventListener('click', this.closeMaintoEdit);
         saveMainBtn?.addEventListener('click', this.saveUpdatedMain);
+        passwordIcons.forEach((icon) => {
+            icon.addEventListener('click', this.togglePassword);
+        });
     }
+
+    private togglePassword = (event: MouseEvent): void => {
+        const icon: HTMLElement = <HTMLElement>event.target;
+        const inputId = icon.getAttribute('for');
+        const input: HTMLInputElement = <HTMLInputElement>this.userPage.element.querySelector(`#${inputId}`);
+        this.app?.changePasswordVisibility(input, icon);
+    };
 
     private openMaintoEdit = (): void => {
         this.app?.userPage.openMaintoEdit();
@@ -52,6 +63,11 @@ export class UserPageController {
                 break;
             case 'user-date-of-birth':
                 this.app?.registrationPage.onDateDateOfBirth(target);
+                break;
+            case 'user-password':
+            case 'new-password':
+            case 'confirm-new-password':
+                this.app?.loginPage.onPasswordValidate(target);
                 break;
             default:
                 break;

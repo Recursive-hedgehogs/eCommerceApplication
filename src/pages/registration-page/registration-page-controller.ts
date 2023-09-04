@@ -31,7 +31,7 @@ export class RegistrationPageController {
         this.registrationPage.element.addEventListener('change', this.onRegistrationChange);
         this.registrationPage.element.addEventListener('input', this.onRegistrationValidate);
         this.registrationPage.element.addEventListener('click', this.onRegistrationClick);
-        this.registrationPage.element.addEventListener('click', this.loginPageController.togglePassword);
+        this.registrationPage.element.addEventListener('click', this.togglePassword);
     }
 
     private onRegistrationValidate = (e: Event): void => {
@@ -215,6 +215,16 @@ export class RegistrationPageController {
                         'red'
                     );
                 });
+        }
+    };
+
+    public togglePassword = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        if (target.id === 'password-icon-registr') {
+            const passwordInput: HTMLInputElement = <HTMLInputElement>(
+                this.registrationPage.element.querySelector('#input-login-password')
+            );
+            this.app?.changePasswordVisibility(passwordInput, target);
         }
     };
 }
