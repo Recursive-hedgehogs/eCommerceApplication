@@ -15,6 +15,7 @@ import {
 import { ApiProduct } from '../../api/api-products/api-products';
 import { CategoryComponent } from '../../components/category/category';
 import { CategoryController } from '../../components/category/category-controller';
+import { IProductFiltersCredentials } from '../../constants/interfaces/credentials.interface';
 
 export default class CatalogPage {
     public element!: HTMLElement;
@@ -67,10 +68,7 @@ export default class CatalogPage {
     }
 
     public showCatalog(): void {
-        this.apiProduct
-            .getProductProjection()
-            ?.then((resp: ClientResponse<ProductProjectionPagedSearchResponse>) => resp.body.results)
-            .then((res: ProductProjection[]) => this.setContent(res));
+        this.updateContent({});
     }
 
     private getCategories() {
@@ -90,5 +88,14 @@ export default class CatalogPage {
                 return categoryComponent.element;
             });
         categoriesContainer.append(...categoriesArray);
+    }
+
+    public updateContent(filter: IProductFiltersCredentials) {
+        this.apiProduct
+            .getProductProjection(filter)
+            ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
+                this.setContent(res.body.results);
+            })
+            .catch((err) => console.log(err));
     }
 }

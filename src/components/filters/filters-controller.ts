@@ -1,11 +1,8 @@
 import { Filters } from './filters';
-import { ApiProduct } from '../../api/api-products/api-products';
 import CatalogPage from '../../pages/catalog-page/catalog-page';
-import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 
 export class FiltersController {
     private filters: Filters;
-    private apiProduct: ApiProduct = new ApiProduct();
     private catalogPage: CatalogPage;
 
     constructor(filters: Filters, catalogPage: CatalogPage) {
@@ -71,24 +68,14 @@ export class FiltersController {
         if (filterResult) {
             filterResult.innerHTML = filtersArray.join(' ');
         }
-        const productProjectionFilters: string[] = this.filters.convertToFilter(map);
-        this.apiProduct
-            .getProductProjection(productProjectionFilters)
-            ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
-                this.catalogPage.setContent(res.body.results);
-            })
-            .catch((err) => console.log(err));
+        const filter: string[] = this.filters.convertToFilter(map);
+        this.catalogPage.updateContent({ filter });
     };
 
     public onClick = (e: Event): void => {
         const target: HTMLButtonElement = e.target as HTMLButtonElement;
         if (target.id === 'filters-reset') {
-            this.apiProduct
-                .getProductProjection()
-                ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
-                    this.catalogPage.setContent(res.body.results);
-                })
-                .catch((err) => console.log(err));
+            this.catalogPage.updateContent({});
         }
         const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
         filterResult.innerHTML = '';
