@@ -1,9 +1,11 @@
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
-import { Address, Customer } from '@commercetools/platform-sdk';
+import { Address, Customer, CustomerUpdateAction } from '@commercetools/platform-sdk';
 import addressTemplate from './address-template.html';
 import ElementCreator from '../../utils/template-creation';
 import './user-page.scss';
+import { IAddress } from '../../constants/interfaces/interface';
+import { ICreateCustomerCredentials } from '../../constants/interfaces/credentials.interface';
 
 export default class UserPage {
     element: HTMLElement;
@@ -64,6 +66,8 @@ export default class UserPage {
             this.element.querySelector(`#input-postal-code${prefix}`)
         );
         postalCode.value = address.postalCode || '';
+        const addressID: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#address-id${prefix}`);
+        addressID.value = address.id || '';
         const city: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#input-city${prefix}`);
         city.value = address.city || '';
         this.setSelectedOptionByValue(`#input-country${prefix}`, address.country === 'PL' ? 'Poland' : 'Germany');
@@ -154,5 +158,38 @@ export default class UserPage {
             }
         }
         if (selectField) selectField.disabled = !selectField.disabled;
+    }
+    //create customer data from input fields to object
+    public prepareCustomerData(): ICreateCustomerCredentials {
+        const personalFields: NodeListOf<HTMLInputElement> = this.element.querySelectorAll('.personal');
+        const namesFields: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email'];
+        const personalArray: string[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
+            namesFields[i],
+            el.value,
+        ]);
+        return Object.fromEntries(personalArray);
+    }
+
+    public prepareAddressData(addressSelector: string): Record<string, string> {
+        const addressFields: string[] = ['id', 'country', 'city', 'streetName', 'postalCode'];
+        const addressElements: NodeListOf<HTMLInputElement> = this.element.querySelectorAll(addressSelector);
+        const addressArray: string[][] = [...addressElements].map((el: HTMLInputElement, i: number) => [
+            addressFields[i],
+            el.value,
+        ]);
+        return Object.fromEntries(addressArray);
+    }
+
+    public createAddressUpdateActions(addressData: Record<string, string>[]): CustomerUpdateAction[] {
+        return addressData.map((item: Record<string, string>) => ({
+            action: 'changeAddress',
+            addressId: item.id,
+            address: {
+                streetName: item.streetName,
+                postalCode: item.postalCode,
+                city: item.city,
+                country: item.country,
+            },
+        }));
     }
 }

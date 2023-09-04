@@ -1,6 +1,12 @@
 import App from '../../app/app';
 import UserPage from './user-page';
-import { validateDateOfBirth, validateEmail, validateName } from '../../utils/validations';
+import {
+    validateDateOfBirth,
+    validateEmail,
+    validateName,
+    validatePassword,
+    validatePostalCode,
+} from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { CustomerUpdate } from '@commercetools/platform-sdk';
 
@@ -15,13 +21,12 @@ export class UserPageController {
     }
 
     private addListeners(): void {
-        const saveMainBtn = this.userPage.element.querySelector('#btn-save-main');
+        const saveButtons = this.userPage.element.querySelectorAll('.btn-save');
         const addBillingBtn = this.userPage.element.querySelector('#btn-add-billing');
         const editButtons = this.userPage.element.querySelectorAll('.btn-edit');
         const cancelButtons = this.userPage.element.querySelectorAll('.btn-cancel');
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('input', this.onEditValidate);
-        saveMainBtn?.addEventListener('click', this.saveUpdatedMain);
         addBillingBtn?.addEventListener('click', this.addNewAddress);
         passwordIcons.forEach((icon) => {
             icon.addEventListener('click', this.togglePassword);
@@ -31,6 +36,9 @@ export class UserPageController {
         });
         cancelButtons.forEach((cancelButton) => {
             cancelButton.addEventListener('click', this.closeEditMode);
+        });
+        saveButtons.forEach((saveButton) => {
+            saveButton.addEventListener('click', this.saveUpdatedMain);
         });
     }
 
@@ -97,14 +105,15 @@ export class UserPageController {
         }
     };
 
-    private saveUpdatedMain = (): void => {
-        const personalFields: NodeListOf<HTMLInputElement> = this.userPage.element.querySelectorAll('.personal');
-        const namesFields: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email'];
-        const personalArray: string[][] = [...personalFields].map((el: HTMLInputElement, i: number) => [
-            namesFields[i],
-            el.value,
-        ]);
-        const customerData = Object.fromEntries(personalArray);
+    private saveUpdatedMain = (e: Event): void => {
+        const customerData = this.userPage.prepareCustomerData();
+        const billingData = this.userPage.prepareAddressData('.billing-addresses .address-input');
+        const shippingData = this.userPage.prepareAddressData('.shipping-addresses .address-input');
+
+        billingData.country = this.app?.getCodeFromCountryName(billingData.country);
+        shippingData.country = this.app?.getCodeFromCountryName(shippingData.country);
+        const allAddresses = [billingData, shippingData];
+
         if (
             validateEmail(customerData.email) ||
             validateName(customerData.firstName) ||
@@ -113,8 +122,11 @@ export class UserPageController {
         ) {
             return;
         }
+
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
+        const addressUpdateActions = this.userPage.createAddressUpdateActions(allAddresses);
+
         const data: CustomerUpdate = {
             version: userVersion,
             actions: [
@@ -134,6 +146,7 @@ export class UserPageController {
                     action: 'changeEmail',
                     email: customerData.email,
                 },
+                ...addressUpdateActions,
             ],
         };
         apiCustomer
@@ -143,14 +156,9 @@ export class UserPageController {
                 this.app.userPage.userData = res.body;
             })
             .then((): void => {
-                // this.closeEditMode(); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                this.closeEditMode(e);
             })
             .catch((): void => {
-                customerData.email?.classList.add('is-invalid');
-                if (customerData.email?.nextElementSibling) {
-                    customerData.email.nextElementSibling.innerHTML =
-                        'There is already an existing customer with the provided email.';
-                }
                 this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
             });
     };
