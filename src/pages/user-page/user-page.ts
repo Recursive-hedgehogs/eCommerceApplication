@@ -1,7 +1,8 @@
-import ElementCreator from '../../utils/template-creation';
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
 import { Address, Customer } from '@commercetools/platform-sdk';
+import addressTemplate from './address-template.html';
+import ElementCreator from '../../utils/template-creation';
 import './user-page.scss';
 
 export default class UserPage {
@@ -21,19 +22,23 @@ export default class UserPage {
         return this.element;
     }
 
-    public showUserData(id: string): void {
+    public setUserData(id: string): void {
         apiCustomer.getUser(id)?.then((res) => {
             this.userData = res.body;
-            this.fillMainFields();
-            this.userData.addresses.forEach((address) => {
-                if (address.id) {
-                    if (this.userData?.billingAddressIds?.includes(address.id)) {
-                        this.fillBillingAddressFields(address);
-                    } else if (this.userData?.shippingAddressIds?.includes(address.id)) {
-                        this.fillShippingAddressFields(address);
-                    }
+            this.showUserData();
+        });
+    }
+
+    public showUserData(): void {
+        this.fillMainFields();
+        this.userData?.addresses.forEach((address) => {
+            if (address.id) {
+                if (this.userData?.billingAddressIds?.includes(address.id)) {
+                    this.fillBillingAddressFields(address);
+                } else if (this.userData?.shippingAddressIds?.includes(address.id)) {
+                    this.fillShippingAddressFields(address);
                 }
-            });
+            }
         });
     }
 
@@ -53,9 +58,14 @@ export default class UserPage {
     private fillAddressFields(address: Address, isBilling: boolean): void {
         const prefix = isBilling ? '' : '-ship';
         const checkboxId = isBilling ? 'switchDefaultAddress' : 'switchDefaultAddressShipping';
-        this.element.querySelector(`#input-street${prefix}`)?.setAttribute('value', address.streetName || '');
-        this.element.querySelector(`#input-postal-code${prefix}`)?.setAttribute('value', address.postalCode || '');
-        this.element.querySelector(`#input-city${prefix}`)?.setAttribute('value', address.city || '');
+        const street: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#input-street${prefix}`);
+        street.value = address.streetName || '';
+        const postalCode: HTMLInputElement = <HTMLInputElement>(
+            this.element.querySelector(`#input-postal-code${prefix}`)
+        );
+        postalCode.value = address.postalCode || '';
+        const city: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#input-city${prefix}`);
+        city.value = address.city || '';
         this.setSelectedOptionByValue(`#input-country${prefix}`, address.country === 'PL' ? 'Poland' : 'Germany');
 
         const checkbox: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#${checkboxId}`);
@@ -83,38 +93,66 @@ export default class UserPage {
     private setSelectedOptionByValue(selectId: string, value: string): void {
         const select = this.element.querySelector(selectId);
         if (select) {
-            const option = select.querySelector(`option[value="${value}"]`);
+            const option: HTMLOptionElement = <HTMLOptionElement>select.querySelector(`option[value="${value}"]`);
             if (option) {
-                option.setAttribute('selected', 'selected');
+                option.selected = true;
             }
         }
     }
 
-    public openMaintoEdit(): void {
-        const cancelButton = this.element.querySelector('#btn-cancel-main');
-        const saveButton = this.element.querySelector('#btn-save-main');
-        const editButton = this.element.querySelector('#btn-edit-main');
-        const inputFields = this.element.querySelectorAll('.main-info input');
-        for (const inputField of inputFields) {
-            if (inputField instanceof HTMLInputElement) {
-                inputField.disabled = !inputField.disabled;
-            }
-        }
+    public openFieldstoEdit(container: HTMLElement): void {
+        const cancelButton = container.querySelector('.btn-cancel');
+        const saveButton = container.querySelector('.btn-save');
+        const editButton = container.querySelector('.btn-edit');
+        const deleteButton = container.querySelector('.btn-delete');
+        const inputFields = container.querySelectorAll('input');
+        const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
+        this.changeDisabled(inputFields, selectField);
         cancelButton?.classList.remove('hidden');
         saveButton?.classList.remove('hidden');
         editButton?.classList.add('hidden');
+        deleteButton?.classList.add('hidden');
     }
 
-    public closeMaintoEdit(): void {
-        this.fillMainFields();
-        const inputFields = this.element.querySelectorAll('.main-info input');
+    public closeFieldstoEdit(container: HTMLElement): void {
+        const cancelButton = container.querySelector('.btn-cancel');
+        const saveButton = container.querySelector('.btn-save');
+        const editButton = container.querySelector('.btn-edit');
+        const deleteButton = container.querySelector('.btn-delete');
+        const inputFields = container.querySelectorAll('input');
+        const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
+        this.changeDisabled(inputFields, selectField);
+        cancelButton?.classList.add('hidden');
+        saveButton?.classList.add('hidden');
+        editButton?.classList.remove('hidden');
+        deleteButton?.classList.remove('hidden');
+        const invalidInputs: NodeListOf<HTMLElement> = container.querySelectorAll('.is-invalid');
+        const invalidFeedbacks: NodeListOf<HTMLElement> = container.querySelectorAll('.invalid-feedback');
+        [...invalidInputs].forEach((el) => {
+            el.classList.remove('is-invalid');
+        });
+        [...invalidFeedbacks].forEach((el) => {
+            if (el.parentElement) el.parentElement.removeChild(el);
+        });
+        this.showUserData();
+    }
+
+    public showNewAddress(): void {
+        const addressesCont: HTMLElement = <HTMLElement>this.element.querySelector('.addresses-container');
+        const newAddress = new ElementCreator({
+            tag: 'section',
+            classNames: ['billing-address', 'card', 'border-secondary', 'mb-3', 'mt-2'],
+            innerHTML: addressTemplate,
+        }).getElement();
+        addressesCont.appendChild(newAddress);
+    }
+
+    private changeDisabled(inputFields: NodeListOf<HTMLElement>, selectField?: HTMLSelectElement): void {
         for (const inputField of inputFields) {
             if (inputField instanceof HTMLInputElement) {
                 inputField.disabled = !inputField.disabled;
             }
         }
-        this.element.querySelector('#btn-cancel-main')?.classList.add('hidden');
-        this.element.querySelector('#btn-save-main')?.classList.add('hidden');
-        this.element.querySelector('#btn-edit-main')?.classList.remove('hidden');
+        if (selectField) selectField.disabled = !selectField.disabled;
     }
 }

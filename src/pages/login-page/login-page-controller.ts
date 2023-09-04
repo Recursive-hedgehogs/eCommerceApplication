@@ -62,7 +62,7 @@ export class LoginPageController {
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
-                    this.app?.userPage.showUserData(customer.id);
+                    this.app?.userPage.setUserData(customer.id);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((): void => {

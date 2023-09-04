@@ -30,36 +30,49 @@
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane main-info fade active show" id="main" role="tabpanel">
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <div class="form-item">
-                                    <label class="labels">Name</label>
-                                    <input id="user-first-name" type="text" class="form-control first-name personal"
-                                        placeholder="first name" value="" disabled>
+                        <div class="billing-address card border-secondary mb-3 mt-2">
+                            <h6 class="card-header header-bg-color title-row">
+                                <span class="title">Personal data</span>
+                                <div class="btn-container">
+                                    <button class="btn-icon btn btn-secondary btn-edit" type="button"><i class="fas fa-pen"></i></button>
+                                    <button class="btn-icon btn btn-secondary btn-save hidden" type="button"><i class="fas fa-check"></i></button>
+                                    <button class="btn-icon btn btn-secondary btn-cancel hidden" type="button"><i class="fas fa-times"></i></button>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+                            </h6>
+                            <div class="card-body">
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-item">
+                                            <label class="labels">Name</label>
+                                            <input id="user-first-name" type="text" class="form-control first-name personal"
+                                                placeholder="first name" value="" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-item">
+                                            <label class="labels">Surname</label>
+                                            <input id="user-last-name" type="text" class="form-control personal" value=""
+                                                placeholder="surname" disabled>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-item">
-                                    <label class="labels">Surname</label>
-                                    <input id="user-last-name" type="text" class="form-control personal" value=""
+                                    <label class="labels">Date of birth</label>
+                                    <input id="user-date-of-birth" type="date" class="form-control personal"
+                                        placeholder="date of birth" value="" disabled>
+                                </div>
+                                <div class="form-item">
+                                    <label class="labels">Email</label>
+                                    <input id="user-email" type="email" class="form-control personal" value=""
                                         placeholder="surname" disabled>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-item">
-                            <label class="labels">Date of birth</label>
-                            <input id="user-date-of-birth" type="date" class="form-control personal"
-                                placeholder="date of birth" value="" disabled>
-                        </div>
-                        <div class="form-item">
-                            <label class="labels">Email</label>
-                            <input id="user-email" type="email" class="form-control personal" value=""
-                                placeholder="surname" disabled>
-                            <div class="invalid-feedback"></div>
                         </div>
 
+
                         <div class="col mt-3 text-center">
-                            <button id="btn-edit-main" class="btn btn-warning user-btns" type="button"><i
+                            <button id="btn-edit" class="btn btn-warning user-btns btn-edit" type="button"><i
                                     class="fas fa-pen"></i><span class="offset-1">Edit</span></button>
                             <button id="btn-cancel-main" class="btn btn-warning user-btns hidden" type="button"><i
                                     class="fas fa-times"></i><span class="offset-1">Cancel</span></button>
@@ -72,9 +85,11 @@
                             <div class="billing-address card border-secondary mb-3 mt-2">
                                 <h6 class="card-header header-bg-color title-row">
                                     <span class="address-title">Address</span>
-                                    <div class="">
-                                        <button class="btn-icon btn btn-secondary"><i class="fas fa-times"></i></button>
-                                        <button class="btn-icon btn btn-secondary"><i class="fas fa-check"></i></button>
+                                    <div class="btn-container">
+                                        <button class="btn-icon btn btn-secondary btn-edit" type="button"><i class="fas fa-pen"></i></button>
+                                        <button class="btn-icon btn btn-secondary btn-delete" type="button"><i class="fas fa-trash"></i></button>
+                                        <button class="btn-icon btn btn-secondary btn-save hidden" type="button"><i class="fas fa-check"></i></button>
+                                        <button class="btn-icon btn btn-secondary btn-cancel hidden" type="button"><i class="fas fa-times"></i></button>
                                     </div>
                                 </h6>
                                 <div class="card-body">
@@ -122,9 +137,11 @@
                             <div class="shipping-address card border-secondary mb-3 mt-2">
                                 <h6 class="card-header header-bg-color title-row">
                                     <span class="address-title">Address</span>
-                                    <div class="">
-                                        <button class="btn-icon btn btn-secondary"><i class="fas fa-times"></i></button>
-                                        <button class="btn-icon btn btn-secondary"><i class="fas fa-check"></i></button>
+                                    <div class="btn-container">
+                                        <button class="btn-icon btn btn-secondary btn-edit" type="button"><i class="fas fa-pen"></i></button>
+                                        <button class="btn-icon btn btn-secondary btn-delete" type="button"><i class="fas fa-trash"></i></button>
+                                        <button class="btn-icon btn btn-secondary btn-save hidden" type="button"><i class="fas fa-check"></i></button>
+                                        <button class="btn-icon btn btn-secondary btn-cancel hidden" type="button"><i class="fas fa-times"></i></button>
                                     </div>
                                 </h6>
                                 <div class="card-body">
