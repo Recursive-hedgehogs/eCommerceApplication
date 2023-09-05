@@ -9,7 +9,13 @@ import {
     validateStreet,
 } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
+import {
+    ClientResponse,
+    Customer,
+    CustomerSignInResult,
+    CustomerUpdate,
+    CustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class UserPageController {
@@ -145,8 +151,7 @@ export class UserPageController {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
-        const parentContainer: HTMLElement = <HTMLElement>target.closest('.tab-pane');
-        const billAddressesCont: HTMLElement = <HTMLElement>parentContainer.querySelector('.billing-addresses');
+        const billAddressesCont: HTMLElement = <HTMLElement>target.closest('.billing-addresses');
         const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
         const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
         const addressElements: NodeListOf<HTMLInputElement> = curentCard.querySelectorAll('.address-field');
@@ -227,6 +232,7 @@ export class UserPageController {
             validateName(customerData.lastName) ||
             validateDateOfBirth(customerData.dateOfBirth)
         ) {
+            alert('Incorrect data');
             return;
         }
         const data: CustomerUpdate = {
@@ -267,8 +273,10 @@ export class UserPageController {
 
     private saveUpdatedAddress = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const billAddressesCont: HTMLElement = <HTMLElement>target.closest('.billing-addresses');
         const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
         const addressData = this.userPage.prepareAddressData('.address-input', curentCard);
+        const checkInput: HTMLInputElement = <HTMLInputElement>curentCard.querySelector('.form-check-input');
         addressData.country = this.app?.getCodeFromCountryName(addressData.country);
         if (
             (addressData.city && validateName(addressData.city)) ||
@@ -281,23 +289,35 @@ export class UserPageController {
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
 
-        const data: CustomerUpdate = {
-            version: userVersion,
-            actions: [
-                {
-                    action: 'changeAddress',
-                    addressId: addressData.id,
-                    address: {
-                        streetName: addressData.streetName,
-                        postalCode: addressData.postalCode,
-                        city: addressData.city,
-                        country: addressData.country,
-                    },
+        const actions: CustomerUpdateAction[] = [
+            {
+                action: 'changeAddress',
+                addressId: addressData.id,
+                address: {
+                    streetName: addressData.streetName,
+                    postalCode: addressData.postalCode,
+                    city: addressData.city,
+                    country: addressData.country,
                 },
-            ],
+            },
+        ];
+
+        if (checkInput.checked) {
+            const actionType = billAddressesCont ? 'setDefaultBillingAddress' : 'setDefaultShippingAddress';
+
+            actions.push({
+                action: actionType,
+                addressId: addressData.id,
+            });
+        }
+
+        const updatedAddress: CustomerUpdate = {
+            version: userVersion,
+            actions: actions,
         };
+
         apiCustomer
-            .updateUser(data, userID)
+            .updateUser(updatedAddress, userID)
             ?.then((res): void => {
                 this.app?.showMessage('You have successfully changed your address');
                 this.app.userPage.userData = res.body;
