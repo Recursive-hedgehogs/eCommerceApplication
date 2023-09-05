@@ -325,12 +325,12 @@ export class UserPageController {
                     const password = newPassword.value;
                     this.relogin({ email, password });
                 })
-                .catch((e: { statuseCode: number }) => {
-                    switch (e.statuseCode) {
-                        case 400:
+                .catch((e: Error) => {
+                    switch (e.message) {
+                        case '400':
                             this.app?.showMessage('Wrong current password');
                             break;
-                        case 500:
+                        case '500':
                             this.app?.showMessage('Password is not valid');
                             break;
                         default:
