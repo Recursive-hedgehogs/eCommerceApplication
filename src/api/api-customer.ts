@@ -8,7 +8,7 @@ import { ApiPasswordFlow } from './api-flows/api-password-flow';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { ApiRefreshTokenFlow } from './api-flows/api-refresh-token-flow';
 import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
-import { CustomerUpdate } from '@commercetools/platform-sdk';
+import { CustomerChangePassword, CustomerUpdate } from '@commercetools/platform-sdk';
 
 class ApiCustomer {
     private apiPasswordFlow: ApiPasswordFlow;
@@ -100,6 +100,17 @@ class ApiCustomer {
             .post({
                 body: data,
             })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public changePassword = (data: CustomerChangePassword) => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.customers()
+            .password()
+            .post({ body: data })
             .execute()
             .catch((err) => {
                 throw Error(err);

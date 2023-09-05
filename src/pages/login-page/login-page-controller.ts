@@ -8,20 +8,20 @@ import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/p
 
 export class LoginPageController {
     private app: App;
-    private loinPage: LoginPage;
+    private loginPage: LoginPage;
     private router: Router;
 
     constructor() {
         this.app = new App();
-        this.loinPage = this.app.loginPage;
+        this.loginPage = this.app.loginPage;
         this.router = new Router();
         this.addListeners();
     }
 
     private addListeners(): void {
-        this.loinPage.element.addEventListener('input', this.onLoginValidate);
-        this.loinPage.element.addEventListener('click', this.togglePassword);
-        this.loinPage.element.addEventListener('submit', this.onLoginSubmit);
+        this.loginPage.element.addEventListener('input', this.onLoginValidate);
+        this.loginPage.element.addEventListener('click', this.togglePassword);
+        this.loginPage.element.addEventListener('submit', this.onLoginSubmit);
     }
 
     private onLoginValidate = (e: Event): void => {
@@ -33,15 +33,11 @@ export class LoginPageController {
         }
     };
 
-    public togglePassword = (e: Event): void => {
+    private togglePassword = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         if (target.id === 'password-icon') {
-            this.app?.loginPage.changePasswordVisibility();
-        } else if (target.id === 'password-icon-registr') {
-            this.app?.registrationPage.changePasswordVisibility();
-        }
-        if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.REGISTRATION) {
-            this.router.navigate(ROUTE.REGISTRATION);
+            const passwordInput: HTMLInputElement = <HTMLInputElement>document.querySelector('#input-login-password');
+            this.app?.changePasswordVisibility(passwordInput, target);
         }
     };
 
@@ -66,7 +62,7 @@ export class LoginPageController {
                 .signIn(customerData)
                 .then((resp: ClientResponse<CustomerSignInResult>) => {
                     const customer: Customer = resp.body.customer;
-                    this.app?.userPage.showUserData(customer.id);
+                    this.app?.userPage.setUserData(customer.id);
                     return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
                 })
                 .then((): void => {

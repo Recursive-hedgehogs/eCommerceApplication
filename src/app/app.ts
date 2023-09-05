@@ -67,6 +67,18 @@ class App implements IApp {
     public isAuthenticated(): boolean {
         return this.loggedIn;
     }
+
+    public changePasswordVisibility(passwordInput: HTMLInputElement, passwordIcon: HTMLElement): void {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('fa-eye-slash');
+            passwordIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('fa-eye');
+            passwordIcon.classList.add('fa-eye-slash');
+        }
+    }
 }
 
 export default App;

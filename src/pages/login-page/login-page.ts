@@ -17,20 +17,6 @@ export default class LoginPage {
         return this.element;
     }
 
-    public changePasswordVisibility(): void {
-        const passwordInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-login-password');
-        const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon');
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            passwordIcon.classList.remove('fa-eye-slash');
-            passwordIcon.classList.add('fa-eye');
-        } else {
-            passwordInput.type = 'password';
-            passwordIcon.classList.remove('fa-eye');
-            passwordIcon.classList.add('fa-eye-slash');
-        }
-    }
-
     public onEmailValidate = (emailInput: HTMLInputElement): void => {
         const parentDiv: Element | null = emailInput.closest('.form-item');
         if (!parentDiv) return;
