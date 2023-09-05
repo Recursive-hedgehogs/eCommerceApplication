@@ -17,11 +17,13 @@ export class Controllers {
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
     private router: Router;
+    userPageControllers: UserPageController;
 
     constructor() {
         this.app = null;
         this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
+        this.userPageControllers = new UserPageController();
         this.router = new Router();
     }
 
@@ -32,7 +34,7 @@ export class Controllers {
         new LoginPageController();
         new RegistrationPageController();
         new CatalogPageController();
-        new UserPageController();
+        // new UserPageController();
         this.addListeners();
     }
 
@@ -64,7 +66,12 @@ export class Controllers {
                     scope.startsWith('customer_id:')
                 );
                 const customerId: string | null = customerIdScope ? customerIdScope.split(':')[1] : null;
-                if (customerId) this.app?.userPage.showUserData(customerId);
+                if (customerId) {
+                    this.app?.userPage.setUserData(customerId, () => {
+                        this.app?.userPage.showUserData();
+                        this.userPageControllers.addListenersToAddresses();
+                    });
+                }
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
                     this.router.navigate(ROUTE.MAIN); //add redirection from login to MAIN page

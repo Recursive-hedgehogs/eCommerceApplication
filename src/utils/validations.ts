@@ -68,6 +68,15 @@ export const validateName = (userName: string): string | null => {
     return null;
 };
 
+export const validateStreet = (userName: string): string | null => {
+    const hasAtLeastOneLetter: boolean = /[A-Za-zА-Яа-яЁё]/.test(userName);
+    if (!hasAtLeastOneLetter) {
+        return 'Should contain at least one letter';
+    }
+
+    return null;
+};
+
 export const validateDateOfBirth = (dateBirth: string): string | null => {
     const currentDate: Date = new Date();
     const inputDate: Date = new Date(dateBirth);
