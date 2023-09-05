@@ -2,12 +2,7 @@ import App from '../../app/app';
 import UserPage from './user-page';
 import { validatePassword } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import {
-    ClientResponse,
-    Customer,
-    CustomerSignInResult,
-    CustomerUpdate,
-} from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class UserPageController {
@@ -98,7 +93,7 @@ export class UserPageController {
 
     private onEditValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
-        const card: HTMLElement = <HTMLElement>target.closest('.card');
+        // const card: HTMLElement = <HTMLElement>target.closest('.card');
         // const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>card.querySelector('#input-country');
         // const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
         //     card.querySelector('#input-country-ship')
@@ -311,7 +306,7 @@ export class UserPageController {
         const newPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#new-password');
         const confirmPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#confirm-new-password');
         if (newPassword.value !== confirmPassword.value) {
-            this.app?.showMessage("New password aren't the same", 'red');
+            this.app?.showMessage("New passwords aren't the same", 'red');
         }
         if (
             validatePassword(currentPassword.value) ||
@@ -338,10 +333,10 @@ export class UserPageController {
                 .catch((e: Error) => {
                     switch (e.message) {
                         case '400':
-                            this.app?.showMessage('Wrong current password');
+                            this.app?.showMessage('Wrong current password', 'red');
                             break;
                         case '500':
-                            this.app?.showMessage('Password is not valid');
+                            this.app?.showMessage('Password is not valid', 'red');
                             break;
                         default:
                             console.log(e);
