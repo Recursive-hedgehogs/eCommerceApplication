@@ -113,7 +113,7 @@ class ApiCustomer {
             .post({ body: data })
             .execute()
             .catch((err) => {
-                throw Error(err);
+                throw Error(err.statusCode);
             });
     };
 }

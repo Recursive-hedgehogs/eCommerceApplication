@@ -23,16 +23,23 @@ export default class UserPage {
         return this.element;
     }
 
-    public setUserData(id: string): void {
-        apiCustomer.getUser(id)?.then((res) => {
-            this.userData = res.body;
-            this.showUserData();
+    public setUserData(id: string, callback?: () => void): Promise<void> {
+        return new Promise((resolve) => {
+            apiCustomer.getUser(id)?.then((res) => {
+                this.userData = res.body;
+                if (callback) {
+                    callback();
+                }
+                resolve();
+            });
         });
     }
 
     public showAddresses() {
         const billingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.billing-addresses');
         const shippingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.shipping-addresses');
+        billingContainer.innerHTML = '';
+        shippingContainer.innerHTML = '';
         const billingAddressIds: string[] | undefined = this.userData?.billingAddressIds;
         const shippingAddressIds: string[] | undefined = this.userData?.shippingAddressIds;
         const addresses = this.userData?.addresses;
@@ -76,12 +83,9 @@ export default class UserPage {
         dateOfBirth.value = this.userData?.dateOfBirth || '';
         const email: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-email');
         email.value = this.userData?.email || '';
-        // const password: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-password');
-        // password.value = this.userData?.password || '';
     }
 
     private fillAddressFields(address: Address, container: HTMLElement, isBilling: boolean): void {
-        const checkboxId = isBilling ? 'switchDefaultAddress' : 'switchDefaultAddressShipping';
         const street: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-street`);
         street.value = address.streetName || '';
         const postalCode: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-postal-code`);
@@ -90,32 +94,21 @@ export default class UserPage {
         addressID.value = address.id || '';
         const city: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-city`);
         city.value = address.city || '';
-        this.setSelectedOptionByValue(`#input-country`, address.country === 'PL' ? 'Poland' : 'Germany');
         const inputFields = container.querySelectorAll('input');
         const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
+        selectField.value = address.country === 'PL' ? 'Poland' : 'Germany';
         this.changeDisabled(inputFields, selectField);
+        const checkbox: HTMLInputElement = <HTMLInputElement>container.querySelector('.form-check-input');
+        const label: HTMLInputElement = <HTMLInputElement>container.querySelector('.form-check-label');
 
-        const checkbox: HTMLInputElement = <HTMLInputElement>container.querySelector(`#${checkboxId}`);
-        const label = this.element.querySelector(`label[for="${checkboxId}"]`);
         //check if address set as the default
         const isDefault = isBilling
             ? this.userData?.defaultBillingAddressId === address.id
             : this.userData?.defaultShippingAddressId === address.id;
 
-        // checkbox.checked = isDefault;
-        // if (label) {
-        //     label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
-        // }
-    }
-
-    // Helper function to set selected option for a select element by value
-    private setSelectedOptionByValue(selectId: string, value: string): void {
-        const select = this.element.querySelector(selectId);
-        if (select) {
-            const option: HTMLOptionElement = <HTMLOptionElement>select.querySelector(`option[value="${value}"]`);
-            if (option) {
-                option.selected = true;
-            }
+        checkbox.checked = isDefault;
+        if (label) {
+            label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
         }
     }
 

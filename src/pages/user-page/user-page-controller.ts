@@ -2,7 +2,12 @@ import App from '../../app/app';
 import UserPage from './user-page';
 import { validatePassword } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
+import {
+    ClientResponse,
+    Customer,
+    CustomerSignInResult,
+    CustomerUpdate,
+} from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class UserPageController {
@@ -23,7 +28,6 @@ export class UserPageController {
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('submit', this.onSubmit);
         this.userPage.element.addEventListener('input', this.onEditValidate);
-        console.log(addButtons);
         passwordIcons.forEach((icon) => {
             icon.addEventListener('click', this.togglePassword);
         });
@@ -41,7 +45,7 @@ export class UserPageController {
         });
     }
 
-    private addListenersToAddresses() {
+    public addListenersToAddresses() {
         const cancelButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-cancel');
         const editButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-edit');
         const deleteButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-delete');
@@ -57,6 +61,9 @@ export class UserPageController {
         saveButtons.forEach((saveButton) => {
             saveButton.addEventListener('click', this.saveUpdatedAddress);
         });
+        deleteButtons.forEach((deleteButton) => {
+            deleteButton.addEventListener('click', this.deleteAddress);
+        });
     }
 
     private addNewListeners(): void {
@@ -71,7 +78,6 @@ export class UserPageController {
     }
 
     private openEditMode = (event: Event): void => {
-        console.log('openEditMode');
         const target: HTMLElement = <HTMLElement>event.target;
         const card: HTMLElement = <HTMLElement>target.closest('.card');
         this.app?.userPage.openFieldstoEdit(card);
@@ -113,22 +119,22 @@ export class UserPageController {
             case 'confirm-new-password':
                 this.app?.loginPage.onPasswordValidate(target);
                 break;
-            // case 'input-city':
-            // case 'input-city-ship':
-            //     this.app?.registrationPage.onNameValidate(target);
-            //     break;
-            // case 'input-street':
-            // case 'input-street-ship':
-            //     this.app?.registrationPage.onStreetValidate(target);
-            //     break;
-            // case 'input-postal-code':
-            //     this.checkCountry(target, countrySelect);
-            //     this.app?.registrationPage.onPostalValidate(target);
-            //     break;
-            // case 'input-postal-code-ship':
-            //     this.checkCountry(target, countryShipSelect);
-            //     this.app?.registrationPage.onPostalValidate(target);
-            //     break;
+            case 'input-city':
+            case 'input-city-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-street':
+            case 'input-street-ship':
+                this.app?.registrationPage.onStreetValidate(target);
+                break;
+            case 'input-postal-code':
+                // this.checkCountry(target, countrySelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            case 'input-postal-code-ship':
+                // this.checkCountry(target, countryShipSelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
             default:
                 break;
         }
@@ -197,6 +203,7 @@ export class UserPageController {
                     console.log(this.app.userPage.userData);
                 }
                 this.closeEditMode(e);
+                this.addListenersToAddresses();
             })
             .catch((): void => {
                 this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
@@ -260,6 +267,7 @@ export class UserPageController {
             })
             .then((): void => {
                 this.closeEditMode(e);
+                this.addListenersToAddresses();
             })
             .catch((): void => {
                 this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
@@ -327,12 +335,12 @@ export class UserPageController {
                     const password = newPassword.value;
                     this.relogin({ email, password });
                 })
-                .catch((e: { statuseCode: number }) => {
-                    switch (e.statuseCode) {
-                        case 400:
+                .catch((e: Error) => {
+                    switch (e.message) {
+                        case '400':
                             this.app?.showMessage('Wrong current password');
                             break;
-                        case 500:
+                        case '500':
                             this.app?.showMessage('Password is not valid');
                             break;
                         default:
@@ -342,7 +350,7 @@ export class UserPageController {
         }
     };
 
-    relogin(data: ILoginCredentials) {
+    private relogin(data: ILoginCredentials) {
         apiCustomer
             .signIn(data)
             .then((resp: ClientResponse<CustomerSignInResult>) => {
@@ -353,4 +361,35 @@ export class UserPageController {
             })
             .catch((e: Error) => console.log(e));
     }
+
+    private deleteAddress = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const userID: string = <string>this.app.userPage.userData?.id;
+        const userVersion: number = <number>this.app.userPage.userData?.version;
+        const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
+        const cardContainer: HTMLElement = <HTMLElement>target.closest('.addresses-container');
+        cardContainer.removeChild(curentCard);
+        const addressIdInput: HTMLInputElement = <HTMLInputElement>curentCard.querySelector('#address-id');
+        const addressId = addressIdInput.value;
+
+        const deletedAddress: CustomerUpdate = {
+            version: userVersion,
+            actions: [
+                {
+                    action: 'removeAddress',
+                    addressId: addressId,
+                },
+            ],
+        };
+
+        apiCustomer
+            .updateUser(deletedAddress, userID)
+            ?.then((res): void => {
+                this.app?.showMessage('You have deleted address');
+                this.app.userPage.userData = res.body;
+            })
+            .catch((): void => {
+                this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
+            });
+    };
 }
