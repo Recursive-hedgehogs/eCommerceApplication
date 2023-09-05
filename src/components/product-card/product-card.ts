@@ -12,8 +12,10 @@ export class ProductCard {
     public productKey: string | undefined;
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
+    public readonly prices: Price[] | undefined;
 
     constructor(data: ProductProjection) {
+        this.prices = data.masterVariant.prices;
         this.productId = data.id;
         this.productKey = data.key;
         this._element = new ElementCreator({
@@ -33,7 +35,7 @@ export class ProductCard {
                 data.masterVariant.images && data.masterVariant.images[0] ? data.masterVariant.images[0].url : 'none',
         }).getElement();
         this.productDescription = new ElementCreator({
-            tag: 'p',
+            tag: 'h6',
             classNames: ['product-description'],
             innerHTML: data.description ? data.description['en-US'] : '',
         }).getElement();

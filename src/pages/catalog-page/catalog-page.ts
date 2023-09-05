@@ -5,16 +5,29 @@ import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardController } from '../../components/product-card/product-card-controller';
 import { Filters } from '../../components/filters/filters';
 import { FiltersController } from '../../components/filters/filters-controller';
-import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import { Sort } from '../../components/sort/sort';
+import { SortController } from '../../components/sort/sort-controller';
+import {
+    Category,
+    CategoryPagedQueryResponse,
+    ClientResponse,
+    ProductProjection,
+    ProductProjectionPagedSearchResponse,
+} from '@commercetools/platform-sdk';
 import { ApiProduct } from '../../api/api-products/api-products';
+import { CategoryComponent } from '../../components/category/category';
+import { CategoryController } from '../../components/category/category-controller';
+import { IProductFiltersCredentials } from '../../constants/interfaces/credentials.interface';
 
 export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
+    private readonly sort?: Sort;
+    public originalProducts: ProductProjection[] = [];
     private products?: ProductCard[];
-    private static singleton: CatalogPage;
     private readonly filters?: Filters;
     private apiProduct: ApiProduct = new ApiProduct();
+    private static singleton: CatalogPage;
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -29,6 +42,8 @@ export default class CatalogPage {
         this.catalogContainer = this.element.querySelector('.catalog-container');
         this.filters = new Filters();
         new FiltersController(this.filters, this);
+        this.sort = new Sort();
+        new SortController(this.sort, this);
         this.start();
         CatalogPage.singleton = this;
     }
@@ -41,6 +56,12 @@ export default class CatalogPage {
         const catalogFilters: Element | null = this.element.querySelector('.catalog-filters');
         if (catalogFilters && this.filters?.element) {
             catalogFilters.append(this.filters.element);
+        }
+        this.getCategories();
+
+        const catalogSorting = this.element.querySelector('.catalog-sorting');
+        if (catalogSorting && this.sort?.element) {
+            catalogSorting.append(this.sort.element);
         }
     }
 
@@ -58,9 +79,34 @@ export default class CatalogPage {
     }
 
     public showCatalog(): void {
+        this.updateContent({});
+    }
+
+    private getCategories() {
+        return this.apiProduct
+            .getCategories()
+            ?.then((resp: ClientResponse<CategoryPagedQueryResponse>) => resp.body.results)
+            .then((categories) => this.createCategories(categories));
+    }
+
+    private createCategories(categories: Category[]): void {
+        const categoriesContainer: HTMLElement = this.element.querySelector('.categories-container') as HTMLElement;
+        const categoriesArray: HTMLElement[] = categories
+            .filter((category) => !category.parent)
+            .map((category: Category) => {
+                const categoryComponent = new CategoryComponent(category, categories);
+                new CategoryController(categoryComponent);
+                return categoryComponent.element;
+            });
+        categoriesContainer.append(...categoriesArray);
+    }
+
+    public updateContent(filter: IProductFiltersCredentials) {
         this.apiProduct
-            .getProductProjection()
-            ?.then((resp: ClientResponse<ProductProjectionPagedSearchResponse>) => resp.body.results)
-            .then((res: ProductProjection[]) => this.setContent(res));
+            .getProductProjection(filter)
+            ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
+                this.setContent(res.body.results);
+            })
+            .catch((err) => console.log(err));
     }
 }

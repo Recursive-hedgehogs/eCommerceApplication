@@ -24,10 +24,9 @@ export default class ProductPage {
     private productFullDescription!: HTMLElement;
     private productPrice!: HTMLElement;
     private productPriceDiscount!: HTMLElement;
-    private productInf!: HTMLElement;
-    private static singleton: ProductPage;
     private data?: IProductWithDiscount; //temporary container for response data
     private apiProduct: ApiProduct = new ApiProduct();
+    private static singleton: ProductPage;
 
     constructor() {
         if (ProductPage.singleton) {
@@ -39,13 +38,11 @@ export default class ProductPage {
             innerHTML: template,
         }).getElement();
         this.productImage = this.element.querySelector('.product-image-container') as HTMLElement;
-        this.productInf = this.element.querySelector('.product-information') as HTMLElement;
         this.productName = this.element.querySelector('.product-name') as HTMLElement;
         this.productDescription = this.element.querySelector('.product-description') as HTMLElement;
         this.productFullDescription = this.element.querySelector('.product-full-description') as HTMLElement;
         this.productPrice = this.element.querySelector('.product-price') as HTMLElement;
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
-        // this.productPublish = this.element.querySelector('.product-publish') as HTMLElement;
         ProductPage.singleton = this;
         this.showModalWindow();
     }
@@ -90,9 +87,8 @@ export default class ProductPage {
                 | ProductDiscountValueRelative
                 | undefined = data.discount?.value;
             const b: { permyriad: string } = pricesD as unknown as { permyriad: string };
-
             if (b && b.permyriad) {
-                const priceDiscount =
+                const priceDiscount: number =
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
                     (+b.permyriad / 10000) *
                         (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
@@ -106,9 +102,6 @@ export default class ProductPage {
         if (data?.product.masterData.current.metaDescription) {
             productFullDescription.innerText = data.product.masterData.current.metaDescription['en-US'];
         }
-        // if (data.product.metaTitle) {
-        //     this.productPublish.innerText = data.product.metaTitle['en-US'];
-        // }
     }
 
     public getImages(images: Image[]): HTMLElement[] {
@@ -122,33 +115,33 @@ export default class ProductPage {
     }
 
     private createSlider(containerSelector: string): void {
-        const swiperEl: SwiperContainer = this.element.querySelector(containerSelector) as SwiperContainer;
+        const swiperContainer: SwiperContainer = this.element.querySelector(containerSelector) as SwiperContainer;
         const swiperParams: SwiperOptions = {
             navigation: true,
             pagination: true,
             slidesPerView: 1,
             on: {
-                init() {
+                init(): void {
                     //
                 },
             },
         };
-        Object.assign(swiperEl, swiperParams);
-        swiperEl.initialize();
+        Object.assign(swiperContainer, swiperParams);
+        swiperContainer.initialize();
     }
 
-    public openModal() {
-        const { element, data } = this; //local variable initialization
-        const modalProductImage = element.querySelector('.product-modal-image-container') as HTMLElement;
+    public openModal(): void {
+        const { element, data }: this = this; //local variable initialization
+        const modalProductImage: HTMLElement = element.querySelector('.product-modal-image-container') as HTMLElement;
         const images: Image[] = data?.product.masterData.current.masterVariant.images ?? [];
-        const modal = document.getElementById('product-modal');
+        const modal: HTMLElement | null = document.getElementById('product-modal');
         const imagesArray: HTMLElement[] = this.data ? this.getImages(images) : [];
         modalProductImage.innerHTML = '';
         modalProductImage.append(...imagesArray);
 
         if (modal) {
             modal.style.display = 'block';
-            const closeButton = this.getCloseButtonElement();
+            const closeButton: HTMLElement | null = this.getCloseButtonElement();
 
             if (closeButton) {
                 closeButton.addEventListener('click', this.closeModal.bind(this));
@@ -158,22 +151,22 @@ export default class ProductPage {
     }
 
     public closeModal(): void {
-        const closeButton = this.getCloseButtonElement();
-        const modal = this.getModalElement();
+        const closeButton: HTMLElement | null = this.getCloseButtonElement();
+        const modal: HTMLElement | null = this.getModalElement();
 
         if (closeButton && modal) {
             modal.style.display = 'none';
         }
     }
 
-    public showModalWindow() {
-        const productImageContainer = this.getProductImageContainer();
+    public showModalWindow(): void {
+        const productImageContainer: HTMLElement | null = this.getProductImageContainer();
 
         if (productImageContainer) {
-            productImageContainer.addEventListener('click', (event) => {
-                const target = event.target as HTMLElement;
+            productImageContainer.addEventListener('click', (event: MouseEvent): void => {
+                const target: HTMLElement = event.target as HTMLElement;
                 if (target.classList.contains('product-images')) {
-                    const imageUrl = this.getBackgroundImageUrl(target);
+                    const imageUrl: string | undefined = this.getBackgroundImageUrl(target);
                     if (imageUrl) {
                         this.openModal();
                     }
@@ -181,7 +174,7 @@ export default class ProductPage {
             });
         }
 
-        const closeButton = this.getCloseButtonElement();
+        const closeButton: HTMLElement | null = this.getCloseButtonElement();
 
         if (closeButton) {
             closeButton.addEventListener('click', this.closeModal.bind(this));
@@ -189,9 +182,9 @@ export default class ProductPage {
     }
 
     private getBackgroundImageUrl(element: HTMLElement): string | undefined {
-        const style = getComputedStyle(element);
-        const backgroundImage = style.getPropertyValue('background-image');
-        const match = backgroundImage.match(/url\("(.+)"\)/);
+        const style: CSSStyleDeclaration = getComputedStyle(element);
+        const backgroundImage: string = style.getPropertyValue('background-image');
+        const match: RegExpMatchArray | null = backgroundImage.match(/url\("(.+)"\)/);
 
         return match ? match[1] : undefined;
     }
@@ -212,7 +205,7 @@ export default class ProductPage {
         this.apiProduct
             .getProductById(productId)
             ?.then((resp: ClientResponse<Product>) => resp.body)
-            .then(async (product: Product) => {
+            .then(async (product: Product): Promise<IProductWithDiscount> => {
                 const a: Price[] | undefined = product.masterData.current.masterVariant.prices;
                 const b: string | undefined =
                     a && a[0] && a[0].discounted?.discount.id ? a[0].discounted?.discount.id : '';
@@ -225,7 +218,7 @@ export default class ProductPage {
                     return { product };
                 }
             })
-            .then((resp) => {
+            .then((resp: { product: Product; discount: ProductDiscount | undefined } | { product: Product }): void => {
                 this.retrieveContent(resp);
                 this.setContent();
             });
