@@ -23,10 +23,15 @@ export default class UserPage {
         return this.element;
     }
 
-    public setUserData(id: string): void {
-        apiCustomer.getUser(id)?.then((res) => {
-            this.userData = res.body;
-            this.showUserData();
+    public setUserData(id: string, callback?: () => void): Promise<void> {
+        return new Promise((resolve) => {
+            apiCustomer.getUser(id)?.then((res) => {
+                this.userData = res.body;
+                if (callback) {
+                    callback();
+                }
+                resolve();
+            });
         });
     }
 

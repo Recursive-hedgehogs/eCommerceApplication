@@ -29,7 +29,6 @@ export class UserPageController {
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('submit', this.onPasswordSubmit);
         this.userPage.element.addEventListener('input', this.onEditValidate);
-        console.log(addButtons);
         passwordIcons.forEach((icon) => {
             icon.addEventListener('click', this.togglePassword);
         });
@@ -47,7 +46,7 @@ export class UserPageController {
         });
     }
 
-    private addListenersToAddresses() {
+    public addListenersToAddresses() {
         const cancelButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-cancel');
         const editButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-edit');
         const deleteButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-delete');
@@ -111,7 +110,6 @@ export class UserPageController {
     };
 
     private openEditMode = (event: Event): void => {
-        console.log('openEditMode');
         const target: HTMLElement = <HTMLElement>event.target;
         const card: HTMLElement = <HTMLElement>target.closest('.card');
         this.app?.userPage.openFieldstoEdit(card);
@@ -153,22 +151,22 @@ export class UserPageController {
             case 'confirm-new-password':
                 this.app?.loginPage.onPasswordValidate(target);
                 break;
-            // case 'input-city':
-            // case 'input-city-ship':
-            //     this.app?.registrationPage.onNameValidate(target);
-            //     break;
-            // case 'input-street':
-            // case 'input-street-ship':
-            //     this.app?.registrationPage.onStreetValidate(target);
-            //     break;
-            // case 'input-postal-code':
-            //     this.checkCountry(target, countrySelect);
-            //     this.app?.registrationPage.onPostalValidate(target);
-            //     break;
-            // case 'input-postal-code-ship':
-            //     this.checkCountry(target, countryShipSelect);
-            //     this.app?.registrationPage.onPostalValidate(target);
-            //     break;
+            case 'input-city':
+            case 'input-city-ship':
+                this.app?.registrationPage.onNameValidate(target);
+                break;
+            case 'input-street':
+            case 'input-street-ship':
+                this.app?.registrationPage.onStreetValidate(target);
+                break;
+            case 'input-postal-code':
+                // this.checkCountry(target, countrySelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
+            case 'input-postal-code-ship':
+                // this.checkCountry(target, countryShipSelect);
+                this.app?.registrationPage.onPostalValidate(target);
+                break;
             default:
                 break;
         }
