@@ -1,15 +1,9 @@
 import App from '../../app/app';
 import UserPage from './user-page';
-import {
-    validateDateOfBirth,
-    validateEmail,
-    validateName,
-    validatePassword,
-    validatePostalCode,
-    validateStreet,
-} from '../../utils/validations';
+import { validatePassword } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { CustomerUpdate } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
+import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class UserPageController {
     private app: App;
@@ -27,7 +21,7 @@ export class UserPageController {
         const editButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-edit');
         const cancelButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-cancel');
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
-        this.userPage.element.addEventListener('submit', this.onPasswordSubmit);
+        this.userPage.element.addEventListener('submit', this.onSubmit);
         this.userPage.element.addEventListener('input', this.onEditValidate);
         console.log(addButtons);
         passwordIcons.forEach((icon) => {
@@ -75,40 +69,6 @@ export class UserPageController {
             saveButton.addEventListener('click', this.saveNewAddress);
         });
     }
-
-    private onPasswordSubmit = (e: Event) => {
-        e.preventDefault();
-        console.log(e);
-        const currentPassword: HTMLInputElement = <HTMLInputElement>(
-            this.userPage.element.querySelector('#user-password')
-        );
-
-        const newPassword: HTMLInputElement = <HTMLInputElement>this.userPage.element.querySelector('#new-password');
-        if (this.userPage.userData) {
-            apiCustomer
-                .changePassword({
-                    id: this.userPage.userData.id,
-                    version: this.userPage.userData.version,
-                    currentPassword: currentPassword.value, //data from input
-                    newPassword: newPassword.value, //data from input
-                })
-                ?.then(() => this.app?.showMessage('New password created'))
-                .catch((e: { statuseCode: number }) => {
-                    switch (e.statuseCode) {
-                        case 400:
-                            // alert('wrong current password');
-                            this.app?.showMessage('wrong current password');
-                            break;
-                        case 500:
-                            // alert('new password is not valid');
-                            this.app?.showMessage('new password is not valid');
-                            break;
-                        default:
-                            console.log(e);
-                    }
-                });
-        }
-    };
 
     private openEditMode = (event: Event): void => {
         console.log('openEditMode');
@@ -327,5 +287,70 @@ export class UserPageController {
                 this.app?.registrationPage.formatPostalCode(event, target, '', 5);
             }
         });
+    }
+
+    private onSubmit = (e: SubmitEvent) => {
+        e.preventDefault();
+        const target = e.target as HTMLElement;
+        switch (target.id) {
+            case 'password-form':
+                this.onPasswordSubmit(target);
+        }
+    };
+
+    private onPasswordSubmit = (target: HTMLElement) => {
+        const currentPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#user-password');
+        const newPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#new-password');
+        const confirmPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#confirm-new-password');
+        if (newPassword.value !== confirmPassword.value) {
+            this.app?.showMessage("New password aren't the same", 'red');
+        }
+        if (
+            validatePassword(currentPassword.value) ||
+            validatePassword(newPassword.value) ||
+            validatePassword(confirmPassword.value)
+        ) {
+            this.app?.showMessage('Not valid', 'red');
+            return;
+        }
+
+        if (this.userPage.userData) {
+            apiCustomer
+                .changePassword({
+                    id: this.userPage.userData.id,
+                    version: this.userPage.userData.version,
+                    currentPassword: currentPassword.value, //data from input
+                    newPassword: newPassword.value, //data from input
+                })
+                ?.then(({ body }) => {
+                    const email: string = body.email;
+                    const password = newPassword.value;
+                    this.relogin({ email, password });
+                })
+                .catch((e: { statuseCode: number }) => {
+                    switch (e.statuseCode) {
+                        case 400:
+                            this.app?.showMessage('Wrong current password');
+                            break;
+                        case 500:
+                            this.app?.showMessage('Password is not valid');
+                            break;
+                        default:
+                            console.log(e);
+                    }
+                });
+        }
+    };
+
+    relogin(data: ILoginCredentials) {
+        apiCustomer
+            .signIn(data)
+            .then((resp: ClientResponse<CustomerSignInResult>) => {
+                const customer: Customer = resp.body.customer;
+                this.app?.userPage.setUserData(customer.id);
+                this.app?.setAuthenticationStatus(true); // set authentication state
+                this.app?.showMessage('New password created');
+            })
+            .catch((e: Error) => console.log(e));
     }
 }
