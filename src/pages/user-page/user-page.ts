@@ -81,8 +81,8 @@ export default class UserPage {
         dateOfBirth.value = this.userData?.dateOfBirth || '';
         const email: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-email');
         email.value = this.userData?.email || '';
-        const password: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-password');
-        password.value = this.userData?.password || '';
+        // const password: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-password');
+        // password.value = this.userData?.password || '';
     }
 
     private fillAddressFields(address: Address, container: HTMLElement, isBilling: boolean): void {
