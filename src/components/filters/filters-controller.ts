@@ -52,7 +52,7 @@ export class FiltersController {
         inputsCheck?.forEach((el: HTMLInputElement): void => {
             // const close = this.filters.element?.querySelector('.close') as HTMLElement;
             if (el.name && el.checked) {
-                filtersArray.push(el.name + ' x');
+                filtersArray.push(el.name);
                 map.set(el.name, el.checked);
             }
         });
@@ -73,11 +73,28 @@ export class FiltersController {
     };
 
     public onClick = (e: Event): void => {
+        const inputsCheck: NodeListOf<HTMLInputElement> | undefined =
+            this.filters.element?.querySelectorAll('input[type=checkbox]');
+        const minInput = this.filters.element?.querySelector('#customRangeMin');
+        const maxInput = this.filters.element?.querySelector('#customRangeMax');
+        const minResult = this.filters.element?.querySelector('.min-result') as HTMLDivElement;
+        const maxResult = this.filters.element?.querySelector('.max-result') as HTMLDivElement;
         const target: HTMLButtonElement = e.target as HTMLButtonElement;
         if (target.id === 'filters-reset') {
             this.catalogPage.updateContent({});
+            const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
+            filterResult.innerHTML = '';
+            inputsCheck?.forEach((el) => (el.checked = false));
+            if (minInput && maxInput) {
+                (<HTMLInputElement>minInput).min = '0';
+                (<HTMLInputElement>minInput).max = '100';
+                (<HTMLInputElement>minInput).value = '0';
+                minResult.innerHTML = '0';
+                (<HTMLInputElement>maxInput).min = '0';
+                (<HTMLInputElement>maxInput).max = '100';
+                (<HTMLInputElement>maxInput).value = '100';
+                maxResult.innerHTML = '100';
+            }
         }
-        const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
-        filterResult.innerHTML = '';
     };
 }
