@@ -38,6 +38,8 @@ export default class UserPage {
     public showAddresses() {
         const billingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.billing-addresses');
         const shippingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.shipping-addresses');
+        billingContainer.innerHTML = '';
+        shippingContainer.innerHTML = '';
         const billingAddressIds: string[] | undefined = this.userData?.billingAddressIds;
         const shippingAddressIds: string[] | undefined = this.userData?.shippingAddressIds;
         const addresses = this.userData?.addresses;
@@ -81,8 +83,6 @@ export default class UserPage {
         dateOfBirth.value = this.userData?.dateOfBirth || '';
         const email: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-email');
         email.value = this.userData?.email || '';
-        // const password: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-password');
-        // password.value = this.userData?.password || '';
     }
 
     private fillAddressFields(address: Address, container: HTMLElement, isBilling: boolean): void {
