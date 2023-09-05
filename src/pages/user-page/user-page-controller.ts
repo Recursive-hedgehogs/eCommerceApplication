@@ -2,7 +2,7 @@ import App from '../../app/app';
 import UserPage from './user-page';
 import { validatePassword } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
+import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate, CustomerUpdateAction } from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class UserPageController {
@@ -55,6 +55,9 @@ export class UserPageController {
         });
         saveButtons.forEach((saveButton) => {
             saveButton.addEventListener('click', this.saveUpdatedAddress);
+        });
+        deleteButtons.forEach((deleteButton) => {
+            deleteButton.addEventListener('click', this.deleteAddress);
         });
     }
 
@@ -340,7 +343,7 @@ export class UserPageController {
         }
     };
 
-    relogin(data: ILoginCredentials) {
+    private relogin(data: ILoginCredentials) {
         apiCustomer
             .signIn(data)
             .then((resp: ClientResponse<CustomerSignInResult>) => {
@@ -351,4 +354,55 @@ export class UserPageController {
             })
             .catch((e: Error) => console.log(e));
     }
+
+    private deleteAddress = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const userID: string = <string>this.app.userPage.userData?.id;
+        const userVersion: number = <number>this.app.userPage.userData?.version;
+        const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
+        const cardContainer: HTMLElement = <HTMLElement>target.closest('.addresses-container');
+        cardContainer.removeChild(curentCard);
+        const addressIdInput: HTMLInputElement = <HTMLInputElement>curentCard.querySelector('#address-id');
+        const addressId = addressIdInput.value;
+        const billingAddressIds: string[] | undefined = this.app.userPage.userData?.billingAddressIds;
+        const shippingAddressIds: string[] | undefined = this.app.userPage.userData?.shippingAddressIds;
+        console.log('billingAddressIds?.includes(addressId)', billingAddressIds?.includes(addressId));
+        const actions: CustomerUpdateAction[] = [
+            {
+                action: 'removeAddress',
+                addressId: addressId,
+            },
+            // {
+            //     action: 'removeShippingAddressId',
+            //     addressId: 'sMJ3LIsF',
+            // },
+        ];
+
+        // if (billingAddressIds?.includes(addressId)) {
+        //     actions.push({
+        //         action: 'removeBillingAddressId',
+        //         addressId: addressId,
+        //     });
+        // } else if (shippingAddressIds?.includes(addressId)) {
+        //     actions.push({
+        //         action: 'removeShippingAddressId',
+        //         addressId: addressId,
+        //     });
+        // }
+
+        const deletedAddress: CustomerUpdate = {
+            version: userVersion,
+            actions,
+        };
+
+        apiCustomer
+            .updateUser(deletedAddress, userID)
+            ?.then((res): void => {
+                this.app?.showMessage('You have deleted address');
+                this.app.userPage.userData = res.body;
+            })
+            .catch((): void => {
+                this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
+            });
+    };
 }
