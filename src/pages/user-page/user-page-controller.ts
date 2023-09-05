@@ -11,7 +11,6 @@ import {
 import { apiCustomer } from '../../api/api-customer';
 import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
-import { IAddress } from '../../constants/interfaces/interface';
 
 export class UserPageController {
     private app: App;
@@ -104,8 +103,7 @@ export class UserPageController {
     private onEditValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         const card: HTMLElement = <HTMLElement>target.closest('.card');
-        const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>card.querySelector('#input-country');
-
+        const countrySelect: HTMLSelectElement | null = card ? card.querySelector('#input-country') : null;
         switch (target.id) {
             case 'user-email':
                 this.app?.loginPage.onEmailValidate(target);
@@ -131,11 +129,11 @@ export class UserPageController {
                 this.app?.registrationPage.onStreetValidate(target);
                 break;
             case 'input-postal-code':
-                this.checkCountry(target, countrySelect);
+                if (countrySelect) this.checkCountry(target, countrySelect);
                 this.app?.registrationPage.onPostalValidate(target);
                 break;
             case 'input-postal-code-ship':
-                this.checkCountry(target, countrySelect);
+                if (countrySelect) this.checkCountry(target, countrySelect);
                 this.app?.registrationPage.onPostalValidate(target);
                 break;
             default:

@@ -1,6 +1,6 @@
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
-import { Address, Customer, CustomerUpdateAction } from '@commercetools/platform-sdk';
+import { Address, Customer } from '@commercetools/platform-sdk';
 import addressTemplate from './address-template.html';
 import ElementCreator from '../../utils/template-creation';
 import './user-page.scss';
