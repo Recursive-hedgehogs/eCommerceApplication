@@ -76,7 +76,7 @@
                     </div>
                     <div class="tab-pane fade" id="billing" role="tabpanel">
                         <div class="addresses-container billing-addresses mt-2">
-                            <div class="billing-address card border-secondary mb-3 mt-2">
+                            <!-- <div class="billing-address card border-secondary mb-3 mt-2">
                                 <h6 class="card-header header-bg-color title-row">
                                     <span class="address-title">Address</span>
                                     <div class="btn-container">
@@ -130,7 +130,7 @@
                                             default</label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="row mt-3 btn-align">
                             <button id="btn-add-billing" class="btn btn-success btn-add" type="submit"
@@ -140,7 +140,7 @@
                     </div>
                     <div class="tab-pane fade" id="shipping" role="tabpanel">
                         <div class="addresses-container shipping-addresses mt-2">
-                            <div class="shipping-address card border-secondary mb-3 mt-2">
+                            <!-- <div class="shipping-address card border-secondary mb-3 mt-2">
                                 <h6 class="card-header header-bg-color title-row">
                                     <span class="address-title">Address</span>
                                     <div class="btn-container">
@@ -197,7 +197,7 @@
                                             default</label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="row mt-3 btn-align">
                             <button id="btn-add-shipping" class="btn btn-success btn-add" type="submit"
@@ -206,53 +206,54 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="password" role="tabpanel">
-
-                        <div class="form-item mt-2">
-                            <div class="labels">Current password</div>
-                            <div class="input-group">
-                                <input id="user-password" type="password" class="form-control"
-                                    placeholder="Enter your password" required>
-                                <div class="input-group-text">
-                                    <label for="user-password"
-                                        class="password-icon-container password-icon fas fa-eye-slash">
-                                    </label>
+                        <form>
+                            <div class="form-item mt-2">
+                                <div class="labels">Current password</div>
+                                <div class="input-group">
+                                    <input id="user-password" type="password" class="form-control"
+                                           placeholder="Enter your password" required>
+                                    <div class="input-group-text">
+                                        <label for="user-password"
+                                               class="password-icon-container password-icon fas fa-eye-slash">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div class="invalid-feedback"></div>
                             </div>
-                        </div>
-
-                        <div class="form-item mt-2">
-                            <div class="labels">New password</div>
-                            <div class="input-group">
-                                <input id="new-password" type="password" class="form-control"
-                                    placeholder="Enter your password" required>
-                                <div class="input-group-text">
-                                    <label for="new-password"
-                                        class="password-icon-container password-icon fas fa-eye-slash">
-                                    </label>
+                    
+                            <div class="form-item mt-2">
+                                <div class="labels">New password</div>
+                                <div class="input-group">
+                                    <input id="new-password" type="password" class="form-control"
+                                           placeholder="Enter your password" required>
+                                    <div class="input-group-text">
+                                        <label for="new-password"
+                                               class="password-icon-container password-icon fas fa-eye-slash">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div class="invalid-feedback"></div>
                             </div>
-                        </div>
-                        <div class="form-item mt-2">
-                            <div class="labels">Confirm new password</div>
-                            <div class="input-group">
-                                <input id="confirm-new-password" type="password" class="form-control"
-                                    placeholder="Enter your password" required>
-                                <div class="input-group-text">
-                                    <label for="confirm-new-password"
-                                        class="password-icon-container password-icon fas fa-eye-slash">
-                                    </label>
+                            <div class="form-item mt-2">
+                                <div class="labels">Confirm new password</div>
+                                <div class="input-group">
+                                    <input id="confirm-new-password" type="password" class="form-control"
+                                           placeholder="Enter your password" required>
+                                    <div class="input-group-text">
+                                        <label for="confirm-new-password"
+                                               class="password-icon-container password-icon fas fa-eye-slash">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div class="invalid-feedback"></div>
                             </div>
-                        </div>
-                        <div class="row mt-3 btn-align">
-                            <button id="btn-cancel-password" class="btn btn-warning user-btns" type="button"><i
-                                    class="fas fa-times"></i><span class="offset-1">Cancel</span></button>
-                            <button id="btn-save-password" class="btn btn-success user-btns" type="submit"><i
-                                    class="fas fa-check"></i><span class="offset-1">Save</span></button>
-                        </div>
+                            <div class="row mt-3 btn-align">
+                                <button id="btn-cancel-password" class="btn btn-warning user-btns" type="button"><i
+                                        class="fas fa-times"></i><span class="offset-1">Cancel</span></button>
+                                <button id="btn-save-password" class="btn btn-success user-btns" type="submit"><i
+                                        class="fas fa-check"></i><span class="offset-1">Save</span></button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

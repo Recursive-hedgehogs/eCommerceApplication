@@ -69,7 +69,9 @@ export class Controllers {
                     scope.startsWith('customer_id:')
                 );
                 const customerId: string | null = customerIdScope ? customerIdScope.split(':')[1] : null;
-                if (customerId) this.app?.userPage.setUserData(customerId);
+                if (customerId) {
+                    this.app?.userPage.setUserData(customerId);
+                }
                 this.app?.setAuthenticationStatus(true); // set authentication state
                 if (window.location.pathname.slice(1) === ROUTE.LOGIN) {
                     this.router.navigate(ROUTE.MAIN); //add redirection from login to MAIN page

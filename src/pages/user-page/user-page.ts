@@ -4,7 +4,6 @@ import { Address, Customer, CustomerUpdateAction } from '@commercetools/platform
 import addressTemplate from './address-template.html';
 import ElementCreator from '../../utils/template-creation';
 import './user-page.scss';
-import { IAddress } from '../../constants/interfaces/interface';
 import { ICreateCustomerCredentials } from '../../constants/interfaces/credentials.interface';
 
 export default class UserPage {
@@ -31,17 +30,41 @@ export default class UserPage {
         });
     }
 
+    public showAddresses() {
+        const billingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.billing-addresses');
+        const shippingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.shipping-addresses');
+        const billingAddressIds: string[] | undefined = this.userData?.billingAddressIds;
+        const shippingAddressIds: string[] | undefined = this.userData?.shippingAddressIds;
+        const addresses = this.userData?.addresses;
+        const billingAddresses = addresses?.filter((address) => {
+            return address.id !== undefined && billingAddressIds?.includes(address.id);
+        });
+        const shippingAddresses = addresses?.filter((address) => {
+            return address.id !== undefined && shippingAddressIds?.includes(address.id);
+        });
+        billingAddresses?.forEach((address) => {
+            const newAddress = new ElementCreator({
+                tag: 'section',
+                classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
+                innerHTML: addressTemplate,
+            }).getElement();
+            billingContainer.appendChild(newAddress);
+            this.fillAddressFields(address, newAddress, true);
+        });
+        shippingAddresses?.forEach((address) => {
+            const newAddress = new ElementCreator({
+                tag: 'section',
+                classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
+                innerHTML: addressTemplate,
+            }).getElement();
+            shippingContainer.appendChild(newAddress);
+            this.fillAddressFields(address, newAddress, false);
+        });
+    }
+
     public showUserData(): void {
         this.fillMainFields();
-        this.userData?.addresses.forEach((address) => {
-            if (address.id) {
-                if (this.userData?.billingAddressIds?.includes(address.id)) {
-                    this.fillBillingAddressFields(address);
-                } else if (this.userData?.shippingAddressIds?.includes(address.id)) {
-                    this.fillShippingAddressFields(address);
-                }
-            }
-        });
+        this.showAddresses();
     }
 
     private fillMainFields(): void {
@@ -57,40 +80,32 @@ export default class UserPage {
         password.value = this.userData?.password || '';
     }
 
-    private fillAddressFields(address: Address, isBilling: boolean): void {
-        const prefix = isBilling ? '' : '-ship';
+    private fillAddressFields(address: Address, container: HTMLElement, isBilling: boolean): void {
         const checkboxId = isBilling ? 'switchDefaultAddress' : 'switchDefaultAddressShipping';
-        const street: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#input-street${prefix}`);
+        const street: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-street`);
         street.value = address.streetName || '';
-        const postalCode: HTMLInputElement = <HTMLInputElement>(
-            this.element.querySelector(`#input-postal-code${prefix}`)
-        );
+        const postalCode: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-postal-code`);
         postalCode.value = address.postalCode || '';
-        const addressID: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#address-id${prefix}`);
+        const addressID: HTMLInputElement = <HTMLInputElement>container.querySelector(`#address-id`);
         addressID.value = address.id || '';
-        const city: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#input-city${prefix}`);
+        const city: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-city`);
         city.value = address.city || '';
-        this.setSelectedOptionByValue(`#input-country${prefix}`, address.country === 'PL' ? 'Poland' : 'Germany');
+        this.setSelectedOptionByValue(`#input-country`, address.country === 'PL' ? 'Poland' : 'Germany');
+        const inputFields = container.querySelectorAll('input');
+        const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
+        this.changeDisabled(inputFields, selectField);
 
-        const checkbox: HTMLInputElement = <HTMLInputElement>this.element.querySelector(`#${checkboxId}`);
+        const checkbox: HTMLInputElement = <HTMLInputElement>container.querySelector(`#${checkboxId}`);
         const label = this.element.querySelector(`label[for="${checkboxId}"]`);
         //check if address set as the default
         const isDefault = isBilling
             ? this.userData?.defaultBillingAddressId === address.id
             : this.userData?.defaultShippingAddressId === address.id;
 
-        checkbox.checked = isDefault;
-        if (label) {
-            label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
-        }
-    }
-
-    private fillBillingAddressFields(address: Address): void {
-        this.fillAddressFields(address, true);
-    }
-
-    private fillShippingAddressFields(address: Address): void {
-        this.fillAddressFields(address, false);
+        // checkbox.checked = isDefault;
+        // if (label) {
+        //     label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
+        // }
     }
 
     // Helper function to set selected option for a select element by value
@@ -148,6 +163,14 @@ export default class UserPage {
             classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
             innerHTML: addressTemplate,
         }).getElement();
+        const deleteButton: HTMLElement = <HTMLElement>newAddress.querySelector('.btn-delete');
+        const editButton: HTMLElement = <HTMLElement>newAddress.querySelector('.btn-edit');
+        const resetNewAddressBtns: HTMLElement = <HTMLElement>newAddress.querySelector('.btn-reset-new');
+        const saveNewAddressBtns: HTMLElement = <HTMLElement>newAddress.querySelector('.btn-save-new');
+        deleteButton.classList.add('hidden');
+        editButton.classList.add('hidden');
+        resetNewAddressBtns.classList.remove('hidden');
+        saveNewAddressBtns.classList.remove('hidden');
         addressesCont.appendChild(newAddress);
     }
 
@@ -179,6 +202,16 @@ export default class UserPage {
 
     public prepareAddressData(addressSelector: string): Record<string, string> {
         const addressFields: string[] = ['id', 'country', 'city', 'streetName', 'postalCode'];
+        const addressElements: NodeListOf<HTMLInputElement> = this.element.querySelectorAll(addressSelector);
+        const addressArray: string[][] = [...addressElements].map((el: HTMLInputElement, i: number) => [
+            addressFields[i],
+            el.value,
+        ]);
+        return Object.fromEntries(addressArray);
+    }
+
+    public prepareNewAddressData(addressSelector: string): Record<string, string> {
+        const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
         const addressElements: NodeListOf<HTMLInputElement> = this.element.querySelectorAll(addressSelector);
         const addressArray: string[][] = [...addressElements].map((el: HTMLInputElement, i: number) => [
             addressFields[i],
