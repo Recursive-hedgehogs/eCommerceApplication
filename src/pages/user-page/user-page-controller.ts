@@ -7,7 +7,6 @@ import {
     Customer,
     CustomerSignInResult,
     CustomerUpdate,
-    CustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
