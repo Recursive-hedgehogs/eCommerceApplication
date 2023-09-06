@@ -1,8 +1,21 @@
 import App from '../../app/app';
 import UserPage from './user-page';
-import { validatePassword } from '../../utils/validations';
+import {
+    validateDateOfBirth,
+    validateEmail,
+    validateName,
+    validatePassword,
+    validatePostalCode,
+    validateStreet,
+} from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult, CustomerUpdate } from '@commercetools/platform-sdk';
+import {
+    ClientResponse,
+    Customer,
+    CustomerSignInResult,
+    CustomerUpdate,
+    CustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
 
 export class UserPageController {
@@ -45,6 +58,8 @@ export class UserPageController {
         const editButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-edit');
         const deleteButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-delete');
         const saveButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-save');
+        const saveMainButton: HTMLElement = <HTMLElement>this.userPage.element.querySelector('.btn-save-main');
+        saveMainButton.addEventListener('click', this.saveUpdatedMain);
         this.userPage.element.addEventListener('input', this.onEditValidate);
         cancelButtons.forEach((cancelButton) => {
             cancelButton.addEventListener('click', this.closeEditMode);
@@ -93,11 +108,8 @@ export class UserPageController {
 
     private onEditValidate = (e: Event): void => {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
-        // const card: HTMLElement = <HTMLElement>target.closest('.card');
-        // const countrySelect: HTMLSelectElement | null = <HTMLSelectElement>card.querySelector('#input-country');
-        // const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
-        //     card.querySelector('#input-country-ship')
-        // );
+        const card: HTMLElement = <HTMLElement>target.closest('.card');
+        const countrySelect: HTMLSelectElement | null = card ? card.querySelector('#input-country') : null;
         switch (target.id) {
             case 'user-email':
                 this.app?.loginPage.onEmailValidate(target);
@@ -123,11 +135,11 @@ export class UserPageController {
                 this.app?.registrationPage.onStreetValidate(target);
                 break;
             case 'input-postal-code':
-                // this.checkCountry(target, countrySelect);
+                if (countrySelect) this.checkCountry(target, countrySelect);
                 this.app?.registrationPage.onPostalValidate(target);
                 break;
             case 'input-postal-code-ship':
-                // this.checkCountry(target, countryShipSelect);
+                if (countrySelect) this.checkCountry(target, countrySelect);
                 this.app?.registrationPage.onPostalValidate(target);
                 break;
             default:
@@ -139,8 +151,7 @@ export class UserPageController {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
-        const parentContainer: HTMLElement = <HTMLElement>target.closest('.tab-pane');
-        const billAddressesCont: HTMLElement = <HTMLElement>parentContainer.querySelector('.billing-addresses');
+        const billAddressesCont: HTMLElement = <HTMLElement>target.closest('.billing-addresses');
         const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
         const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
         const addressElements: NodeListOf<HTMLInputElement> = curentCard.querySelectorAll('.address-field');
@@ -150,7 +161,13 @@ export class UserPageController {
         ]);
         const newAddressData = Object.fromEntries(addressArray);
         newAddressData.country = this.app?.getCodeFromCountryName(newAddressData.country);
-        console.log(newAddressData);
+        if (
+            (newAddressData.city && validateName(newAddressData.city)) ||
+            (newAddressData.streetName && validateStreet(newAddressData.streetName)) ||
+            (newAddressData.postalCode && validatePostalCode(newAddressData.postalCode))
+        ) {
+            return;
+        }
         const newAddress: CustomerUpdate = {
             version: userVersion,
             actions: [
@@ -205,33 +222,19 @@ export class UserPageController {
             });
     };
 
-    private saveUpdatedAddress = (e: Event): void => {
+    private saveUpdatedMain = (e: Event): void => {
         const customerData = this.userPage.prepareCustomerData();
-        const billingData = this.userPage.prepareAddressData('.billing-addresses .address-input');
-        const shippingData = this.userPage.prepareAddressData('.shipping-addresses .address-input');
-
-        billingData.country = this.app?.getCodeFromCountryName(billingData.country);
-        shippingData.country = this.app?.getCodeFromCountryName(shippingData.country);
-        const allAddresses = [billingData, shippingData];
-        // if (
-        //     validateEmail(customerData.email) ||
-        //     validateName(allAddresses[0].city) ||
-        //     validateName(allAddresses[1].city) ||
-        //     validateStreet(allAddresses[0].streetName) ||
-        //     validateStreet(allAddresses[1].streetName) ||
-        //     validateName(customerData.firstName) ||
-        //     validateName(customerData.lastName) ||
-        //     validateDateOfBirth(customerData.dateOfBirth) ||
-        //     validatePostalCode(allAddresses[0].postalCode) ||
-        //     validatePostalCode(allAddresses[1].postalCode)
-        // ) {
-        //     return;
-        // }
-
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
-        const addressUpdateActions = this.userPage.createAddressUpdateActions(allAddresses);
-
+        if (
+            validateEmail(customerData.email) ||
+            validateName(customerData.firstName) ||
+            validateName(customerData.lastName) ||
+            validateDateOfBirth(customerData.dateOfBirth)
+        ) {
+            alert('Incorrect data');
+            return;
+        }
         const data: CustomerUpdate = {
             version: userVersion,
             actions: [
@@ -251,13 +254,72 @@ export class UserPageController {
                     action: 'changeEmail',
                     email: customerData.email,
                 },
-                ...addressUpdateActions,
             ],
         };
         apiCustomer
             .updateUser(data, userID)
             ?.then((res): void => {
                 this.app?.showMessage('You have successfully changed your personal data');
+                this.app.userPage.userData = res.body;
+            })
+            .then((): void => {
+                this.closeEditMode(e);
+                this.userPage.fillMainFields();
+            })
+            .catch((): void => {
+                this.app?.showMessage('Something went wrong during the edit process, try again later', 'red');
+            });
+    };
+
+    private saveUpdatedAddress = (e: Event): void => {
+        const target: HTMLInputElement = <HTMLInputElement>e.target;
+        const billAddressesCont: HTMLElement = <HTMLElement>target.closest('.billing-addresses');
+        const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
+        const addressData = this.userPage.prepareAddressData('.address-input', curentCard);
+        const checkInput: HTMLInputElement = <HTMLInputElement>curentCard.querySelector('.form-check-input');
+        addressData.country = this.app?.getCodeFromCountryName(addressData.country);
+        if (
+            (addressData.city && validateName(addressData.city)) ||
+            (addressData.streetName && validateStreet(addressData.streetName)) ||
+            (addressData.postalCode && validatePostalCode(addressData.postalCode))
+        ) {
+            return;
+        }
+
+        const userID: string = <string>this.app.userPage.userData?.id;
+        const userVersion: number = <number>this.app.userPage.userData?.version;
+
+        const actions: CustomerUpdateAction[] = [
+            {
+                action: 'changeAddress',
+                addressId: addressData.id,
+                address: {
+                    streetName: addressData.streetName,
+                    postalCode: addressData.postalCode,
+                    city: addressData.city,
+                    country: addressData.country,
+                },
+            },
+        ];
+
+        if (checkInput.checked) {
+            const actionType = billAddressesCont ? 'setDefaultBillingAddress' : 'setDefaultShippingAddress';
+
+            actions.push({
+                action: actionType,
+                addressId: addressData.id,
+            });
+        }
+
+        const updatedAddress: CustomerUpdate = {
+            version: userVersion,
+            actions: actions,
+        };
+
+        apiCustomer
+            .updateUser(updatedAddress, userID)
+            ?.then((res): void => {
+                this.app?.showMessage('You have successfully changed your address');
                 this.app.userPage.userData = res.body;
             })
             .then((): void => {

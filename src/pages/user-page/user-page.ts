@@ -1,10 +1,11 @@
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
-import { Address, Customer, CustomerUpdateAction } from '@commercetools/platform-sdk';
+import { Address, Customer } from '@commercetools/platform-sdk';
 import addressTemplate from './address-template.html';
 import ElementCreator from '../../utils/template-creation';
 import './user-page.scss';
 import { ICreateCustomerCredentials } from '../../constants/interfaces/credentials.interface';
+import { IAddress } from '../../constants/interfaces/interface';
 
 export default class UserPage {
     element: HTMLElement;
@@ -74,7 +75,7 @@ export default class UserPage {
         this.showAddresses();
     }
 
-    private fillMainFields(): void {
+    public fillMainFields(): void {
         const firstName: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-first-name');
         firstName.value = this.userData?.firstName || '';
         const lastName: HTMLInputElement = <HTMLInputElement>this.element.querySelector('#user-last-name');
@@ -115,6 +116,7 @@ export default class UserPage {
     public openFieldstoEdit(container: HTMLElement): void {
         const cancelButton = container.querySelector('.btn-cancel');
         const saveButton = container.querySelector('.btn-save');
+        const saveMainButton = container.querySelector('.btn-save-main');
         const editButton = container.querySelector('.btn-edit');
         const deleteButton = container.querySelector('.btn-delete');
         const inputFields = container.querySelectorAll('input');
@@ -122,6 +124,7 @@ export default class UserPage {
         this.changeDisabled(inputFields, selectField);
         cancelButton?.classList.remove('hidden');
         saveButton?.classList.remove('hidden');
+        saveMainButton?.classList.remove('hidden');
         editButton?.classList.add('hidden');
         deleteButton?.classList.add('hidden');
     }
@@ -129,6 +132,8 @@ export default class UserPage {
     public closeFieldstoEdit(container: HTMLElement): void {
         const cancelButton = container.querySelector('.btn-cancel');
         const saveButton = container.querySelector('.btn-save');
+        const saveNewButton = container.querySelector('.btn-save-new');
+        const resetNewButton = container.querySelector('.btn-reset-new');
         const editButton = container.querySelector('.btn-edit');
         const deleteButton = container.querySelector('.btn-delete');
         const inputFields = container.querySelectorAll('input');
@@ -136,6 +141,8 @@ export default class UserPage {
         this.changeDisabled(inputFields, selectField);
         cancelButton?.classList.add('hidden');
         saveButton?.classList.add('hidden');
+        saveNewButton?.classList.add('hidden');
+        resetNewButton?.classList.add('hidden');
         editButton?.classList.remove('hidden');
         deleteButton?.classList.remove('hidden');
         const invalidInputs: NodeListOf<HTMLElement> = container.querySelectorAll('.is-invalid');
@@ -146,7 +153,6 @@ export default class UserPage {
         [...invalidFeedbacks].forEach((el) => {
             if (el.parentElement) el.parentElement.removeChild(el);
         });
-        this.showUserData();
     }
 
     public showNewAddress(parentContainer: HTMLElement): void {
@@ -193,13 +199,14 @@ export default class UserPage {
         return Object.fromEntries(personalArray);
     }
 
-    public prepareAddressData(addressSelector: string): Record<string, string> {
+    public prepareAddressData(addressSelector: string, container: Element): IAddress {
         const addressFields: string[] = ['id', 'country', 'city', 'streetName', 'postalCode'];
-        const addressElements: NodeListOf<HTMLInputElement> = this.element.querySelectorAll(addressSelector);
+        const addressElements: NodeListOf<HTMLInputElement> = container.querySelectorAll(addressSelector);
         const addressArray: string[][] = [...addressElements].map((el: HTMLInputElement, i: number) => [
             addressFields[i],
             el.value,
         ]);
+
         return Object.fromEntries(addressArray);
     }
 
@@ -211,18 +218,5 @@ export default class UserPage {
             el.value,
         ]);
         return Object.fromEntries(addressArray);
-    }
-
-    public createAddressUpdateActions(addressData: Record<string, string>[]): CustomerUpdateAction[] {
-        return addressData.map((item: Record<string, string>) => ({
-            action: 'changeAddress',
-            addressId: item.id,
-            address: {
-                streetName: item.streetName,
-                postalCode: item.postalCode,
-                city: item.city,
-                country: item.country,
-            },
-        }));
     }
 }
