@@ -268,11 +268,19 @@ describe('Validation Functions', () => {
 });
 
 describe('message-tests', () => {
+    let messageText: string;
     let message: Message;
     beforeEach(() => {
-        message = new Message('message');
+        messageText = 'message';
+        message = new Message(messageText);
     });
     it('should create div', () => {
         expect(message.element instanceof HTMLDivElement).toBe(true);
+    });
+    it('should have correct class', () => {
+        expect(message.element?.className.split(' ').includes(messageText)).toBe(true);
+    });
+    it('should have correct message', () => {
+        expect(message.element?.innerHTML).toBe(messageText);
     });
 });
