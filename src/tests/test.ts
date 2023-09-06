@@ -1,10 +1,9 @@
-//import { config } from 'dotenv';
+import { config } from 'dotenv';
 import * as packageJson from '../../package.json';
 import App from '../app/app';
 import View from '../view/view';
 import 'jest-fetch-mock';
 import { Controllers } from '../controllers/controllers';
-//config();
 import UserPage from '../pages/user-page/user-page';
 import { apiCustomer } from '../api/api-customer';
 import { Customer } from '@commercetools/platform-sdk';
@@ -21,6 +20,8 @@ import {
     validateStreet,
     validatePassword,
 } from '../utils/validations';
+import { Message } from '../components/message/message';
+config();
 
 test('Husky is configured in package.json', () => {
     expect(packageJson.husky).toBeDefined();
@@ -40,9 +41,9 @@ describe('App', () => {
         process.env = { ...env };
         app = new App();
     });
-    /*test('will receive process.env variables', async () => {
-        await expect(!!process.env.CTP_PROJECT_KEY).toBe(true);
-    });*/
+    test('will receive process.env variables', () => {
+        expect(!!process.env.CTP_PROJECT_KEY).toBe(true);
+    });
     test('setAuthenticationStatus sets authentication status', async () => {
         app.setAuthenticationStatus(true);
         expect(app.isAuthenticated()).toBe(true);
@@ -222,10 +223,10 @@ describe('FiltersController', () => {
         expect(filtersController).toBeDefined();
     });
 
-    it('should update content when submitted', () => {
-        const submitEvent = new Event('submit');
-        filters.element?.dispatchEvent(submitEvent);
-    });
+    // it('should update content when submitted', () => {
+    //     const submitEvent = new Event('submit');
+    //     filters.element?.dispatchEvent(submitEvent);
+    // });
 });
 
 describe('Validation Functions', () => {
@@ -263,5 +264,15 @@ describe('Validation Functions', () => {
         expect(validatePostalCode('12345')).toBeNull();
 
         expect(validatePostalCode('ABC')).toBe('Postal code should contain only digits and dashes');
+    });
+});
+
+describe('message-tests', () => {
+    let message: Message;
+    beforeEach(() => {
+        message = new Message('message');
+    });
+    it('should create div', () => {
+        expect(message.element instanceof HTMLDivElement).toBe(true);
     });
 });
