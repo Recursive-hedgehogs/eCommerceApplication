@@ -57,7 +57,6 @@ export default class CatalogPage {
         if (catalogFilters && this.filters?.element) {
             catalogFilters.append(this.filters.element);
         }
-        this.getCategories();
 
         const catalogSorting = this.element.querySelector('.catalog-sorting');
         if (catalogSorting && this.sort?.element) {
@@ -79,6 +78,7 @@ export default class CatalogPage {
     }
 
     public showCatalog(): void {
+        this.getCategories();
         this.updateContent({});
     }
 
