@@ -11,7 +11,7 @@
     "lint": "eslint src --ext .ts",
     "lint-fix": "eslint src --ext .ts --fix",
     "format": "npx prettier --write src",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,8 @@
     "@commercetools/sdk-client-v2": "^2.2.0",
     "bootstrap": "^5.3.1",
     "bootswatch": "^5.3.1",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "whatwg-fetch": "^3.6.18"
   },
   "devDependencies": {
     "@babel/core": "^7.22.10",
