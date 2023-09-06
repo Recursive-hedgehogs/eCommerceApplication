@@ -368,7 +368,7 @@ export class UserPageController {
         const newPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#new-password');
         const confirmPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#confirm-new-password');
         if (newPassword.value !== confirmPassword.value) {
-            this.app?.showMessage("New password aren't the same", 'red');
+            this.app?.showMessage("New passwords aren't the same", 'red');
         }
         if (
             validatePassword(currentPassword.value) ||
@@ -395,10 +395,10 @@ export class UserPageController {
                 .catch((e: Error) => {
                     switch (e.message) {
                         case '400':
-                            this.app?.showMessage('Wrong current password');
+                            this.app?.showMessage('Wrong current password', 'red');
                             break;
                         case '500':
-                            this.app?.showMessage('Password is not valid');
+                            this.app?.showMessage('Password is not valid', 'red');
                             break;
                         default:
                             console.log(e);
