@@ -1,8 +1,10 @@
+import { config } from 'dotenv';
 import * as packageJson from '../../package.json';
 import App from '../app/app';
 import View from '../view/view';
 import 'jest-fetch-mock';
 import { Controllers } from '../controllers/controllers';
+config();
 
 test('Husky is configured in package.json', () => {
     expect(packageJson.husky).toBeDefined();
@@ -15,35 +17,41 @@ test('Husky is installed and configured properly', () => {
 });
 
 describe('App', () => {
+    const env = process.env;
     let app: App;
-    beforeEach(() => {
+    beforeEach(async () => {
+        jest.resetModules();
+        process.env = { ...env };
         app = new App();
     });
-    test('setAuthenticationStatus sets authentication status', () => {
+    test('will receive process.env variables', async () => {
+        await expect(!!process.env.CTP_PROJECT_KEY).toBe(true);
+    });
+    test('setAuthenticationStatus sets authentication status', async () => {
         app.setAuthenticationStatus(true);
         expect(app.isAuthenticated()).toBe(true);
     });
-    test('isAuthenticated returns correct authentication status', () => {
+    test('isAuthenticated returns correct authentication status', async () => {
         app.setAuthenticationStatus(false);
         expect(app.isAuthenticated()).toBe(false);
         app.setAuthenticationStatus(true);
         expect(app.isAuthenticated()).toBe(true);
     });
-    test('start sets the view property', () => {
+    test('start sets the view property', async () => {
         const mockView: View = {} as View;
         app.start(mockView);
         expect(app.view).toBe(mockView);
     });
-    test('App authentication status is initially set to false', () => {
+    test('App authentication status is initially set to false', async () => {
         expect(app.isAuthenticated()).toBe(true);
     });
-    test('App authentication status can be toggled', () => {
+    test('App authentication status can be toggled', async () => {
         app.setAuthenticationStatus(false);
         expect(app.isAuthenticated()).toBe(false);
         app.setAuthenticationStatus(true);
         expect(app.isAuthenticated()).toBe(true);
     });
-    test('App starts with correct initial view properties', () => {
+    test('App starts with correct initial view properties', async () => {
         const mockView: View = {} as View;
         app.start(mockView);
         expect(app.view).toBe(mockView);
@@ -52,6 +60,9 @@ describe('App', () => {
         const app: App = new App();
         app.setAuthenticationStatus(true);
         // app.setCurrentPage(ROUTE.LOGIN);
+    });
+    afterEach(() => {
+        process.env = env;
     });
 });
 
