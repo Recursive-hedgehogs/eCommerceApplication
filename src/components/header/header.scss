@@ -3,11 +3,28 @@
     gap: 3%;
 }
 
-.navbar-brand i {
-    color: #e2da31;
-    font-size: 28px;
-}
-
 .my-btn-link {
     margin-left: 3%;
+}
+
+.dropdown-toggle::after {
+    margin-left: 0.05em;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: #ffb676;
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    right: -8px;
+}
+
+.icon-link {
+    width: 50px;
 }

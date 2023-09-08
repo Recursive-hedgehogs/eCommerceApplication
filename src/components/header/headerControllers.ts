@@ -50,14 +50,17 @@ export class HeaderControllers {
                 case ROUTE.LOGIN:
                     this.router.navigate(ROUTE.LOGIN);
                     document.title = 'storiesShelf store | Login';
+                    this.setActiveLink(target);
                     break;
                 case ROUTE.REGISTRATION:
                     this.router.navigate(ROUTE.REGISTRATION);
                     document.title = 'storiesShelf store | Registration';
+                    this.setActiveLink(target);
                     break;
                 case ROUTE.CATALOG:
                     this.router.navigate(ROUTE.CATALOG);
                     document.title = 'storiesShelf store | Catalog';
+                    this.setActiveLink(target);
                     if (e.target) {
                         this.app?.catalogPage.showCatalog();
                     }
@@ -65,22 +68,34 @@ export class HeaderControllers {
                 case ROUTE.USER:
                     this.router.navigate(ROUTE.USER);
                     document.title = 'storiesShelf store | User';
+                    this.setActiveLink(target);
                     break;
                 case ROUTE.BASKET:
                     this.router.navigate(ROUTE.BASKET);
                     document.title = 'storiesShelf store | Basket';
+                    this.setActiveLink(target);
                     break;
                 case ROUTE.ABOUT:
                     this.router.navigate(ROUTE.ABOUT);
                     document.title = 'shelfStories store | About';
+                    this.setActiveLink(target);
                     break;
                 case ROUTE.MAIN:
                     this.router.navigate(ROUTE.MAIN);
                     document.title = 'shelfStories store | Main';
+                    this.setActiveLink(target);
                     break;
                 default:
                     break;
             }
         }
+    };
+
+    private setActiveLink = (targetLink: HTMLElement) => {
+        const links = this.header.getElement().querySelectorAll('.nav-link');
+        links.forEach((link) => {
+            link.classList.remove('active');
+        });
+        targetLink.classList.add('active');
     };
 }
