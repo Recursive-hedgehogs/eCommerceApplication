@@ -7,11 +7,6 @@ module.exports = {
         static: {
             directory: path.resolve(__dirname, '../dist'),
         },
-        // open: {
-        //     app: {
-        //         name: 'google chrome',
-        //     },
-        // },
         historyApiFallback: true,
     },
 };

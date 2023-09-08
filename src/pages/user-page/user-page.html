@@ -1,0 +1,149 @@
+<div class="container rounded bg-white mt-5 mb-5 border">
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
+                    src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+                    alt="avatar"></div>
+        </div>
+        <div class="col-md-5">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Profile Detailes</h4>
+                </div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#main" aria-selected="true"
+                            role="tab">Main</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#billing" aria-selected="false" role="tab"
+                            tabindex="-1">Billing</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#shipping" aria-selected="false" tabindex="-1"
+                            role="tab">Shipping</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#password" aria-selected="false" tabindex="-1"
+                            role="tab">Password</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane main-info fade active show" id="main" role="tabpanel">
+                        <div class="billing-address card border-secondary mb-3 mt-2">
+                            <h6 class="card-header header-bg-color title-row">
+                                <span class="title">Personal data</span>
+                                <div class="btn-container">
+                                    <button class="btn-icon btn btn-secondary btn-edit" type="button"><i
+                                            class="fas fa-pen"></i></button>
+                                    <button class="btn-icon btn btn-secondary btn-save-main hidden" type="button"><i
+                                            class="fas fa-check"></i></button>
+                                    <button class="btn-icon btn btn-secondary btn-cancel hidden" type="button"><i
+                                            class="fas fa-times"></i></button>
+                                </div>
+                            </h6>
+                            <div class="card-body">
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-item">
+                                            <label class="labels">Name</label>
+                                            <input id="user-first-name" type="text"
+                                                class="form-control first-name personal" placeholder="first name"
+                                                value="" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-item">
+                                            <label class="labels">Surname</label>
+                                            <input id="user-last-name" type="text" class="form-control personal"
+                                                value="" placeholder="surname" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-item">
+                                    <label class="labels">Date of birth</label>
+                                    <input id="user-date-of-birth" type="date" class="form-control personal"
+                                        placeholder="date of birth" value="" disabled>
+                                </div>
+                                <div class="form-item">
+                                    <label class="labels">Email</label>
+                                    <input id="user-email" type="email" class="form-control personal" value=""
+                                        placeholder="surname" disabled>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="billing" role="tabpanel">
+                        <div class="addresses-container billing-addresses mt-2">
+                        </div>
+                        <div class="row mt-3 btn-align">
+                            <button id="btn-add-billing" class="btn btn-success btn-add" type="submit"
+                                style="width: 60%;"><i class="fas fa-plus"></i><span class="offset-1">Add new
+                                    address</span></button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="shipping" role="tabpanel">
+                        <div class="addresses-container shipping-addresses mt-2">
+                        </div>
+                        <div class="row mt-3 btn-align">
+                            <button id="btn-add-shipping" class="btn btn-success btn-add" type="submit"
+                                style="width: 60%;"><i class="fas fa-plus"></i><span class="offset-1">Add new
+                                    address</span></button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="password" role="tabpanel">
+                        <form id="password-form">
+                            <div class="form-item mt-2">
+                                <div class="labels">Current password</div>
+                                <div class="input-group">
+                                    <input id="user-password" type="password" class="form-control"
+                                           placeholder="Enter your password" required>
+                                    <div class="input-group-text">
+                                        <label for="user-password"
+                                               class="password-icon-container password-icon fas fa-eye-slash">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                    
+                            <div class="form-item mt-2">
+                                <div class="labels">New password</div>
+                                <div class="input-group">
+                                    <input id="new-password" type="password" class="form-control"
+                                           placeholder="Enter your password" required>
+                                    <div class="input-group-text">
+                                        <label for="new-password"
+                                               class="password-icon-container password-icon fas fa-eye-slash">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="form-item mt-2">
+                                <div class="labels">Confirm new password</div>
+                                <div class="input-group">
+                                    <input id="confirm-new-password" type="password" class="form-control"
+                                           placeholder="Enter your password" required>
+                                    <div class="input-group-text">
+                                        <label for="confirm-new-password"
+                                               class="password-icon-container password-icon fas fa-eye-slash">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="row mt-3 btn-align">
+                                <button id="btn-cancel-password" class="btn btn-warning user-btns" type="button"><i
+                                        class="fas fa-times"></i><span class="offset-1">Cancel</span></button>
+                                <button id="btn-save-password" class="btn btn-success user-btns" type="submit"><i
+                                        class="fas fa-check"></i><span class="offset-1">Save</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

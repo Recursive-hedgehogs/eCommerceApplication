@@ -8,7 +8,7 @@ export class Main {
     constructor() {
         this.element = new ElementCreator({
             tag: 'main',
-            classNames: ['main', 'd-flex', 'flex-column', 'flex-grow-1', 'bg-secondary-subtle', 'p-3'],
+            classNames: ['main', 'd-flex', 'flex-column', 'flex-grow-1', 'bg-secondary-subtle'],
         }).getElement();
         return Main.singleton ?? (Main.singleton = this);
     }

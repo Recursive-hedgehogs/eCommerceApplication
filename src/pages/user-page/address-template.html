@@ -1,0 +1,46 @@
+<h6 class="card-header header-bg-color title-row">
+    <span class="address-title">Address</span>
+    <div class="btn-container">
+        <button class="btn-icon btn btn-secondary btn-edit" type="button"><i class="fas fa-pen"></i></button>
+        <button class="btn-icon btn btn-secondary btn-delete" type="button"><i class="fas fa-trash"></i></button>
+        <button class="btn-icon btn btn-secondary btn-save-new hidden" type="button"><i class="fas fa-check"></i></button>
+        <button class="btn-icon btn btn-secondary btn-reset-new hidden" type="button"><i class="fas fa-times"></i></button>
+        <button class="btn-icon btn btn-secondary btn-save hidden" type="button"><i class="fas fa-check"></i></button>
+        <button class="btn-icon btn btn-secondary btn-cancel hidden" type="button"><i class="fas fa-times"></i></button>
+    </div>
+</h6>
+<div class="card-body">
+    <div class="form-item mt-2 hidden">
+        <label class="labels">ID</label>
+        <input id="address-id" type="text" class="form-control address-input" required disabled>
+    </div>
+    <div class="country form-item">
+        <label class="labels">Country</label>
+        <select id="input-country" class="form-select address-input address-field" required>
+            <option value="" disabled>Country</option>
+            <option value="Poland">Poland</option>
+            <option value="Germany">Germany</option>
+        </select>
+    </div>
+    <div class="city form-item mt-2">
+        <label class="labels">City</label>
+        <input id="input-city" type="text" class="form-control address-input address-field" placeholder="Enter your city"
+            required>
+    </div>
+    <div class="street form-item mt-2">
+        <label class="labels">Street</label>
+        <input id="input-street" type="text" class="form-control address-input address-field" placeholder="Enter your street"
+            required>
+    </div>
+    <div class="postal-code form-item mt-2">
+        <label class="labels">Postal code</label>
+        <input id="input-postal-code" type="text" class="form-control address-input address-field"
+            placeholder="Enter your postal code" required>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" name="default" role="switch" id="switchDefaultAddress">
+        <label class="form-check-label label-small" for="switchDefaultAddress">Set the address
+            as the
+            default</label>
+    </div>
+</div>

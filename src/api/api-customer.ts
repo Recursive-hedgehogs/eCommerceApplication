@@ -1,9 +1,14 @@
-import { ICreateCustomerCredentials, IEmailTokenCredentials, ILoginCredentials } from '../models/interfaces/interface';
+import {
+    ICreateCustomerCredentials,
+    IEmailTokenCredentials,
+    ILoginCredentials,
+} from '../constants/interfaces/credentials.interface';
 import { apiRoot } from './api-client';
-import { ApiPasswordFlow } from './api-password-flow';
+import { ApiPasswordFlow } from './api-flows/api-password-flow';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { ApiRefreshTokenFlow } from './api-refresh-token-flow';
-import { ApiExistingTokenFlow } from './api-existing-token-flow';
+import { ApiRefreshTokenFlow } from './api-flows/api-refresh-token-flow';
+import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
+import { CustomerChangePassword, CustomerUpdate } from '@commercetools/platform-sdk';
 
 class ApiCustomer {
     private apiPasswordFlow: ApiPasswordFlow;
@@ -14,7 +19,7 @@ class ApiCustomer {
         this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
-    createCustomer = (data: ICreateCustomerCredentials) => {
+    public createCustomer = (data: ICreateCustomerCredentials) => {
         return apiRoot
             .customers()
             .post({
@@ -26,7 +31,7 @@ class ApiCustomer {
             });
     };
 
-    signIn = (data: ILoginCredentials) => {
+    public signIn = (data: ILoginCredentials) => {
         this.apiPasswordFlow.setUserData(data.email, data.password);
         const apiRoot: ByProjectKeyRequestBuilder = this.apiPasswordFlow.apiRoot as ByProjectKeyRequestBuilder;
         return apiRoot
@@ -43,7 +48,7 @@ class ApiCustomer {
             });
     };
 
-    signIn2 = (data: ILoginCredentials) => {
+    public signIn2 = (data: ILoginCredentials) => {
         const refresh = localStorage.getItem('refreshToken');
         if (refresh) {
             this.apiRefreshTokenFlow.setUserData(refresh);
@@ -64,7 +69,7 @@ class ApiCustomer {
             });
     };
 
-    createEmailToken = (data: IEmailTokenCredentials) => {
+    public createEmailToken = (data: IEmailTokenCredentials) => {
         return apiRoot
             .customers()
             .emailToken()
@@ -77,7 +82,7 @@ class ApiCustomer {
             });
     };
 
-    public getUser(ID: string) {
+    public getUser = (ID: string) => {
         return this.apiExistingTokenFlow.apiRoot
             ?.customers()
             .withId({ ID })
@@ -86,6 +91,30 @@ class ApiCustomer {
             .catch((err) => {
                 throw Error(err);
             });
-    }
+    };
+
+    public updateUser = (data: CustomerUpdate, ID: string) => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.customers()
+            .withId({ ID })
+            .post({
+                body: data,
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public changePassword = (data: CustomerChangePassword) => {
+        return this.apiExistingTokenFlow.apiRoot
+            ?.customers()
+            .password()
+            .post({ body: data })
+            .execute()
+            .catch((err) => {
+                throw Error(err.statusCode);
+            });
+    };
 }
 export const apiCustomer: ApiCustomer = new ApiCustomer();

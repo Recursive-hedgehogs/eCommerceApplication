@@ -1,4 +1,4 @@
-import { IElementParams } from '../models/interfaces/interface';
+import { IElementParams } from '../constants/interfaces/interface';
 
 class ElementCreator<T extends HTMLElement> {
     element: T | null;
@@ -7,7 +7,7 @@ class ElementCreator<T extends HTMLElement> {
         this.createElement(params);
     }
 
-    getElement(): T {
+    public getElement(): T {
         if (this.element) {
             return this.element;
         } else {
@@ -15,32 +15,28 @@ class ElementCreator<T extends HTMLElement> {
         }
     }
 
-    createElement(params: IElementParams): void {
+    public createElement(params: IElementParams): void {
         const tag: string = params.tag;
         this.element = document.createElement(tag) as T;
         this.setCssClasses(params.classNames);
         if (params.textContent) this.setTextContent(params.textContent);
         if (params.innerHTML) this.setInnerHTML(params.innerHTML);
+        if (params.background) this.element.style.backgroundImage = `url('${params.background}')`;
     }
 
-    setCssClasses(cssClasses: Array<string>): void {
+    public setCssClasses(cssClasses: Array<string>): void {
         cssClasses?.map((cssClass: string) => this.element?.classList.add(cssClass));
     }
 
-    setTextContent(text: string, emptyText = ''): void {
+    public setTextContent(text: string, emptyText = ''): void {
         if (this.element) {
             text ? (this.element.textContent = text) : (this.element.textContent = emptyText);
         }
     }
 
-    setInnerHTML(html?: string | HTMLElement): void {
+    public setInnerHTML(html?: string): void {
         if (this.element) {
-            this.element.innerHTML = '';
-            if (html instanceof HTMLElement) {
-                this.element.append(html);
-            } else {
-                this.element.innerHTML = html ?? '';
-            }
+            this.element.innerHTML = html ?? '';
         }
     }
 }

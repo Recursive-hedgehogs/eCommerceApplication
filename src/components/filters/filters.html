@@ -1,0 +1,140 @@
+<div class="d-flex flex-row column-gap-3 flex-wrap row-gap-2">
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Genre
+    </button>
+    <form class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton1">
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckFantasy" name="fantasy">
+                <label class="form-check-label" for="dropdownCheckFantasy">
+                    Fantasy
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckClassics" name="classic">
+                <label class="form-check-label" for="dropdownCheckClassics">
+                    Classics
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckBiography" name="biography">
+                <label class="form-check-label" for="dropdownCheckBiography">
+                    Biography
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckThriller" name="thriller">
+                <label class="form-check-label" for="dropdownCheckThriller">
+                    Thriller
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckNovel" name="novel">
+                <label class="form-check-label" for="dropdownCheckNovel">
+                    Novel
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckPsychology" name="psychology">
+                <label class="form-check-label" for="dropdownCheckPsychology">
+                    Psychology
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckBusiness" name="business">
+                <label class="form-check-label" for="dropdownCheckBusiness">
+                    Business
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+        Author
+    </button>
+    <form class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton4">
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheck" name="tolkien">
+                <label class="form-check-label" for="dropdownCheck">
+                    J.R.R. Tolkien
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckIsaacson" name="isaacson">
+                <label class="form-check-label" for="dropdownCheckIsaacson">
+                    W. Isaacson
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckForden" name="forden">
+                <label class="form-check-label" for="dropdownCheckForden">
+                    S.G. Forden
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownCheckRemarque" name="remarque">
+                <label class="form-check-label" for="dropdownCheckRemarque">
+                    E.M. Remarque
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+        Price
+    </button>
+    <form class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton2">
+        <label for="customRangeMin" class="form-label"></label>
+        <input type="range" class="form-range min-slider" value="0" min="0" max="100" step="10" id="customRangeMin" name="minimum">
+        <div class="min-result">0</div>
+        <label for="customRangeMax" class="form-label"></label>
+        <input type="range" class="form-range  max-slider" value="100" min="0" max="100" step="10" id="customRangeMax" name="maximum">
+        <div class="max-result">100</div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+        Language
+    </button>
+    <form class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton3">
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownEn" name="english">
+                <label class="form-check-label" for="dropdownEn">English</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dropdownBel" name="belarusian">
+                <label class="form-check-label" for="dropdownBel">Belarusian</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
+<button class="btn btn-primary" id="filters-reset">Reset filters</button>
+</div>
+<div class="filters-result border border-1 border-primary-subtle rounded-2"></div>
