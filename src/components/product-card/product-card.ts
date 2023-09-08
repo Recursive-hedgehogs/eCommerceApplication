@@ -13,7 +13,7 @@ export class ProductCard {
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
     public readonly prices: Price[] | undefined;
-    private productAddToCart: HTMLElement;
+    public productAddToCart: HTMLElement;
 
     constructor(data: ProductProjection) {
         this.prices = data.masterVariant.prices;

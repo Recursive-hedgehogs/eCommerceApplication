@@ -1,7 +1,7 @@
 import { Controllers } from '../../controllers/controllers';
 import { TokenCache } from '@commercetools/sdk-client-v2';
 import { IAnonymusCredentials, IClientCredentials, IUserCredentials } from './credentials.interface';
-import { DiscountedPrice, Product, ProductDiscount, ProductProjection } from '@commercetools/platform-sdk';
+import { DiscountedPrice, MyCartDraft, Product, ProductDiscount, ProductProjection } from '@commercetools/platform-sdk';
 
 export interface IView {
     build(): void;
@@ -68,4 +68,8 @@ export interface IProductWithDiscount {
 export interface IProductProjectionWithDiscount {
     product: ProductProjection;
     discount?: DiscountedPrice;
+}
+
+export interface ICartDraft {
+    currency: MyCartDraft;
 }
