@@ -13,6 +13,7 @@ export class ProductCard {
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
     public readonly prices: Price[] | undefined;
+    public productAddToCart: HTMLElement;
 
     constructor(data: ProductProjection) {
         this.prices = data.masterVariant.prices;
@@ -59,13 +60,19 @@ export class ProductCard {
             this.productDefaultPrice.innerText = '';
             this.productPrice.classList.remove('text-decoration-line-through');
         }
+        this.productAddToCart = new ElementCreator({
+            tag: 'button',
+            classNames: ['product-add-to-cart'],
+            innerHTML: 'Add to Cart',
+        }).getElement();
 
         this._element.append(
             this.productName,
             this.productImage,
             this.productDescription,
             this.productPrice,
-            this.productDefaultPrice
+            this.productDefaultPrice,
+            this.productAddToCart
         );
     }
 
