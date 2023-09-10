@@ -36,7 +36,10 @@ export class ProductCardController {
     public addProductToCart() {
         this.getBasket()?.then((cart) => {
             if (cart) {
-                this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId);
+                this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
+                    this.app.basketPage.setContent(body.lineItems);
+                });
+
                 console.log(cart);
             }
         });
