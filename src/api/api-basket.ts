@@ -1,7 +1,9 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
-import { CartDraft, ShoppingListUpdate } from '@commercetools/platform-sdk';
+import { CartDraft } from '@commercetools/platform-sdk';
+
 export class ApiBasket {
     private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
+
     constructor() {
         this.apiAnonymousSessionFlow = new ApiAnonymousSessionFlow();
     }
@@ -18,35 +20,34 @@ export class ApiBasket {
             });
     };
 
+    public updateCart = (cartId: string, version: number, productId: string) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'addLineItem',
+                            productId,
+                            // variantId
+                            quantity: 1,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
     public getCartById = (ID: string) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.carts()
             .withId({ ID })
             .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public getShoppingListByID = (ID: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.shoppingLists()
-            .withId({ ID })
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public updateShoppingListByID = (data: ShoppingListUpdate, ID: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.shoppingLists()
-            .withId({ ID })
-            .post({
-                body: data,
-            })
             .execute()
             .catch((err) => {
                 throw Error(err);
