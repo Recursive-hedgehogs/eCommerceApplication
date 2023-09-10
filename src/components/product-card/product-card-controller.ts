@@ -18,24 +18,42 @@ export class ProductCardController {
     }
 
     private addListeners(): void {
-        // this.productCard.element?.addEventListener('click', this.onClick);
-        this.productCard.productAddToCart.addEventListener('click', this.addProductToCart);
+        this.productCard.element?.addEventListener('click', this.onClick);
     }
 
     public onClick = (e: Event): void => {
-        this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
-        if (e.target) {
-            this.app.productPage.getData(this.productCard.productId);
+        const target = e.target as HTMLElement;
+        switch (target.id) {
+            case 'add-product-to-cart':
+                this.addProductToCart();
+                break;
+            default:
+                this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
+                this.app.productPage.getData(this.productCard.productId);
         }
     };
 
-    public addProductToCart = () => {
-        this.apiBasket
-            .createCart({ currency: 'EUR' })
-            ?.then(({ body }) => {
-                this.apiBasket.updateCart(body.id, body.version, this.productCard.productId);
-                console.log(body);
-            })
-            .then((resp) => console.log(resp));
-    };
+    public addProductToCart() {
+        this.getBasket()?.then((cart) => {
+            if (cart) {
+                this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId);
+                console.log(cart);
+            }
+        });
+    }
+
+    getBasket() {
+        return this.apiBasket
+            .getCarts()
+            ?.then((resp) => resp.body)
+            .then((resp) => resp.results)
+            .then((resp) => resp[0])
+            .then((cart) => {
+                if (cart?.id) {
+                    return cart;
+                } else {
+                    return this.apiBasket.createCart();
+                }
+            });
+    }
 }

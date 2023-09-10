@@ -65,6 +65,7 @@ export class ProductCard {
             classNames: ['product-add-to-cart'],
             innerHTML: 'Add to Cart',
         }).getElement();
+        this.productAddToCart.id = 'add-product-to-cart';
 
         this._element.append(
             this.productName,

@@ -1,5 +1,4 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
-import { CartDraft } from '@commercetools/platform-sdk';
 
 export class ApiBasket {
     private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
@@ -8,13 +7,24 @@ export class ApiBasket {
         this.apiAnonymousSessionFlow = new ApiAnonymousSessionFlow();
     }
 
-    public createCart = (data: CartDraft) => {
+    public getCarts = () => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public createCart = () => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.carts()
             .post({
-                body: data,
+                body: { currency: 'EUR' },
             })
             .execute()
+            .then(({ body }) => body)
             .catch((err) => {
                 throw Error(err);
             });
@@ -35,6 +45,21 @@ export class ApiBasket {
                             quantity: 1,
                         },
                     ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public deleteCart = (ID: string, version: number) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID })
+            .delete({
+                queryArgs: {
+                    version,
                 },
             })
             .execute()
