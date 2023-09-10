@@ -3,7 +3,7 @@ import template from './login-page.template.html';
 import './login-page.scss';
 import * as validationUtils from '../../utils/validations';
 export default class LoginPage {
-    element: HTMLElement;
+    public element: HTMLElement;
 
     constructor() {
         this.element = new ElementCreator({

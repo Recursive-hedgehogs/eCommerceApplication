@@ -10,6 +10,7 @@ import MainPage from '../pages/main-page/main-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
 import UserPage from '../pages/user-page/user-page';
 import Header from '../components/header/header';
+import BasketPage from '../pages/basket-page/basket-page';
 
 class App implements IApp {
     private countriesArray!: Array<ISO31661AssignedEntry>;
@@ -24,6 +25,7 @@ class App implements IApp {
     public userPage!: UserPage;
     public notFoundPage!: NotFoundPage;
     public header!: Header;
+    public basketPage!: BasketPage;
     private static singleton: App;
 
     constructor() {
@@ -41,6 +43,7 @@ class App implements IApp {
         this.productPage = new ProductPage();
         this.catalogPage = new CatalogPage();
         this.notFoundPage = new NotFoundPage();
+        this.basketPage = new BasketPage();
         App.singleton = this;
     }
 

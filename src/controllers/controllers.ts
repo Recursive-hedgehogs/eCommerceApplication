@@ -34,7 +34,6 @@ export class Controllers {
         new LoginPageController();
         new RegistrationPageController();
         new CatalogPageController();
-        // new UserPageController();
         this.addListeners();
     }
 
@@ -108,6 +107,7 @@ export class Controllers {
         } else if (window.location.pathname.slice(1) === ROUTE.USER) {
             this.router.navigate(ROUTE.LOGIN); //add redirection from user to LOGIN page
         }
+        this.setBasket();
         window.removeEventListener('load', this.onFirstLoad);
     };
 
@@ -117,4 +117,12 @@ export class Controllers {
             this.router.navigate(currentPath, e.state.route === currentPath);
         }
     };
+
+    private setBasket(): void {
+        this.app?.basketPage.getBasket()?.then((cart) => {
+            if (cart?.lineItems) {
+                this.app?.basketPage.setContent(cart);
+            }
+        });
+    }
 }
