@@ -1,11 +1,13 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './basket-page.html';
 import './basket-page.scss';
-import { LineItem } from '@commercetools/platform-sdk';
+import { Cart, CartPagedQueryResponse, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { BasketItem } from '../../components/basket-item/basket-item';
+import { ApiBasket } from '../../api/api-basket';
 
 export default class BasketPage {
     private readonly _element: HTMLElement;
+    private apiBasket: ApiBasket = new ApiBasket();
 
     constructor() {
         this._element = new ElementCreator({
@@ -15,10 +17,27 @@ export default class BasketPage {
         }).getElement();
     }
 
-    public setContent(data: LineItem[]): void {
+    public setContent(data: Cart): void {
         this.basketContainer.innerHTML = '';
-        const basketItemsArray: HTMLElement[] = data.map((item: LineItem) => new BasketItem(item).element);
+        const basketItemsArray: HTMLElement[] = data.lineItems.map((item: LineItem) => new BasketItem(item).element);
         this.basketContainer.append(...basketItemsArray);
+        const totalCartPrice = this._element.querySelector('.basket-total-price') as HTMLElement;
+        totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
+    }
+
+    public getBasket() {
+        return this.apiBasket
+            .getCarts()
+            ?.then((resp: ClientResponse<CartPagedQueryResponse>) => resp.body)
+            .then((resp: CartPagedQueryResponse) => resp.results)
+            .then((resp: Cart[]) => resp[0])
+            .then((cart: Cart) => {
+                if (cart?.id) {
+                    return cart;
+                } else {
+                    return this.apiBasket.createCart();
+                }
+            });
     }
 
     public get element(): HTMLElement {

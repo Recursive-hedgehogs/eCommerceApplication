@@ -34,10 +34,10 @@ export class ProductCardController {
     };
 
     public addProductToCart() {
-        this.getBasket()?.then((cart) => {
+        this.app.basketPage.getBasket()?.then((cart) => {
             if (cart) {
                 this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
-                    this.app.basketPage.setContent(body.lineItems);
+                    this.app.basketPage.setContent(body);
                 });
 
                 console.log(cart);
@@ -45,18 +45,18 @@ export class ProductCardController {
         });
     }
 
-    getBasket() {
-        return this.apiBasket
-            .getCarts()
-            ?.then((resp) => resp.body)
-            .then((resp) => resp.results)
-            .then((resp) => resp[0])
-            .then((cart) => {
-                if (cart?.id) {
-                    return cart;
-                } else {
-                    return this.apiBasket.createCart();
-                }
-            });
-    }
+    // getBasket() {
+    //     return this.apiBasket
+    //         .getCarts()
+    //         ?.then((resp) => resp.body)
+    //         .then((resp) => resp.results)
+    //         .then((resp) => resp[0])
+    //         .then((cart) => {
+    //             if (cart?.id) {
+    //                 return cart;
+    //             } else {
+    //                 return this.apiBasket.createCart();
+    //             }
+    //         });
+    // }
 }
