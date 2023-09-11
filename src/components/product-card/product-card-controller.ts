@@ -38,6 +38,7 @@ export class ProductCardController {
             if (cart) {
                 this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
                     this.app.basketPage.setContent(body);
+                    this.app?.header.setItemsNumInBasket(cart?.lineItems.length + 1);
                 });
 
                 console.log(cart);

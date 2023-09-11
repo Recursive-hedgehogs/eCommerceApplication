@@ -121,6 +121,7 @@ export class Controllers {
     private setBasket(): void {
         this.app?.basketPage.getBasket()?.then((cart) => {
             if (cart?.lineItems) {
+                this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
                 this.app?.basketPage.setContent(cart);
             }
         });
