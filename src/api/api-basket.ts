@@ -78,4 +78,27 @@ export class ApiBasket {
                 throw Error(err);
             });
     };
+
+    public deleteItemInCart = (cartId: string, version: number, lineItemId: string) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'removeLineItem',
+                            lineItemId,
+                            // variantId
+                            quantity: 1,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
 }

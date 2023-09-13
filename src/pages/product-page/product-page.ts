@@ -10,6 +10,7 @@ import {
     ProductDiscountValueAbsolute,
     ProductDiscountValueExternal,
     ProductDiscountValueRelative,
+    ProductProjection,
 } from '@commercetools/platform-sdk';
 import { IProductWithDiscount } from '../../constants/interfaces/interface';
 import { SwiperContainer } from 'swiper/swiper-element';
@@ -24,9 +25,10 @@ export default class ProductPage {
     private productFullDescription!: HTMLElement;
     private productPrice!: HTMLElement;
     private productPriceDiscount!: HTMLElement;
-    private data?: IProductWithDiscount; //temporary container for response data
+    public data?: IProductWithDiscount; //temporary container for response data
     private apiProduct: ApiProduct = new ApiProduct();
     private static singleton: ProductPage;
+    public productId: string | undefined;
 
     constructor() {
         if (ProductPage.singleton) {
@@ -43,6 +45,7 @@ export default class ProductPage {
         this.productFullDescription = this.element.querySelector('.product-full-description') as HTMLElement;
         this.productPrice = this.element.querySelector('.product-price') as HTMLElement;
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
+        this.productId = undefined;
         ProductPage.singleton = this;
         this.showModalWindow();
     }
@@ -202,6 +205,7 @@ export default class ProductPage {
     }
 
     public getData(productId: string): void {
+        this.productId = productId;
         this.apiProduct
             .getProductById(productId)
             ?.then((resp: ClientResponse<Product>) => resp.body)
