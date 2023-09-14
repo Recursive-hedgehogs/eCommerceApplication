@@ -3,6 +3,7 @@ import { Router } from '../../router/router';
 import { ROUTE } from '../../constants/enums/enum';
 import App from '../../app/app';
 import { ApiBasket } from '../../api/api-basket';
+import { Cart } from '@commercetools/platform-sdk';
 
 export class ProductCardController {
     private readonly productCard: ProductCard;
@@ -22,10 +23,13 @@ export class ProductCardController {
     }
 
     public onClick = (e: Event): void => {
-        const target = e.target as HTMLElement;
+        const target: HTMLElement = e.target as HTMLElement;
         switch (target.id) {
             case 'add-product-to-cart':
-                this.addProductToCart();
+                this.addProductToCart()?.then(() => {
+                    this.productCard.inCart = true;
+                    // this.productCard.productAddToCart.innerText = 'In Cart';
+                });
                 break;
             default:
                 this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
@@ -33,31 +37,14 @@ export class ProductCardController {
         }
     };
 
-    public addProductToCart() {
-        this.app.basketPage.getBasket()?.then((cart) => {
+    public addProductToCart(): Promise<void> | undefined {
+        return this.app.basketPage.getBasket()?.then((cart: Cart | undefined): void => {
             if (cart) {
                 this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
                     this.app.basketPage.setContent(body);
                     this.app?.header.setItemsNumInBasket(cart?.lineItems.length + 1);
                 });
-
-                console.log(cart);
             }
         });
     }
-
-    // getBasket() {
-    //     return this.apiBasket
-    //         .getCarts()
-    //         ?.then((resp) => resp.body)
-    //         .then((resp) => resp.results)
-    //         .then((resp) => resp[0])
-    //         .then((cart) => {
-    //             if (cart?.id) {
-    //                 return cart;
-    //             } else {
-    //                 return this.apiBasket.createCart();
-    //             }
-    //         });
-    // }
 }

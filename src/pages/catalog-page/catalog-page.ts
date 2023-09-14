@@ -98,15 +98,33 @@ export default class CatalogPage {
                 new CategoryController(categoryComponent);
                 return categoryComponent.element;
             });
+        categoriesContainer.innerHTML = '';
         categoriesContainer.append(...categoriesArray);
     }
 
-    public updateContent(filter: IProductFiltersCredentials) {
+    public updateContent(filter: IProductFiltersCredentials): void {
         this.apiProduct
             .getProductProjection(filter)
             ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
                 this.setContent(res.body.results);
             })
             .catch((err) => console.log(err));
+    }
+
+    public updateCardsButtonAddToCart(idArray: string[]): void {
+        console.log(idArray);
+        setTimeout(
+            () =>
+                this.products
+                    ?.filter((product) => {
+                        console.log(idArray.includes(product.productId), product);
+                        return idArray.includes(product.productId);
+                    })
+                    .forEach((product) => {
+                        console.log(product);
+                        product.inCart = true;
+                    }),
+            1000
+        );
     }
 }

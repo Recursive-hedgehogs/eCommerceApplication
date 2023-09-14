@@ -11,6 +11,7 @@ import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 import { UserPageController } from '../pages/user-page/user-page-controller';
+import { Cart } from '@commercetools/platform-sdk';
 
 export class Controllers {
     private app: App | null;
@@ -119,10 +120,12 @@ export class Controllers {
     };
 
     private setBasket(): void {
-        this.app?.basketPage.getBasket()?.then((cart) => {
+        this.app?.basketPage.getBasket()?.then((cart: Cart | undefined) => {
             if (cart?.lineItems) {
                 this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
                 this.app?.basketPage.setContent(cart);
+                const idArray = cart.lineItems.map(({ productId }) => productId);
+                this.app?.catalogPage.updateCardsButtonAddToCart(idArray);
             }
         });
     }
