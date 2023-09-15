@@ -17,7 +17,7 @@ export class BasketItem {
         this.setContent();
     }
 
-    private setContent() {
+    private setContent(): void {
         const basketItemName: HTMLElement = this._element.querySelector('.basket-item-name') as HTMLElement;
         const basketItemImage: HTMLElement = this._element.querySelector('.basket-item-image') as HTMLElement;
         const basketItemPrice: HTMLElement = this._element.querySelector('.basket-item-price') as HTMLElement;

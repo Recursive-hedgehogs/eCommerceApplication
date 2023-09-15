@@ -1,10 +1,13 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
+import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
 
 export class ApiBasket {
     private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
+    private apiExistingTokenFlow: ApiExistingTokenFlow;
 
     constructor() {
         this.apiAnonymousSessionFlow = new ApiAnonymousSessionFlow();
+        this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
 
     public getCarts = () => {
@@ -19,6 +22,19 @@ export class ApiBasket {
 
     public createCart = () => {
         return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .post({
+                body: { currency: 'EUR' },
+            })
+            .execute()
+            .then(({ body }) => body)
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public createCartForLogInUser = () => {
+        return this.apiExistingTokenFlow.apiRoot
             ?.carts()
             .post({
                 body: { currency: 'EUR' },

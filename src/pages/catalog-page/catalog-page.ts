@@ -23,7 +23,6 @@ export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
     private readonly sort?: Sort;
-    public originalProducts: ProductProjection[] = [];
     private products?: ProductCard[];
     private readonly filters?: Filters;
     private apiProduct: ApiProduct = new ApiProduct();
@@ -82,19 +81,19 @@ export default class CatalogPage {
         this.updateContent({});
     }
 
-    private getCategories() {
+    private getCategories(): Promise<void> | undefined {
         return this.apiProduct
             .getCategories()
             ?.then((resp: ClientResponse<CategoryPagedQueryResponse>) => resp.body.results)
-            .then((categories) => this.createCategories(categories));
+            .then((categories: Category[]) => this.createCategories(categories));
     }
 
     private createCategories(categories: Category[]): void {
         const categoriesContainer: HTMLElement = this.element.querySelector('.categories-container') as HTMLElement;
         const categoriesArray: HTMLElement[] = categories
-            .filter((category) => !category.parent)
+            .filter((category: Category) => !category.parent)
             .map((category: Category) => {
-                const categoryComponent = new CategoryComponent(category, categories);
+                const categoryComponent: CategoryComponent = new CategoryComponent(category, categories);
                 new CategoryController(categoryComponent);
                 return categoryComponent.element;
             });
@@ -112,16 +111,13 @@ export default class CatalogPage {
     }
 
     public updateCardsButtonAddToCart(idArray: string[]): void {
-        console.log(idArray);
         setTimeout(
             () =>
                 this.products
-                    ?.filter((product) => {
-                        console.log(idArray.includes(product.productId), product);
+                    ?.filter((product: ProductCard) => {
                         return idArray.includes(product.productId);
                     })
-                    .forEach((product) => {
-                        console.log(product);
+                    .forEach((product: ProductCard): void => {
                         product.inCart = true;
                     }),
             1000

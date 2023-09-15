@@ -11,10 +11,12 @@ import NotFoundPage from '../pages/not-found-page/not-found-page';
 import UserPage from '../pages/user-page/user-page';
 import Header from '../components/header/header';
 import BasketPage from '../pages/basket-page/basket-page';
+import { State } from '../state/state';
 
 class App implements IApp {
     private countriesArray!: Array<ISO31661AssignedEntry>;
     public main: Main = new Main();
+    private state: State = new State();
     private loggedIn = false;
     public view!: View | null;
     public productPage!: ProductPage;
@@ -65,6 +67,7 @@ class App implements IApp {
 
     public setAuthenticationStatus(status: boolean): void {
         this.loggedIn = status;
+        this.state.isLogIn = status;
     }
 
     public isAuthenticated(): boolean {

@@ -26,9 +26,8 @@ export class ProductCardController {
         const target: HTMLElement = e.target as HTMLElement;
         switch (target.id) {
             case 'add-product-to-cart':
-                this.addProductToCart()?.then(() => {
+                this.addProductToCart()?.then((): void => {
                     this.productCard.inCart = true;
-                    // this.productCard.productAddToCart.innerText = 'In Cart';
                 });
                 break;
             default:
@@ -38,7 +37,7 @@ export class ProductCardController {
     };
 
     public addProductToCart(): Promise<void> | undefined {
-        return this.app.basketPage.getBasket()?.then((cart: Cart | undefined): void => {
+        return this.app.basketPage.getBasket()?.then((cart) => {
             if (cart) {
                 this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
                     this.app.basketPage.setContent(body);
