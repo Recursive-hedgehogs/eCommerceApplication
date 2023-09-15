@@ -1,4 +1,5 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
+import { ClientResponse, Cart } from '@commercetools/platform-sdk';
 
 export class ApiBasket {
     private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
@@ -78,4 +79,70 @@ export class ApiBasket {
                 throw Error(err);
             });
     };
+
+    public decreaseCartItemQuantity(cartId: string, lineItemId: string, version: number) {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'changeLineItemQuantity',
+                            lineItemId,
+                            quantity: 1,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((error) => {
+                throw Error(error);
+            });
+    }
 }
+
+/*public increaseCartItemQuantity = (cartId: string, lineItemId: string, version: number) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'changeLineItemQuantity',
+                            lineItemId,
+                            quantity: 1,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public removeCartItem = (cartId: string, lineItemId: string, version: number) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'removeLineItem',
+                            lineItemId,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+}*/
