@@ -28,13 +28,6 @@ export default class BasketPage {
         totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
     }
 
-    // 1.check if basketId exist
-    // 2. if yes: check if isLoggedIn
-    // 3. if yes: existingFlow -> get cart by id;
-
-    // 2b. if no: check if isLoggedIn
-    // 3. if yes: anonymousFlow -> get cart by id;
-
     public getBasket(): Promise<Cart | void | undefined> | undefined {
         if (this.state.basketId) {
             return this.apiBasket
@@ -53,24 +46,6 @@ export default class BasketPage {
             this.state.basketId = cart.id;
         });
     }
-
-    // public getBasket(): Promise<Cart | void | undefined> | undefined {
-    //     return this.apiBasket
-    //         .getCarts()
-    //         ?.then((resp: ClientResponse<CartPagedQueryResponse>) => resp.body)
-    //         .then((resp: CartPagedQueryResponse) => resp.results)
-    //         .then((resp: Cart[]) => resp[0])
-    //         .then((cart: Cart) => {
-    //             if (cart?.id) {
-    //                 return cart;
-    //             } else {
-    //                 if (this.state.isLogIn) {
-    //                     return this.apiBasket.createCartForLogInUser();
-    //                 }
-    //                 return this.apiBasket.createCart();
-    //             }
-    //         });
-    // }
 
     public get element(): HTMLElement {
         return this._element;

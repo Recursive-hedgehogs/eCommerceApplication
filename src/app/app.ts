@@ -12,12 +12,14 @@ import UserPage from '../pages/user-page/user-page';
 import Header from '../components/header/header';
 import BasketPage from '../pages/basket-page/basket-page';
 import { State } from '../state/state';
+import { validateEmail, validatePassword } from '../utils/validations';
+import { apiCustomer } from '../api/api-customer';
+import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
+import { ROUTE } from '../constants/enums/enum';
+import { Router } from '../router/router';
 
 class App implements IApp {
-    private countriesArray!: Array<ISO31661AssignedEntry>;
     public main: Main = new Main();
-    private state: State = new State();
-    private loggedIn = false;
     public view!: View | null;
     public productPage!: ProductPage;
     public catalogPage!: CatalogPage;
@@ -28,7 +30,11 @@ class App implements IApp {
     public notFoundPage!: NotFoundPage;
     public header!: Header;
     public basketPage!: BasketPage;
+    private state: State = new State();
+    private countriesArray!: Array<ISO31661AssignedEntry>;
+    private loggedIn = false;
     private static singleton: App;
+    private router!: Router;
 
     constructor() {
         if (App.singleton) {
@@ -46,6 +52,7 @@ class App implements IApp {
         this.catalogPage = new CatalogPage();
         this.notFoundPage = new NotFoundPage();
         this.basketPage = new BasketPage();
+        this.router = new Router();
         App.singleton = this;
     }
 
@@ -85,6 +92,49 @@ class App implements IApp {
             passwordIcon.classList.add('fa-eye-slash');
         }
     }
+    public onLogin = (e: SubmitEvent): void => {
+        const target: EventTarget | null = e.target;
+        if (target instanceof HTMLFormElement) {
+            e.preventDefault();
+            const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
+            const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
+            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+            const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
+            const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
+            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
+            const fieldNames: string[] = ['email', 'password'];
+            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
+            const customerData = Object.fromEntries(pairs);
+            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
+                return;
+            }
+            apiCustomer
+                .signIn(customerData)
+                .then((resp: ClientResponse<CustomerSignInResult>) => {
+                    const customer: Customer = resp.body.customer;
+                    this.userPage.setUserData(customer.id);
+                    return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
+                })
+                .then((): void => {
+                    this.showMessage('You are logged in');
+                    this.setAuthenticationStatus(true); // set authentication state
+                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
+                    logoutBtn?.classList.remove('hidden');
+                    profileBtn?.classList.remove('hidden');
+                    loginBtn?.classList.add('hidden');
+                    registrBtn?.classList.add('hidden');
+                })
+                .catch((): void => {
+                    inputEmail?.forEach((el: Element): void => {
+                        el.classList.add('is-invalid');
+                    });
+                    fail?.forEach((el: HTMLElement): void => {
+                        el.innerText = 'Incorrect email or password - please try again.';
+                    });
+                });
+        }
+    };
 }
 
 export default App;

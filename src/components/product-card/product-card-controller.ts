@@ -3,6 +3,7 @@ import { Router } from '../../router/router';
 import { ROUTE } from '../../constants/enums/enum';
 import App from '../../app/app';
 import { ApiBasket } from '../../api/api-basket';
+import { Cart } from '@commercetools/platform-sdk';
 
 export class ProductCardController {
     private readonly productCard: ProductCard;
@@ -36,9 +37,9 @@ export class ProductCardController {
     };
 
     public addProductToCart(): Promise<void> | undefined {
-        return this.app.basketPage.getBasket()?.then((cart) => {
+        return this.app.basketPage.getBasket()?.then((cart: Cart | undefined | void): void => {
             if (cart) {
-                this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
+                this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }): void => {
                     this.app.basketPage.setContent(body);
                     this.app?.header.setItemsNumInBasket(cart?.lineItems.length + 1);
                 });

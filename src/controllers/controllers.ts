@@ -12,6 +12,7 @@ import { RegistrationPageController } from '../pages/registration-page/registrat
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 import { UserPageController } from '../pages/user-page/user-page-controller';
 import { State } from '../state/state';
+import { Cart } from '@commercetools/platform-sdk';
 
 export class Controllers {
     private app: App | null;
@@ -48,7 +49,7 @@ export class Controllers {
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
         this.router.navigate(currentLocation);
         const refreshToken: string | null = localStorage.getItem('refreshToken');
-        const cartID = localStorage.getItem('cartID');
+        const cartID: string | null = localStorage.getItem('cartID');
         this.state.basketId = cartID ?? '';
         if (refreshToken) {
             const authClient = new SdkAuth({
@@ -109,11 +110,11 @@ export class Controllers {
     };
 
     private setBasket(): void {
-        this.app?.basketPage.getBasket()?.then((cart) => {
+        this.app?.basketPage.getBasket()?.then((cart: Cart | void | undefined): void => {
             if (cart?.lineItems) {
                 this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
                 this.app?.basketPage.setContent(cart);
-                const idArray = cart.lineItems.map(({ productId }) => productId);
+                const idArray: string[] = cart.lineItems.map(({ productId }) => productId);
                 this.app?.catalogPage.updateCardsButtonAddToCart(idArray);
             }
         });

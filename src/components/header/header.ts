@@ -15,7 +15,7 @@ export default class Header {
     }
 
     public getElement(): HTMLElement {
-        const currentPath = window.location.pathname.slice(1);
+        const currentPath: string = window.location.pathname.slice(1);
         const currentLink: HTMLElement = <HTMLElement>this.element.querySelector(`[data-link="${currentPath}"]`);
         if (currentLink) {
             this.setActiveLink(currentLink);
@@ -27,16 +27,16 @@ export default class Header {
         return this.element;
     }
 
-    private setActiveLink = (targetLink: HTMLElement) => {
-        const links = this.element.querySelectorAll('.nav-link');
-        links.forEach((link) => {
+    public setActiveLink = (targetLink: HTMLElement): void => {
+        const links: NodeListOf<Element> = this.element.querySelectorAll('.nav-link');
+        links.forEach((link: Element): void => {
             link.classList.remove('active');
         });
         targetLink.classList.add('active');
     };
 
     public setItemsNumInBasket(count: number): void {
-        const number = this.element.querySelector('.number-book');
+        const number: Element | null = this.element.querySelector('.number-book');
         if (number) number.textContent = String(count);
     }
 

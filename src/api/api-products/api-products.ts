@@ -17,37 +17,17 @@ export class ApiProduct {
             ?.products()
             .get()
             .execute()
-            .then((el) => {
+            .then((el: ClientResponse<ProductPagedQueryResponse>) => {
                 return el as ClientResponse<ProductPagedQueryResponse>;
             })
             .catch((err) => {
                 throw new Error(err);
             });
     };
-    public getProductsFromApiExistingTokenFlow = () => {
-        return this.apiExistingTokenFlow.apiRoot
-            ?.products()
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
 
     public getProductById = (ID: string) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.products()
-            .withId({ ID })
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public getProductDiscountById = (ID: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.productDiscounts()
             .withId({ ID })
             .get()
             .execute()
@@ -66,6 +46,16 @@ export class ApiProduct {
             });
     };
 
+    public getProductDiscountById = (ID: string) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.productDiscounts()
+            .withId({ ID })
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
     public getProductProjection = (data: IProductFiltersCredentials) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
@@ -85,7 +75,6 @@ export class ApiProduct {
                 throw Error(err);
             });
     };
-
     public getCategories = () => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.categories()
