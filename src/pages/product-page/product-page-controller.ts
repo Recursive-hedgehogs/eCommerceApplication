@@ -37,11 +37,18 @@ export class ProductPageController {
         this.app.basketPage.getBasket()?.then((cart) => {
             const foundObject = cart?.lineItems.find((item) => item.productId === productId);
             if (cart && foundObject?.id) {
-                this.apiBasket.deleteItemInCart(cart.id, cart.version, foundObject.id)?.then(() => {
-                    target.classList.add('hidden');
-                    btnAdd?.classList.remove('hidden');
-                    this.app?.header.setItemsNumInBasket(cart?.lineItems.length - 1);
-                });
+                this.apiBasket
+                    .deleteItemInCart(cart.id, cart.version, foundObject.id)
+                    ?.then(() => {
+                        this.app?.showMessage('Item removed from the cart successfully');
+                        target.classList.add('hidden');
+                        btnAdd?.classList.remove('hidden');
+                        this.app?.header.setItemsNumInBasket(cart?.lineItems.length - 1);
+                    })
+                    .catch((error) => {
+                        console.error('Error removing item from the cart:', error);
+                        alert('Error removing item from the cart');
+                    });
             }
         });
     };
