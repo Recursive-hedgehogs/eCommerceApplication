@@ -3,7 +3,6 @@ import { Router } from '../../router/router';
 import { ROUTE } from '../../constants/enums/enum';
 import App from '../../app/app';
 import { ApiBasket } from '../../api/api-basket';
-import { Cart } from '@commercetools/platform-sdk';
 
 export class ProductCardController {
     private readonly productCard: ProductCard;

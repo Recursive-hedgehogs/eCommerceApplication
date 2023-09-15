@@ -1,17 +1,23 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
 import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
+import { State } from '../state/state';
 
 export class ApiBasket {
-    private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
-    private apiExistingTokenFlow: ApiExistingTokenFlow;
+    private state: State = new State();
+    private readonly apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
+    private readonly apiExistingTokenFlow: ApiExistingTokenFlow;
 
     constructor() {
         this.apiAnonymousSessionFlow = new ApiAnonymousSessionFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
 
+    get currentFlow(): ApiExistingTokenFlow | ApiAnonymousSessionFlow {
+        return this.state.isLogIn ? this.apiExistingTokenFlow : this.apiAnonymousSessionFlow;
+    }
+
     public getCarts = () => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .get()
             .execute()
@@ -20,21 +26,19 @@ export class ApiBasket {
             });
     };
 
-    public createCart = () => {
-        return this.apiAnonymousSessionFlow.apiRoot
+    public getCartById = (ID: string) => {
+        return this.currentFlow.apiRoot
             ?.carts()
-            .post({
-                body: { currency: 'EUR' },
-            })
+            .withId({ ID })
+            .get()
             .execute()
-            .then(({ body }) => body)
             .catch((err) => {
                 throw Error(err);
             });
     };
 
-    public createCartForLogInUser = () => {
-        return this.apiExistingTokenFlow.apiRoot
+    public createCart = () => {
+        return this.currentFlow.apiRoot
             ?.carts()
             .post({
                 body: { currency: 'EUR' },
@@ -47,7 +51,7 @@ export class ApiBasket {
     };
 
     public updateCart = (cartId: string, version: number, productId: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID: cartId })
             .post({
@@ -57,7 +61,6 @@ export class ApiBasket {
                         {
                             action: 'addLineItem',
                             productId,
-                            // variantId
                             quantity: 1,
                         },
                     ],
@@ -70,7 +73,7 @@ export class ApiBasket {
     };
 
     public deleteCart = (ID: string, version: number) => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID })
             .delete({
@@ -78,17 +81,6 @@ export class ApiBasket {
                     version,
                 },
             })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public getCartById = (ID: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.carts()
-            .withId({ ID })
-            .get()
             .execute()
             .catch((err) => {
                 throw Error(err);

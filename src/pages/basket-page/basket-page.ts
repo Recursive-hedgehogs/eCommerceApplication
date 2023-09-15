@@ -1,7 +1,7 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './basket-page.html';
 import './basket-page.scss';
-import { Cart, CartPagedQueryResponse, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import { Cart, LineItem } from '@commercetools/platform-sdk';
 import { BasketItem } from '../../components/basket-item/basket-item';
 import { ApiBasket } from '../../api/api-basket';
 import { State } from '../../state/state';
@@ -36,16 +36,24 @@ export default class BasketPage {
     // 3. if yes: anonymousFlow -> get cart by id;
 
     public getBasket(): Promise<Cart | void | undefined> | undefined {
-        if (this.state.isLogIn && this.state.basketId) {
-            return this.apiBasket.getCartById(this.state.basketId)?.then(({ body }) => body);
-        } else if (this.state.basketId) {
-            return this.apiBasket.getCartById(this.state.basketId)?.then(({ body }) => body);
-        } else if (this.state.isLogIn) {
-            return this.apiBasket.createCartForLogInUser();
-        } else {
-            return this.apiBasket.createCart();
+        if (this.state.basketId) {
+            return this.apiBasket
+                .getCartById(this.state.basketId)
+                ?.then(({ body }) => body)
+                .catch(
+                    () =>
+                        this.apiBasket.createCart()?.then((cart) => {
+                            localStorage.setItem('cartID', cart.id);
+                            this.state.basketId = cart.id;
+                        })
+                );
         }
+        return this.apiBasket.createCart()?.then((cart) => {
+            localStorage.setItem('cartID', cart.id);
+            this.state.basketId = cart.id;
+        });
     }
+
     // public getBasket(): Promise<Cart | void | undefined> | undefined {
     //     return this.apiBasket
     //         .getCarts()
