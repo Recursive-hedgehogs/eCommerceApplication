@@ -10,7 +10,6 @@ import {
     ProductDiscountValueAbsolute,
     ProductDiscountValueExternal,
     ProductDiscountValueRelative,
-    ProductProjection,
 } from '@commercetools/platform-sdk';
 import { IProductWithDiscount } from '../../constants/interfaces/interface';
 import { SwiperContainer } from 'swiper/swiper-element';
@@ -204,8 +203,9 @@ export default class ProductPage {
         return this.element.querySelector('.product-image-container') as HTMLElement | null;
     }
 
-    public getData(productId: string): void {
+    public getData(productId: string, isInBasket: boolean): void {
         this.productId = productId;
+        this.checkButton(isInBasket);
         this.apiProduct
             .getProductById(productId)
             ?.then((resp: ClientResponse<Product>) => resp.body)
@@ -226,5 +226,17 @@ export default class ProductPage {
                 this.retrieveContent(resp);
                 this.setContent();
             });
+    }
+
+    private checkButton(isInBasket: boolean): void {
+        const btnAdd = this.element.querySelector('#btn-add');
+        const btnRemove = this.element.querySelector('#btn-remove');
+        if (isInBasket) {
+            btnAdd?.classList.add('hidden');
+            btnRemove?.classList.remove('hidden');
+        } else {
+            btnAdd?.classList.remove('hidden');
+            btnRemove?.classList.add('hidden');
+        }
     }
 }
