@@ -53,8 +53,6 @@ export default class BasketPage {
     }
 
     public changeQuantity(lineItemId: string, newQuantity: number) {
-        console.log('Inside decreaseQuantity');
-        console.log('lineItemId:', lineItemId);
         if (this.cart && this.apiBasket && typeof this.apiBasket.changeCartItemQuantity === 'function') {
             const cartId = this.cart?.id;
             const version = this.cart?.version;
@@ -74,7 +72,29 @@ export default class BasketPage {
                 console.error('Cart ID is undefined');
             }
         } else {
-            console.error('ApiBasket or decreaseCartItemQuantity is undefined');
+            console.error('ApiBasket or changeCartItemQuantity is undefined');
+        }
+    }
+
+    public deleteCartFromBasket(lineItemId: string) {
+        if (this.cart && this.apiBasket && typeof this.apiBasket.removeCartItem === 'function') {
+            const cartId = this.cart?.id;
+            const version = this.cart?.version;
+
+            if (cartId) {
+                this.apiBasket
+                    ?.removeCartItem(cartId, lineItemId, version)
+                    ?.then((response) => {
+                        this.setContent(response.body);
+                    })
+                    .catch((error) => {
+                        console.error('Error product delete:', error);
+                    });
+            } else {
+                console.error('Cart ID is undefined');
+            }
+        } else {
+            console.error('ApiBasket or removeCartItem is undefined');
         }
     }
 }

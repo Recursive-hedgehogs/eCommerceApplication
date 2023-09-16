@@ -1,5 +1,4 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
-import { ClientResponse, Cart } from '@commercetools/platform-sdk';
 
 export class ApiBasket {
     private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;

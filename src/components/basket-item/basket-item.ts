@@ -30,6 +30,7 @@ export class BasketItem {
         this.setContent();
         this.setupEventListeners(this.quantityDecreaseButton);
         this.setupEventListeners(this.quantityIncreaseButton);
+        this.setupEventListeners(this.deleteButton);
     }
 
     private setContent() {
@@ -71,5 +72,13 @@ export class BasketItem {
                 this.basketPage.changeQuantity(lineItemId, newQuantity);
             }
         });
+        if (quantityChangeButton === this.deleteButton) {
+            quantityChangeButton.addEventListener('click', () => {
+                const lineItemId: string = this.data?.id;
+                if (lineItemId) {
+                    this.basketPage.deleteCartFromBasket(lineItemId);
+                }
+            });
+        }
     }
 }
