@@ -18,6 +18,8 @@ import { ApiProduct } from '../../api/api-products/api-products';
 import { CategoryComponent } from '../../components/category/category';
 import { CategoryController } from '../../components/category/category-controller';
 import { IProductFiltersCredentials } from '../../constants/interfaces/credentials.interface';
+import { Pagination } from '../../components/pagination/pagination';
+import { PaginationController } from '../../components/pagination/pagination-controller';
 
 export default class CatalogPage {
     public element!: HTMLElement;
@@ -26,7 +28,9 @@ export default class CatalogPage {
     private products?: ProductCard[];
     private readonly filters?: Filters;
     private apiProduct: ApiProduct = new ApiProduct();
+    private readonly pagination?: Pagination;
     private static singleton: CatalogPage;
+    private paginationController?: PaginationController;
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -43,6 +47,8 @@ export default class CatalogPage {
         new FiltersController(this.filters, this);
         this.sort = new Sort();
         new SortController(this.sort, this);
+        this.pagination = new Pagination();
+        this.paginationController = new PaginationController(this.pagination);
         this.start();
         CatalogPage.singleton = this;
     }
@@ -74,6 +80,9 @@ export default class CatalogPage {
             this.catalogContainer.innerHTML = '';
             this.catalogContainer.append(...productElements);
         }
+        this.catalogContainer?.after(this.pagination?.element as Node);
+        this.pagination?.setContent(5);
+        this.paginationController?.updateListeners();
     }
 
     public showCatalog(): void {

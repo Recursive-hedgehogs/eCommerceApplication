@@ -67,7 +67,8 @@ export class ApiProduct {
                     'text.en-US': data.search,
                     sort: data.sort,
                     fuzzy: true,
-                    limit: 25,
+                    offset: 20,
+                    limit: 20,
                 },
             })
             .execute()

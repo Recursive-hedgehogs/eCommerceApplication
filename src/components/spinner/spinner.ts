@@ -12,7 +12,7 @@ export class Spinner {
         }).getElement();
     }
 
-    public get element(): HTMLElement | null {
+    public get element(): HTMLElement {
         return this._element;
     }
 }
