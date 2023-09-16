@@ -59,26 +59,25 @@ export class BasketItem {
 
     private setupEventListeners(quantityChangeButton: HTMLButtonElement) {
         quantityChangeButton.addEventListener('click', (event) => {
-            console.log('clicked');
             const lineItemId: string = this.data?.id;
             let newQuantity: number = this.data?.quantity;
+
+            if (quantityChangeButton === this.deleteButton) {
+                const deleteButton = (event.target as HTMLButtonElement).className === 'delete-button';
+                if (lineItemId && deleteButton) {
+                    this.basketPage.deleteCartFromBasket(lineItemId);
+                    return;
+                }
+            }
+
             newQuantity = !event.target
                 ? newQuantity
                 : (event.target as HTMLButtonElement).className === 'quantity-decrease'
                 ? --newQuantity
                 : ++newQuantity;
             if (lineItemId) {
-                console.log('Line item ID:', lineItemId);
                 this.basketPage.changeQuantity(lineItemId, newQuantity);
             }
         });
-        if (quantityChangeButton === this.deleteButton) {
-            quantityChangeButton.addEventListener('click', () => {
-                const lineItemId: string = this.data?.id;
-                if (lineItemId) {
-                    this.basketPage.deleteCartFromBasket(lineItemId);
-                }
-            });
-        }
     }
 }

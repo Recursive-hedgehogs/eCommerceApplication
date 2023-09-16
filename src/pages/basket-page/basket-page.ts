@@ -58,11 +58,9 @@ export default class BasketPage {
             const version = this.cart?.version;
 
             if (cartId) {
-                console.log('Attempting to decrease quantity for line item:', lineItemId);
                 this.apiBasket
                     ?.changeCartItemQuantity(cartId, lineItemId, version, newQuantity)
                     ?.then((response) => {
-                        console.log('Quantity decreased successfully:', response.body);
                         this.setContent(response.body);
                     })
                     .catch((error) => {
