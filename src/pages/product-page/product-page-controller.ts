@@ -16,7 +16,7 @@ export class ProductPageController {
         this.productPage.addEventListener('click', this.onProductPageClick);
     }
 
-    private onProductPageClick = (e: Event): void => {
+    private onProductPageClick = (e: MouseEvent): void => {
         const productId = this.app.productPage.productId;
         e.preventDefault();
         const target = <HTMLElement>e.target;
@@ -27,6 +27,12 @@ export class ProductPageController {
                     break;
                 case 'btn-add':
                     this.addItemToCart(target, productId);
+                    break;
+                case 'btn-close':
+                    this.app.productPage.closeModal();
+                    break;
+                case 'product-image-container':
+                    this.app.productPage.showModalWindow();
                     break;
             }
         }

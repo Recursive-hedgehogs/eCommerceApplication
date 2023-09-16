@@ -1,5 +1,5 @@
 <div class="d-flex flex-column gap-2 flex-md-row product-page-inner">
-    <swiper-container class="product-image-container" init="false"></swiper-container>
+    <swiper-container id="product-image-container" class="product-image-container" init="false"></swiper-container>
     <div class="product-information flex-grow-1 row-gap-3">
         <h4 class="product-name"></h4>
         <div class="d-flex flex-row column-gap-2">
@@ -21,8 +21,8 @@
 
 <div id="product-modal" class="modal">
   <div class="modal-content new-modal">
-      <swiper-container class="product-modal-image-container" init="false"></swiper-container>
-      <span class="close">&times;</span>
+      <swiper-container id="product-modal-image-container" init="false"></swiper-container>
+      <button id="btn-close" class="close btn">&times;</button>
   </div>
 </div>
 
