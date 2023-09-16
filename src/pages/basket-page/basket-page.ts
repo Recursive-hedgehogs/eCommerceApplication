@@ -16,7 +16,6 @@ export default class BasketPage {
             classNames: ['basket-page-container'],
             innerHTML: template,
         }).getElement();
-        //this.setupEventListeners();
     }
 
     public setContent(data: Cart): void {
@@ -53,15 +52,19 @@ export default class BasketPage {
         return this._element.querySelector('.basket-container') as HTMLElement;
     }
 
-    /*public decreaseQuantity(lineItemId: string) {
-        if (this.cart && this.apiBasket && typeof this.apiBasket.decreaseCartItemQuantity === 'function') {
+    public changeQuantity(lineItemId: string, newQuantity: number) {
+        console.log('Inside decreaseQuantity');
+        console.log('lineItemId:', lineItemId);
+        if (this.cart && this.apiBasket && typeof this.apiBasket.changeCartItemQuantity === 'function') {
             const cartId = this.cart?.id;
             const version = this.cart?.version;
 
             if (cartId) {
+                console.log('Attempting to decrease quantity for line item:', lineItemId);
                 this.apiBasket
-                    .decreaseCartItemQuantity(cartId, lineItemId, version)
-                    .then((response) => {
+                    ?.changeCartItemQuantity(cartId, lineItemId, version, newQuantity)
+                    ?.then((response) => {
+                        console.log('Quantity decreased successfully:', response.body);
                         this.setContent(response.body);
                     })
                     .catch((error) => {
@@ -73,24 +76,5 @@ export default class BasketPage {
         } else {
             console.error('ApiBasket or decreaseCartItemQuantity is undefined');
         }
-    }*/
-
-    /*private setupEventListeners() {
-        const decreaseButtons = document.querySelectorAll('.decrease-quantity-button');
-
-        decreaseButtons.forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const targetElement = event.target as HTMLElement;
-                const basketItemElement = targetElement.closest('.basket-item');
-
-                if (basketItemElement) {
-                    const lineItemId = basketItemElement.getAttribute('data-line-item-id');
-
-                    if (lineItemId) {
-                        this.decreaseQuantity(lineItemId);
-                    }
-                }
-            });
-        });
-    }*/
+    }
 }

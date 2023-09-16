@@ -7,24 +7,29 @@ import BasketPage from '../../pages/basket-page/basket-page';
 export class BasketItem {
     private readonly _element: HTMLElement;
     public data: LineItem;
-    private quantityIncreaseButton: HTMLElement;
-    private quantityDecreaseButton: HTMLElement;
-    private deleteButton: HTMLElement;
+    private quantityIncreaseButton: HTMLButtonElement;
+    private quantityDecreaseButton: HTMLButtonElement;
+    private deleteButton: HTMLButtonElement;
     private basketPage: BasketPage;
 
     constructor(data: LineItem, basketPage: BasketPage) {
         this.data = data;
         this.basketPage = basketPage;
+        if (!this.basketPage) {
+            console.error('basketPage is null or undefined');
+        }
         this._element = new ElementCreator({
             tag: 'div',
             classNames: ['basket-item', 'd-flex', 'column-gap-2', 'border', 'solid', 'border-black', 'border-1'],
             innerHTML: template,
         }).getElement();
-        this.quantityIncreaseButton = this._element.querySelector('.quantity-increase') as HTMLElement;
-        this.quantityDecreaseButton = this._element.querySelector('.quantity-decrease') as HTMLElement;
-        this.deleteButton = this._element.querySelector('.delete-button') as HTMLElement;
+        this.quantityIncreaseButton = this._element.querySelector('.quantity-increase') as HTMLButtonElement;
+        this.quantityDecreaseButton = this._element.querySelector('.quantity-decrease') as HTMLButtonElement;
+        this.deleteButton = this._element.querySelector('.delete-button') as HTMLButtonElement;
 
         this.setContent();
+        this.setupEventListeners(this.quantityDecreaseButton);
+        this.setupEventListeners(this.quantityIncreaseButton);
     }
 
     private setContent() {
@@ -49,5 +54,22 @@ export class BasketItem {
 
     public get element(): HTMLElement {
         return this._element;
+    }
+
+    private setupEventListeners(quantityChangeButton: HTMLButtonElement) {
+        quantityChangeButton.addEventListener('click', (event) => {
+            console.log('clicked');
+            const lineItemId: string = this.data?.id;
+            let newQuantity: number = this.data?.quantity;
+            newQuantity = !event.target
+                ? newQuantity
+                : (event.target as HTMLButtonElement).className === 'quantity-decrease'
+                ? --newQuantity
+                : ++newQuantity;
+            if (lineItemId) {
+                console.log('Line item ID:', lineItemId);
+                this.basketPage.changeQuantity(lineItemId, newQuantity);
+            }
+        });
     }
 }
