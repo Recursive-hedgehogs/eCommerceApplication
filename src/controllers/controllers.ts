@@ -122,9 +122,11 @@ export class Controllers {
 
     private setBasket(): void {
         this.app?.basketPage.getBasket()?.then((cart) => {
-            if (cart?.lineItems) {
+            if (cart?.lineItems.length) {
                 this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
                 this.app?.basketPage.setContent(cart);
+            } else {
+                this.app?.basketPage.setEmptyBasket();
             }
         });
     }

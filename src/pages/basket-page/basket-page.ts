@@ -1,5 +1,6 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './basket-page.html';
+import emptyBasketTemplate from './empty-basket-template.html';
 import './basket-page.scss';
 import { Cart, CartPagedQueryResponse, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { BasketItem } from '../../components/basket-item/basket-item';
@@ -25,6 +26,16 @@ export default class BasketPage {
         totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
     }
 
+    public setEmptyBasket(): void {
+        this.basketContainer.innerHTML = '';
+        const emptyBasket = new ElementCreator({
+            tag: 'div',
+            classNames: ['empty-basket-container'],
+            innerHTML: emptyBasketTemplate,
+        }).getElement();
+        this.basketContainer.append(emptyBasket);
+    }
+
     public getBasket() {
         return this.apiBasket
             .getCarts()
@@ -38,6 +49,15 @@ export default class BasketPage {
                     return this.apiBasket.createCart();
                 }
             });
+    }
+
+    private isEmptyBasket(): Promise<boolean> {
+        return Promise.resolve(this.getBasket()).then((cart) => {
+            if (cart) {
+                return !cart.lineItems.length;
+            }
+            return true;
+        });
     }
 
     public get element(): HTMLElement {
