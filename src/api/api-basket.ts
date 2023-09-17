@@ -101,4 +101,47 @@ export class ApiBasket {
                 throw Error(err);
             });
     };
+
+    public changeCartItemQuantity(cartId: string, lineItemId: string, version: number, newQuantity: number) {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'changeLineItemQuantity',
+                            lineItemId,
+                            quantity: newQuantity,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((error) => {
+                throw Error(error);
+            });
+    }
+
+    public removeCartItem = (cartId: string, lineItemId: string, version: number) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'removeLineItem',
+                            lineItemId,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
 }

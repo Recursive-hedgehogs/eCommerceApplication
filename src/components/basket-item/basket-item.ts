@@ -2,22 +2,34 @@ import template from './basket-item.html';
 import './basket-item.scss';
 import { LineItem } from '@commercetools/platform-sdk';
 import ElementCreator from '../../utils/template-creation';
+import BasketPage from '../../pages/basket-page/basket-page';
 
 export class BasketItem {
     private readonly _element: HTMLElement;
+    private readonly basketPage: BasketPage;
     public data: LineItem;
+    public quantityIncreaseButton: HTMLButtonElement;
+    public quantityDecreaseButton: HTMLButtonElement;
+    public deleteButton: HTMLButtonElement;
 
-    constructor(data: LineItem) {
+    constructor(data: LineItem, basketPage: BasketPage) {
         this.data = data;
+        this.basketPage = basketPage;
+        if (!this.basketPage) {
+            console.error('basketPage is null or undefined');
+        }
         this._element = new ElementCreator({
             tag: 'div',
             classNames: ['basket-item', 'd-flex', 'column-gap-2', 'border', 'solid', 'border-black', 'border-1'],
             innerHTML: template,
         }).getElement();
+        this.quantityIncreaseButton = this._element.querySelector('.quantity-increase') as HTMLButtonElement;
+        this.quantityDecreaseButton = this._element.querySelector('.quantity-decrease') as HTMLButtonElement;
+        this.deleteButton = this._element.querySelector('.delete-button') as HTMLButtonElement;
         this.setContent();
     }
 
-    private setContent() {
+    private setContent(): void {
         const basketItemName: HTMLElement = this._element.querySelector('.basket-item-name') as HTMLElement;
         const basketItemImage: HTMLElement = this._element.querySelector('.basket-item-image') as HTMLElement;
         const basketItemPrice: HTMLElement = this._element.querySelector('.basket-item-price') as HTMLElement;

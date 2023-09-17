@@ -3,7 +3,12 @@
     <h4 class="basket-item-name"></h4>
     <div class="d-flex column-gap-2">
         <p class="basket-item-price"></p>
-        <p class="basket-item-count"></p>
+        <p class="basket-item-count">
+          <input class="basket-item-quantity" type="number" min="1" value="1">
+        </p>
+        <button class="quantity-decrease">-</button>
+        <button class="quantity-increase">+</button>
+        <button class="delete-button">Remove from Basket</button>
     </div>
     <p class="basket-item-total-price"></p>
 </div>

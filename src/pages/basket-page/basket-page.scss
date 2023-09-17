@@ -1,3 +1,8 @@
+.basket-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .empty-basket-container {
     display: flex;
     flex-direction: column;
