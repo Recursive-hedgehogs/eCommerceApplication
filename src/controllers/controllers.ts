@@ -135,7 +135,7 @@ export class Controllers {
     private setBasket(): void {
         this.app?.basketPage.getBasket()?.then((cart: Cart | void | undefined): void => {
             if (cart?.lineItems.length) {
-                this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
+                this.app?.header.setItemsNumInBasket(cart?.totalLineItemQuantity ?? 0);
                 this.app?.basketPage.setContent(cart);
                 const idArray: string[] = cart.lineItems.map(({ productId }) => productId);
                 this.app?.catalogPage.updateCardsButtonAddToCart(idArray);

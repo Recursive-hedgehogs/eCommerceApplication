@@ -49,7 +49,7 @@ export class ProductCardController {
                     .updateCart(cart.id, cart.version, this.productCard.productId)
                     ?.then(({ body }): void => {
                         this.app.basketPage.setContent(body);
-                        this.app?.header.setItemsNumInBasket(cart?.lineItems.length + 1);
+                        this.app.header.setItemsNumInBasket(body.totalLineItemQuantity ?? 0);
                         this.productCard.element?.querySelector('.spinner-container')?.remove();
                     })
                     .catch(() => this.productCard.element?.querySelector('.spinner-container')?.remove());

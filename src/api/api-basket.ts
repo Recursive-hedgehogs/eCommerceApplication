@@ -87,42 +87,8 @@ export class ApiBasket {
             });
     };
 
-    // public getCartById = (ID: string) => {
-    //     return this.apiAnonymousSessionFlow.apiRoot
-    //         ?.carts()
-    //         .withId({ ID })
-    //         .get()
-    //         .execute()
-    //         .catch((err) => {
-    //             throw Error(err);
-    //         });
-    // };
-
-    public deleteItemInCart = (cartId: string, version: number, lineItemId: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.carts()
-            .withId({ ID: cartId })
-            .post({
-                body: {
-                    version,
-                    actions: [
-                        {
-                            action: 'removeLineItem',
-                            lineItemId,
-                            // variantId
-                            quantity: 1,
-                        },
-                    ],
-                },
-            })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
     public changeCartItemQuantity(cartId: string, lineItemId: string, version: number, newQuantity: number) {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID: cartId })
             .post({
@@ -143,8 +109,30 @@ export class ApiBasket {
             });
     }
 
+    public deleteItemInCart = (cartId: string, version: number, lineItemId: string) => {
+        return this.currentFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'removeLineItem',
+                            lineItemId,
+                            quantity: 1,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
     public removeCartItem = (cartId: string, lineItemId: string, version: number) => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID: cartId })
             .post({
