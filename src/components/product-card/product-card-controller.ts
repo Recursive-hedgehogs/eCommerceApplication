@@ -29,7 +29,9 @@ export class ProductCardController {
                 break;
             default:
                 this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
-                this.app.productPage.getData(this.productCard.productId);
+                this.app?.basketPage.isProductInBasket(this.productCard.productId).then((isInBasket) => {
+                    this.app?.productPage.getData(this.productCard.productId, isInBasket);
+                });
         }
     };
 
@@ -38,6 +40,7 @@ export class ProductCardController {
             if (cart) {
                 this.apiBasket.updateCart(cart.id, cart.version, this.productCard.productId)?.then(({ body }) => {
                     this.app.basketPage.setContent(body);
+                    this.app?.header.setItemsNumInBasket(cart?.lineItems.length + 1);
                 });
 
                 console.log(cart);

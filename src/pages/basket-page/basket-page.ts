@@ -1,5 +1,6 @@
 import ElementCreator from '../../utils/template-creation';
 import template from './basket-page.html';
+import emptyBasketTemplate from './empty-basket-template.html';
 import './basket-page.scss';
 import { Cart, CartPagedQueryResponse, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { BasketItem } from '../../components/basket-item/basket-item';
@@ -9,8 +10,8 @@ export default class BasketPage {
     private readonly _element: HTMLElement;
     private apiBasket: ApiBasket = new ApiBasket();
     private cart: Cart | null = null;
-    private clearBasketItems!: HTMLButtonElement;
-    private lineItemIds: string[] = [];
+    // private clearBasketItems!: HTMLButtonElement;
+    // private lineItemIds: string[] = [];
 
     constructor() {
         this._element = new ElementCreator({
@@ -35,6 +36,16 @@ export default class BasketPage {
         this.cart = data;
     }
 
+    public setEmptyBasket(): void {
+        this.basketContainer.innerHTML = '';
+        const emptyBasket = new ElementCreator({
+            tag: 'div',
+            classNames: ['empty-basket-container'],
+            innerHTML: emptyBasketTemplate,
+        }).getElement();
+        this.basketContainer.append(emptyBasket);
+    }
+
     public getBasket() {
         return this.apiBasket
             .getCarts()
@@ -50,12 +61,31 @@ export default class BasketPage {
             });
     }
 
+    private isEmptyBasket(): Promise<boolean> {
+        return Promise.resolve(this.getBasket()).then((cart) => {
+            if (cart) {
+                return !cart.lineItems.length;
+            }
+            return true;
+        });
+    }
+
     public get element(): HTMLElement {
         return this._element;
     }
 
     public get basketContainer(): HTMLElement {
         return this._element.querySelector('.basket-container') as HTMLElement;
+    }
+
+    public isProductInBasket(productId: string): Promise<boolean> {
+        return Promise.resolve(this.getBasket()).then((cart) => {
+            if (cart) {
+                const foundItem = cart.lineItems.find((item) => item.productId === productId);
+                return !!foundItem;
+            }
+            return false;
+        });
     }
 
     public changeQuantity(lineItemId: string, newQuantity: number) {
@@ -109,9 +139,11 @@ export default class BasketPage {
                     const cartId = cart.id;
                     const version = cart.version;
                     if (cartId) {
-                        this.apiBasket.deleteCart(cartId, version)?.then((response) => {
+                        this.apiBasket.deleteCart(cartId, version)?.then(() => {
                             this.getBasket()?.then((cart) => {
-                                this.setContent(cart!);
+                                if (cart) {
+                                    this.setContent(cart);
+                                }
                             });
                         });
                     }
