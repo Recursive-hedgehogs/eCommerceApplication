@@ -57,6 +57,7 @@ export default class BasketPage {
         const totalCartPrice: HTMLElement = this._element.querySelector('.basket-total-price') as HTMLElement;
         totalCartPrice.innerText = '';
         this.basketContainer.append(emptyBasket);
+        this.header.setItemsNumInBasket(0);
         localStorage.removeItem('cartID');
         this.state.basketId = '';
     }
@@ -154,14 +155,5 @@ export default class BasketPage {
                 }
             });
         }
-    }
-
-    private isEmptyBasket(): Promise<boolean> {
-        return Promise.resolve(this.getBasket()).then((cart: Cart | void | undefined): boolean => {
-            if (cart) {
-                return !cart.lineItems.length;
-            }
-            return true;
-        });
     }
 }

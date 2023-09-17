@@ -1,6 +1,17 @@
+.basket-item p, h4{
+  cursor: default;
+}
+
 .basket-item-image {
   width: 100px;
-  height: 200px;
+  aspect-ratio: 100/150;
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.basket-item-count {
+  width: 30px;
+  border: var(--bs-border-width) solid var(--bs-primary);
+  border-bottom-width: 4px;
+  cursor: default;
 }
