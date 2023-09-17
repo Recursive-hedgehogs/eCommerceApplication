@@ -11,6 +11,8 @@ import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 import { UserPageController } from '../pages/user-page/user-page-controller';
+import { ProductPageController } from '../pages/product-page/product-page-controller';
+import { BasketPageController } from '../pages/basket-page/basket-page-controller';
 import { State } from '../state/state';
 import { Cart } from '@commercetools/platform-sdk';
 
@@ -37,6 +39,8 @@ export class Controllers {
         new LoginPageController();
         new RegistrationPageController();
         new CatalogPageController();
+        new ProductPageController();
+        new BasketPageController();
         this.addListeners();
     }
 
@@ -93,6 +97,25 @@ export class Controllers {
                 })
                 .then(() => this.setBasket());
             this.apiRefreshTokenFlow.setUserData(refreshToken);
+            // this.apiRefreshTokenFlow.apiRoot
+            //     ?.get()
+            //     .execute()
+            // .then((resp: ClientResponse<Project>): void => {
+            // if (resp.headers) {
+            //     const headers: { Authorization: string } = resp.headers as { Authorization: string };
+            //     this.apiExistingTokenFlow.setUserData(headers.Authorization);
+            //     this.app?.showMessage('You are logged in');
+            //     this.app?.setAuthenticationStatus(true); // set authentication state
+            //     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
+            //     const loginBtn: HTMLElement | null = document.getElementById('login-btn');
+            //     const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
+            //     logoutBtn?.classList.remove('hidden');
+            //     loginBtn?.classList.add('hidden');
+            // }
+            // })
+            // .catch((err) => {
+            //     throw Error(err);
+            // });
         } else if (window.location.pathname.slice(1) === ROUTE.USER) {
             this.router.navigate(ROUTE.LOGIN); //add redirection from user to LOGIN page
             this.setBasket();
@@ -111,11 +134,13 @@ export class Controllers {
 
     private setBasket(): void {
         this.app?.basketPage.getBasket()?.then((cart: Cart | void | undefined): void => {
-            if (cart?.lineItems) {
+            if (cart?.lineItems.length) {
                 this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
                 this.app?.basketPage.setContent(cart);
                 const idArray: string[] = cart.lineItems.map(({ productId }) => productId);
                 this.app?.catalogPage.updateCardsButtonAddToCart(idArray);
+            } else {
+                this.app?.basketPage.setEmptyBasket();
             }
         });
     }
