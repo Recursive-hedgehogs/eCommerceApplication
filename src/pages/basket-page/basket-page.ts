@@ -9,6 +9,8 @@ export default class BasketPage {
     private readonly _element: HTMLElement;
     private apiBasket: ApiBasket = new ApiBasket();
     private cart: Cart | null = null;
+    private clearBasketItems!: HTMLButtonElement;
+    private lineItemIds: string[] = [];
 
     constructor() {
         this._element = new ElementCreator({
@@ -16,6 +18,10 @@ export default class BasketPage {
             classNames: ['basket-page-container'],
             innerHTML: template,
         }).getElement();
+        const clearBasketButton = this._element.querySelector('.clear-basket') as HTMLButtonElement;
+        clearBasketButton.addEventListener('click', () => {
+            this.clearBasket();
+        });
     }
 
     public setContent(data: Cart): void {
@@ -95,4 +101,33 @@ export default class BasketPage {
             console.error('ApiBasket or removeCartItem is undefined');
         }
     }
+
+    public clearBasket() {
+        if (confirm('Вы уверены, что хотите очистить корзину?')) {
+            this.getBasket()?.then((cart) => {
+                if (cart && this.apiBasket && typeof this.apiBasket.deleteCart === 'function') {
+                    const cartId = cart.id;
+                    const version = cart.version;
+                    if (cartId) {
+                        this.apiBasket.deleteCart(cartId, version)?.then((response) => {
+                            this.getBasket()?.then((cart) => {
+                                this.setContent(cart!);
+                            });
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    /*private addLineItemId(lineItemId: string) {
+        this.lineItemIds.push(lineItemId);
+    }
+
+    private removeLineItemId(lineItemId: string) {
+        const index = this.lineItemIds.indexOf(lineItemId);
+        if (index !== -1) {
+            this.lineItemIds.splice(index, 1);
+        }
+    }*/
 }
