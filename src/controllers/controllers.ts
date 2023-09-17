@@ -12,6 +12,7 @@ import { RegistrationPageController } from '../pages/registration-page/registrat
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 import { UserPageController } from '../pages/user-page/user-page-controller';
 import { ProductPageController } from '../pages/product-page/product-page-controller';
+import { BasketPageController } from '../pages/basket-page/basket-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -36,6 +37,7 @@ export class Controllers {
         new RegistrationPageController();
         new CatalogPageController();
         new ProductPageController();
+        new BasketPageController();
         this.addListeners();
     }
 

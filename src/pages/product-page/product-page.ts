@@ -92,7 +92,7 @@ export default class ProductPage {
                 const priceDiscount: number =
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
                     (+b.permyriad / 10000) *
-                    (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
+                        (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
                 productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
                 productPrice.classList.add('text-decoration-line-through');
             } else {
