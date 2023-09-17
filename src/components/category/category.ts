@@ -22,7 +22,7 @@ export class CategoryComponent {
         return this._element;
     }
 
-    private createCategory() {
+    private createCategory(): void {
         this.categoryButton = new ElementCreator({
             tag: 'button',
             classNames: ['btn', 'btn-secondary'],

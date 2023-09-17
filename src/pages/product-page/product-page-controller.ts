@@ -45,11 +45,11 @@ export class ProductPageController {
             if (cart && foundObject?.id) {
                 this.apiBasket
                     .deleteItemInCart(cart.id, cart.version, foundObject.id)
-                    ?.then(() => {
+                    ?.then(({ body }) => {
                         this.app?.showMessage('Item removed from the cart successfully');
                         target.classList.add('hidden');
                         btnAdd?.classList.remove('hidden');
-                        this.app?.header.setItemsNumInBasket(cart?.lineItems.length - 1);
+                        this.app?.header.setItemsNumInBasket(body.totalLineItemQuantity ?? 0);
                     })
                     .catch((error) => {
                         console.error('Error removing item from the cart:', error);
@@ -65,7 +65,7 @@ export class ProductPageController {
             if (cart && productId) {
                 this.apiBasket.updateCart(cart.id, cart.version, productId)?.then(({ body }) => {
                     this.app.basketPage.setContent(body);
-                    this.app?.header.setItemsNumInBasket(cart?.lineItems.length + 1);
+                    this.app.header.setItemsNumInBasket(body.totalLineItemQuantity ?? 0);
                     target.classList.add('hidden');
                     btnRemove?.classList.remove('hidden');
                 });

@@ -50,7 +50,6 @@ export class FiltersController {
         const inputsRange: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=range]');
         inputsCheck?.forEach((el: HTMLInputElement): void => {
-            // const close = this.filters.element?.querySelector('.close') as HTMLElement;
             if (el.name && el.checked) {
                 filtersArray.push(el.name);
                 map.set(el.name, el.checked);
@@ -75,16 +74,16 @@ export class FiltersController {
     public onClick = (e: Event): void => {
         const inputsCheck: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=checkbox]');
-        const minInput = this.filters.element?.querySelector('#customRangeMin');
-        const maxInput = this.filters.element?.querySelector('#customRangeMax');
-        const minResult = this.filters.element?.querySelector('.min-result') as HTMLDivElement;
-        const maxResult = this.filters.element?.querySelector('.max-result') as HTMLDivElement;
+        const minInput: HTMLInputElement = this.filters.element?.querySelector('#customRangeMin') as HTMLInputElement;
+        const maxInput: HTMLInputElement = this.filters.element?.querySelector('#customRangeMax') as HTMLInputElement;
+        const minResult: HTMLDivElement = this.filters.element?.querySelector('.min-result') as HTMLDivElement;
+        const maxResult: HTMLDivElement = this.filters.element?.querySelector('.max-result') as HTMLDivElement;
         const target: HTMLButtonElement = e.target as HTMLButtonElement;
         if (target.id === 'filters-reset') {
             this.catalogPage.updateContent({});
             const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
             filterResult.innerHTML = '';
-            inputsCheck?.forEach((el) => (el.checked = false));
+            inputsCheck?.forEach((el: HTMLInputElement): boolean => (el.checked = false));
             if (minInput && maxInput) {
                 (<HTMLInputElement>minInput).min = '0';
                 (<HTMLInputElement>minInput).max = '100';

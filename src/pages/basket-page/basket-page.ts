@@ -2,24 +2,36 @@ import ElementCreator from '../../utils/template-creation';
 import template from './basket-page.html';
 import emptyBasketTemplate from './empty-basket-template.html';
 import './basket-page.scss';
-import { Cart, CartPagedQueryResponse, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { BasketItem } from '../../components/basket-item/basket-item';
 import { ApiBasket } from '../../api/api-basket';
 import { BasketItemController } from '../../components/basket-item/basket-item-controller';
+import { State } from '../../state/state';
+import Header from '../../components/header/header';
 
 export default class BasketPage {
     private readonly _element: HTMLElement;
     private apiBasket: ApiBasket = new ApiBasket();
+    private state: State;
     private cart: Cart | null = null;
-    // private clearBasketItems!: HTMLButtonElement;
-    // private lineItemIds: string[] = [];
+    private header: Header;
 
-    constructor() {
+    constructor(header: Header) {
         this._element = new ElementCreator({
             tag: 'section',
             classNames: ['basket-page-container'],
             innerHTML: template,
         }).getElement();
+        this.state = new State();
+        this.header = header;
+    }
+
+    public get element(): HTMLElement {
+        return this._element;
+    }
+
+    public get basketContainer(): HTMLElement {
+        return this._element.querySelector('.basket-container') as HTMLElement;
     }
 
     public setContent(data: Cart): void {
@@ -35,14 +47,6 @@ export default class BasketPage {
         this.cart = data;
     }
 
-    public get element(): HTMLElement {
-        return this._element;
-    }
-
-    public get basketContainer(): HTMLElement {
-        return this._element.querySelector('.basket-container') as HTMLElement;
-    }
-
     public setEmptyBasket(): void {
         this.basketContainer.innerHTML = '';
         const emptyBasket: HTMLElement = new ElementCreator({
@@ -50,35 +54,37 @@ export default class BasketPage {
             classNames: ['empty-basket-container'],
             innerHTML: emptyBasketTemplate,
         }).getElement();
+        const totalCartPrice: HTMLElement = this._element.querySelector('.basket-total-price') as HTMLElement;
+        totalCartPrice.innerText = '';
         this.basketContainer.append(emptyBasket);
+        this.header.setItemsNumInBasket(0);
+        localStorage.removeItem('cartID');
+        this.state.basketId = '';
     }
 
-    public getBasket() {
-        return this.apiBasket
-            .getCarts()
-            ?.then((resp: ClientResponse<CartPagedQueryResponse>) => resp.body)
-            .then((resp: CartPagedQueryResponse) => resp.results)
-            .then((resp: Cart[]) => resp[0])
-            .then((cart: Cart) => {
-                if (cart?.id) {
-                    return cart;
-                } else {
-                    return this.apiBasket.createCart();
-                }
-            });
-    }
-
-    private isEmptyBasket(): Promise<boolean> {
-        return Promise.resolve(this.getBasket()).then((cart: Cart | undefined): boolean => {
-            if (cart) {
-                return !cart.lineItems.length;
-            }
-            return true;
+    public getBasket(): Promise<Cart | void | undefined> | undefined {
+        console.log('4', this.state.basketId);
+        if (this.state.basketId) {
+            console.log('5', this.state.basketId);
+            return this.apiBasket
+                .getCartById(this.state.basketId)
+                ?.then(({ body }) => body)
+                .catch(
+                    () =>
+                        this.apiBasket.createCart()?.then((cart: Cart): void => {
+                            localStorage.setItem('cartID', cart.id);
+                            this.state.basketId = cart.id;
+                        })
+                );
+        }
+        return this.apiBasket.createCart()?.then((cart: Cart): void => {
+            localStorage.setItem('cartID', cart.id);
+            this.state.basketId = cart.id;
         });
     }
 
     public isProductInBasket(productId: string): Promise<boolean> {
-        return Promise.resolve(this.getBasket()).then((cart: Cart | undefined): boolean => {
+        return Promise.resolve(this.getBasket()).then((cart: Cart | void | undefined): boolean => {
             if (cart) {
                 const foundItem: LineItem | undefined = cart.lineItems.find(
                     (item: LineItem): boolean => item.productId === productId
@@ -99,6 +105,7 @@ export default class BasketPage {
                     ?.changeCartItemQuantity(cartId, lineItemId, version, newQuantity)
                     ?.then((response: ClientResponse<Cart>): void => {
                         this.setContent(response.body);
+                        this.header.setItemsNumInBasket(response.body.totalLineItemQuantity ?? 0);
                     })
                     .catch((error) => {
                         console.error('Error decreasing quantity:', error);
@@ -121,6 +128,7 @@ export default class BasketPage {
                     ?.removeCartItem(cartId, lineItemId, version)
                     ?.then((response: ClientResponse<Cart>): void => {
                         this.setContent(response.body);
+                        this.header.setItemsNumInBasket(response.body.totalLineItemQuantity ?? 0);
                     })
                     .catch((error) => {
                         console.error('Error product delete:', error);
@@ -135,32 +143,17 @@ export default class BasketPage {
 
     public clearBasket(): void {
         if (confirm('Are you sure you want to empty the basket?')) {
-            this.getBasket()?.then((cart: Cart | undefined): void => {
+            this.getBasket()?.then((cart: Cart | void | undefined): void => {
                 if (cart && this.apiBasket && typeof this.apiBasket.deleteCart === 'function') {
                     const cartId: string = cart.id;
                     const version: number = cart.version;
                     if (cartId) {
                         this.apiBasket.deleteCart(cartId, version)?.then((): void => {
-                            this.getBasket()?.then((cart: Cart | undefined): void => {
-                                if (cart) {
-                                    this.setContent(cart);
-                                }
-                            });
+                            this.setEmptyBasket();
                         });
                     }
                 }
             });
         }
     }
-
-    /*private addLineItemId(lineItemId: string) {
-        this.lineItemIds.push(lineItemId);
-    }
-
-    private removeLineItemId(lineItemId: string) {
-        const index = this.lineItemIds.indexOf(lineItemId);
-        if (index !== -1) {
-            this.lineItemIds.splice(index, 1);
-        }
-    }*/
 }

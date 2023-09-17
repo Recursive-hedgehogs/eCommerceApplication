@@ -6,17 +6,14 @@ import {
 import { apiRoot } from './api-client';
 import { ApiPasswordFlow } from './api-flows/api-password-flow';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { ApiRefreshTokenFlow } from './api-flows/api-refresh-token-flow';
 import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
 import { CustomerChangePassword, CustomerUpdate } from '@commercetools/platform-sdk';
 
 class ApiCustomer {
     private apiPasswordFlow: ApiPasswordFlow;
-    private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
     constructor() {
         this.apiPasswordFlow = new ApiPasswordFlow();
-        this.apiRefreshTokenFlow = new ApiRefreshTokenFlow();
         this.apiExistingTokenFlow = new ApiExistingTokenFlow();
     }
     public createCustomer = (data: ICreateCustomerCredentials) => {
@@ -47,28 +44,6 @@ class ApiCustomer {
                 throw Error(err);
             });
     };
-
-    public signIn2 = (data: ILoginCredentials) => {
-        const refresh = localStorage.getItem('refreshToken');
-        if (refresh) {
-            this.apiRefreshTokenFlow.setUserData(refresh);
-            this.apiRefreshTokenFlow.apiRoot?.customers().get().execute();
-        }
-        const apiRoot: ByProjectKeyRequestBuilder = this.apiRefreshTokenFlow.apiRoot as ByProjectKeyRequestBuilder;
-        return apiRoot
-            .login()
-            .post({
-                body: {
-                    email: data.email,
-                    password: data.password,
-                },
-            })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
     public createEmailToken = (data: IEmailTokenCredentials) => {
         return apiRoot
             .customers()

@@ -1,14 +1,23 @@
 import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
+import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
+import { State } from '../state/state';
 
 export class ApiBasket {
-    private apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
+    private state: State = new State();
+    private readonly apiAnonymousSessionFlow: ApiAnonymousSessionFlow;
+    private readonly apiExistingTokenFlow: ApiExistingTokenFlow;
 
     constructor() {
         this.apiAnonymousSessionFlow = new ApiAnonymousSessionFlow();
+        this.apiExistingTokenFlow = new ApiExistingTokenFlow();
+    }
+
+    get currentFlow(): ApiExistingTokenFlow | ApiAnonymousSessionFlow {
+        return this.state.isLogIn ? this.apiExistingTokenFlow : this.apiAnonymousSessionFlow;
     }
 
     public getCarts = () => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .get()
             .execute()
@@ -17,8 +26,19 @@ export class ApiBasket {
             });
     };
 
+    public getCartById = (ID: string) => {
+        return this.currentFlow.apiRoot
+            ?.carts()
+            .withId({ ID })
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
     public createCart = () => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .post({
                 body: { currency: 'EUR' },
@@ -31,7 +51,7 @@ export class ApiBasket {
     };
 
     public updateCart = (cartId: string, version: number, productId: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID: cartId })
             .post({
@@ -41,7 +61,6 @@ export class ApiBasket {
                         {
                             action: 'addLineItem',
                             productId,
-                            // variantId
                             quantity: 1,
                         },
                     ],
@@ -54,7 +73,7 @@ export class ApiBasket {
     };
 
     public deleteCart = (ID: string, version: number) => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID })
             .delete({
@@ -68,42 +87,8 @@ export class ApiBasket {
             });
     };
 
-    public getCartById = (ID: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.carts()
-            .withId({ ID })
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public deleteItemInCart = (cartId: string, version: number, lineItemId: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.carts()
-            .withId({ ID: cartId })
-            .post({
-                body: {
-                    version,
-                    actions: [
-                        {
-                            action: 'removeLineItem',
-                            lineItemId,
-                            // variantId
-                            quantity: 1,
-                        },
-                    ],
-                },
-            })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
     public changeCartItemQuantity(cartId: string, lineItemId: string, version: number, newQuantity: number) {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID: cartId })
             .post({
@@ -124,8 +109,30 @@ export class ApiBasket {
             });
     }
 
+    public deleteItemInCart = (cartId: string, version: number, lineItemId: string) => {
+        return this.currentFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'removeLineItem',
+                            lineItemId,
+                            quantity: 1,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
     public removeCartItem = (cartId: string, lineItemId: string, version: number) => {
-        return this.apiAnonymousSessionFlow.apiRoot
+        return this.currentFlow.apiRoot
             ?.carts()
             .withId({ ID: cartId })
             .post({

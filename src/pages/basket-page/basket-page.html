@@ -1,8 +1,12 @@
-<div class="basket-wrapper">
-  <h4>Basket</h4>
+<div class="basket-wrapper d-flex justify-content-end p-2">
   <div class="clear-basket-container">
-    <button class="clear-basket" id="clear-cart">Clear basket</button>
+    <button class="clear-basket btn btn-outline-warning" id="clear-cart">Clear basket</button>
   </div>
 </div>
-<div class="basket-container"></div>
-<p class="basket-total-price"></p>
+<div class="d-flex flex-column flex-md-row p-3 gap-3">
+  <div class="basket-container d-flex flex-column flex-grow-1 bg-secondary"></div>
+  <div class="border solid border-black bg-secondary">
+    <div>Promo</div>
+    <div class="basket-total-price"></div>
+  </div>
+</div>

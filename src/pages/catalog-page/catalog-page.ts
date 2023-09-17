@@ -18,16 +18,19 @@ import { ApiProduct } from '../../api/api-products/api-products';
 import { CategoryComponent } from '../../components/category/category';
 import { CategoryController } from '../../components/category/category-controller';
 import { IProductFiltersCredentials } from '../../constants/interfaces/credentials.interface';
+import { Pagination } from '../../components/pagination/pagination';
+import { PaginationController } from '../../components/pagination/pagination-controller';
 
 export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
     private readonly sort?: Sort;
-    public originalProducts: ProductProjection[] = [];
     private products?: ProductCard[];
     private readonly filters?: Filters;
     private apiProduct: ApiProduct = new ApiProduct();
+    private readonly pagination?: Pagination;
     private static singleton: CatalogPage;
+    private paginationController?: PaginationController;
 
     constructor() {
         if (CatalogPage.singleton) {
@@ -44,6 +47,8 @@ export default class CatalogPage {
         new FiltersController(this.filters, this);
         this.sort = new Sort();
         new SortController(this.sort, this);
+        this.pagination = new Pagination();
+        this.paginationController = new PaginationController(this.pagination);
         this.start();
         CatalogPage.singleton = this;
     }
@@ -58,13 +63,13 @@ export default class CatalogPage {
             catalogFilters.append(this.filters.element);
         }
 
-        const catalogSorting = this.element.querySelector('.catalog-sorting');
+        const catalogSorting: Element | null = this.element.querySelector('.catalog-sorting');
         if (catalogSorting && this.sort?.element) {
             catalogSorting.append(this.sort.element);
         }
     }
 
-    public setContent(products: ProductProjection[]): void {
+    public setContent(products: ProductProjection[], limit: number, totalCount?: number): void {
         this.products = products.map((product: ProductProjection) => {
             const productCard: ProductCard = new ProductCard(product);
             new ProductCardController(productCard);
@@ -75,38 +80,60 @@ export default class CatalogPage {
             this.catalogContainer.innerHTML = '';
             this.catalogContainer.append(...productElements);
         }
+        this.catalogContainer?.after(this.pagination?.element as Node);
+        const pagesCount: number = totalCount ? Math.ceil(totalCount / limit) : 1;
+        const pageNumber: number = +window.location.pathname.slice(9);
+        this.pagination?.setContent(pagesCount, pageNumber);
+        this.paginationController?.updateListeners();
     }
 
-    public showCatalog(): void {
+    public showCatalog(page?: string): void {
+        const pageNumber: number | undefined = page ? +page : undefined;
         this.getCategories();
-        this.updateContent({});
+        this.updateContent({}, pageNumber);
     }
 
-    private getCategories() {
+    private getCategories(): Promise<void> | undefined {
         return this.apiProduct
             .getCategories()
             ?.then((resp: ClientResponse<CategoryPagedQueryResponse>) => resp.body.results)
-            .then((categories) => this.createCategories(categories));
+            .then((categories: Category[]) => this.createCategories(categories));
     }
 
     private createCategories(categories: Category[]): void {
         const categoriesContainer: HTMLElement = this.element.querySelector('.categories-container') as HTMLElement;
         const categoriesArray: HTMLElement[] = categories
-            .filter((category) => !category.parent)
+            .filter((category: Category) => !category.parent)
             .map((category: Category) => {
-                const categoryComponent = new CategoryComponent(category, categories);
+                const categoryComponent: CategoryComponent = new CategoryComponent(category, categories);
                 new CategoryController(categoryComponent);
                 return categoryComponent.element;
             });
+        categoriesContainer.innerHTML = '';
         categoriesContainer.append(...categoriesArray);
     }
 
-    public updateContent(filter: IProductFiltersCredentials) {
+    public updateContent(filter: IProductFiltersCredentials, page?: number): void {
+        const offset: number | undefined = page ? (page - 1) * 20 : undefined;
         this.apiProduct
-            .getProductProjection(filter)
+            .getProductProjection(filter, offset)
             ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
-                this.setContent(res.body.results);
+                this.setContent(res.body.results, res.body.limit, res.body.total);
             })
             .catch((err) => console.log(err));
+    }
+
+    public updateCardsButtonAddToCart(idArray: string[]): void {
+        setTimeout(
+            () =>
+                this.products
+                    ?.filter((product: ProductCard) => {
+                        return idArray.includes(product.productId);
+                    })
+                    .forEach((product: ProductCard): void => {
+                        product.inCart = true;
+                    }),
+            1000
+        );
     }
 }

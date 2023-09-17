@@ -19,13 +19,21 @@ export class Router {
             if (route === ROUTE.LOGIN && this.app.isAuthenticated()) {
                 route = ROUTE.MAIN;
             }
+            if (route === ROUTE.CATALOG) {
+                route = `${ROUTE.CATALOG}/1`;
+            }
             const isProductPageRegex = /product\/[\w\d-]*/;
             const isProductPage: boolean = isProductPageRegex.test(route);
+            const isCatalogPageRegex = /catalog\/\d*/;
+            const isCatalogPage: boolean = isCatalogPageRegex.test(route);
             let page: HTMLElement | undefined = this.app?.view.pages.has(route)
                 ? this.app?.view.pages.get(route)
                 : this.app?.view.pages.get(ROUTE.NOT_FOUND);
             if (isProductPage) {
                 page = this.app?.view.pages.get(ROUTE.PRODUCT);
+            }
+            if (isCatalogPage) {
+                page = this.app?.view.pages.get(ROUTE.CATALOG);
             }
             this.app?.main.setContent(page);
             this.onNavigate(route);
@@ -43,6 +51,8 @@ export class Router {
     private onNavigate(page: string): void {
         const isProductPageRegex = /product\/[\w\d-]*/;
         const isProductPage: boolean = isProductPageRegex.test(page);
+        const isCatalogPageRegex = /catalog\/\d*/;
+        const isCatalogPage: boolean = isCatalogPageRegex.test(page);
         switch (page) {
             case ROUTE.CATALOG:
                 this.app?.catalogPage.showCatalog();
@@ -52,6 +62,9 @@ export class Router {
             this.app?.basketPage.isProductInBasket(productId).then((isInBasket) => {
                 this.app?.productPage.getData(productId, isInBasket);
             });
+        }
+        if (isCatalogPage) {
+            this.app?.catalogPage.showCatalog(page.slice(8));
         }
     }
 }

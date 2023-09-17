@@ -21,24 +21,24 @@ export class HeaderControllers {
         e.preventDefault();
         const target: HTMLElement = <HTMLElement>e.target;
         const linkElement: HTMLElement = <HTMLElement>target?.closest('[data-link]');
-        const dataLink = linkElement?.dataset.link;
+        const dataLink: string | undefined = linkElement?.dataset.link;
         switch (dataLink) {
             case ROUTE.LOGIN:
                 this.router.navigate(ROUTE.LOGIN);
                 document.title = 'storiesShelf store | Login';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 this.highlightUser();
                 break;
             case ROUTE.REGISTRATION:
                 this.router.navigate(ROUTE.REGISTRATION);
                 document.title = 'storiesShelf store | Registration';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 this.highlightUser();
                 break;
             case ROUTE.CATALOG:
-                this.router.navigate(ROUTE.CATALOG);
+                this.router.navigate(ROUTE.CATALOG + '/1');
                 document.title = 'storiesShelf store | Catalog';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 if (e.target) {
                     this.app?.catalogPage.showCatalog();
                 }
@@ -46,23 +46,23 @@ export class HeaderControllers {
             case ROUTE.USER:
                 this.router.navigate(ROUTE.USER);
                 document.title = 'storiesShelf store | User';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 this.highlightUser();
                 break;
             case ROUTE.BASKET:
                 this.router.navigate(ROUTE.BASKET);
                 document.title = 'storiesShelf store | Basket';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 break;
             case ROUTE.ABOUT:
                 this.router.navigate(ROUTE.ABOUT);
                 document.title = 'shelfStories store | About';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 break;
             case ROUTE.MAIN:
                 this.router.navigate(ROUTE.MAIN);
                 document.title = 'shelfStories store | Main';
-                this.setActiveLink(target);
+                this.app.header.setActiveLink(target);
                 break;
             case 'logout':
                 this.onLogOut();
@@ -72,15 +72,7 @@ export class HeaderControllers {
         }
     };
 
-    private setActiveLink = (targetLink: HTMLElement) => {
-        const links = this.header.querySelectorAll('.nav-link');
-        links.forEach((link) => {
-            link.classList.remove('active');
-        });
-        targetLink.classList.add('active');
-    };
-
-    private onLogOut = () => {
+    private onLogOut = (): void => {
         const loginBtn: HTMLElement | null = this.header.querySelector('#login-btn');
         const logoutBtn: HTMLElement | null = this.header.querySelector('#logout-btn');
         const registrBtn: HTMLElement | null = this.header.querySelector('#registration-btn');
@@ -94,7 +86,7 @@ export class HeaderControllers {
         localStorage.removeItem('refreshToken');
     };
 
-    private highlightUser = () => {
+    private highlightUser = (): void => {
         const usertLink: HTMLElement = <HTMLElement>this.header.querySelector('.user-link');
         if (usertLink) usertLink.classList.add('active');
     };

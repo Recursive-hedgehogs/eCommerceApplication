@@ -20,7 +20,18 @@ export class BasketItem {
         }
         this._element = new ElementCreator({
             tag: 'div',
-            classNames: ['basket-item', 'd-flex', 'column-gap-2', 'border', 'solid', 'border-black', 'border-1'],
+            classNames: [
+                'basket-item',
+                'd-flex',
+                'flex-column',
+                'flex-sm-row',
+                'column-gap-2',
+                'border',
+                'solid',
+                'border-black',
+                'border-1',
+                'p-3',
+            ],
             innerHTML: template,
         }).getElement();
         this.quantityIncreaseButton = this._element.querySelector('.quantity-increase') as HTMLButtonElement;
@@ -44,9 +55,9 @@ export class BasketItem {
         const price: number = this.data.price.discounted?.value
             ? this.data.price.discounted.value.centAmount / 100
             : this.data.price.value.centAmount / 100;
-        basketItemPrice.innerText = `Item price: ${price} €`;
-        basketItemCount.innerText = `Count: ${this.data.quantity}`;
-        basketItemTotalPrice.innerText = `Total price: ${this.data.quantity * price} €`;
+        basketItemPrice.innerText = `Price: ${price} €`;
+        basketItemCount.innerText = `${this.data.quantity}`;
+        basketItemTotalPrice.innerText = `Summa: ${Math.round(this.data.quantity * price * 10) / 10} €`;
     }
 
     public get element(): HTMLElement {

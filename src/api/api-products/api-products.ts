@@ -17,37 +17,17 @@ export class ApiProduct {
             ?.products()
             .get()
             .execute()
-            .then((el) => {
+            .then((el: ClientResponse<ProductPagedQueryResponse>) => {
                 return el as ClientResponse<ProductPagedQueryResponse>;
             })
             .catch((err) => {
                 throw new Error(err);
             });
     };
-    public getProductsFromApiExistingTokenFlow = () => {
-        return this.apiExistingTokenFlow.apiRoot
-            ?.products()
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
 
     public getProductById = (ID: string) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.products()
-            .withId({ ID })
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public getProductDiscountById = (ID: string) => {
-        return this.apiAnonymousSessionFlow.apiRoot
-            ?.productDiscounts()
             .withId({ ID })
             .get()
             .execute()
@@ -66,7 +46,17 @@ export class ApiProduct {
             });
     };
 
-    public getProductProjection = (data: IProductFiltersCredentials) => {
+    public getProductDiscountById = (ID: string) => {
+        return this.apiAnonymousSessionFlow.apiRoot
+            ?.productDiscounts()
+            .withId({ ID })
+            .get()
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+    public getProductProjection = (data: IProductFiltersCredentials, offset?: number) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
             .search()
@@ -77,7 +67,8 @@ export class ApiProduct {
                     'text.en-US': data.search,
                     sort: data.sort,
                     fuzzy: true,
-                    limit: 25,
+                    offset,
+                    limit: 20,
                 },
             })
             .execute()
@@ -85,7 +76,6 @@ export class ApiProduct {
                 throw Error(err);
             });
     };
-
     public getCategories = () => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.categories()
