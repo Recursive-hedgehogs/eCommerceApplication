@@ -16,12 +16,15 @@ export class BasketPageController {
     }
 
     private addListeners(): void {
-        this.basketPage.element.addEventListener('click', this.goToCatalog);
+        this.basketPage.element.addEventListener('click', this.onClick);
     }
 
-    private goToCatalog = (e: Event): void => {
+    private onClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
             this.router.navigate(ROUTE.CATALOG);
+        }
+        if (e.target instanceof HTMLElement && e.target.id === 'clear-cart') {
+            this.basketPage.clearBasket();
         }
     };
 }
