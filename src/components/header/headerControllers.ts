@@ -36,7 +36,7 @@ export class HeaderControllers {
                 this.highlightUser();
                 break;
             case ROUTE.CATALOG:
-                this.router.navigate(ROUTE.CATALOG);
+                this.router.navigate(ROUTE.CATALOG + '/1');
                 document.title = 'storiesShelf store | Catalog';
                 this.app.header.setActiveLink(target);
                 if (e.target) {

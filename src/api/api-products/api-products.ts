@@ -56,7 +56,7 @@ export class ApiProduct {
                 throw Error(err);
             });
     };
-    public getProductProjection = (data: IProductFiltersCredentials) => {
+    public getProductProjection = (data: IProductFiltersCredentials, offset?: number) => {
         return this.apiAnonymousSessionFlow.apiRoot
             ?.productProjections()
             .search()
@@ -67,7 +67,7 @@ export class ApiProduct {
                     'text.en-US': data.search,
                     sort: data.sort,
                     fuzzy: true,
-                    offset: 20,
+                    offset,
                     limit: 20,
                 },
             })

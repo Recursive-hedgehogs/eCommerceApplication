@@ -69,7 +69,7 @@ export default class CatalogPage {
         }
     }
 
-    public setContent(products: ProductProjection[]): void {
+    public setContent(products: ProductProjection[], limit: number, totalCount?: number): void {
         this.products = products.map((product: ProductProjection) => {
             const productCard: ProductCard = new ProductCard(product);
             new ProductCardController(productCard);
@@ -81,13 +81,16 @@ export default class CatalogPage {
             this.catalogContainer.append(...productElements);
         }
         this.catalogContainer?.after(this.pagination?.element as Node);
-        this.pagination?.setContent(5);
+        const pagesCount: number = totalCount ? Math.ceil(totalCount / limit) : 1;
+        const pageNumber: number = +window.location.pathname.slice(9);
+        this.pagination?.setContent(pagesCount, pageNumber);
         this.paginationController?.updateListeners();
     }
 
-    public showCatalog(): void {
+    public showCatalog(page?: string): void {
+        const pageNumber: number | undefined = page ? +page : undefined;
         this.getCategories();
-        this.updateContent({});
+        this.updateContent({}, pageNumber);
     }
 
     private getCategories(): Promise<void> | undefined {
@@ -110,11 +113,12 @@ export default class CatalogPage {
         categoriesContainer.append(...categoriesArray);
     }
 
-    public updateContent(filter: IProductFiltersCredentials): void {
+    public updateContent(filter: IProductFiltersCredentials, page?: number): void {
+        const offset: number | undefined = page ? (page - 1) * 20 : undefined;
         this.apiProduct
-            .getProductProjection(filter)
+            .getProductProjection(filter, offset)
             ?.then((res: ClientResponse<ProductProjectionPagedSearchResponse>): void => {
-                this.setContent(res.body.results);
+                this.setContent(res.body.results, res.body.limit, res.body.total);
             })
             .catch((err) => console.log(err));
     }
