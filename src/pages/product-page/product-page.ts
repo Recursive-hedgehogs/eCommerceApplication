@@ -24,9 +24,10 @@ export default class ProductPage {
     private productFullDescription!: HTMLElement;
     private productPrice!: HTMLElement;
     private productPriceDiscount!: HTMLElement;
-    private data?: IProductWithDiscount; //temporary container for response data
+    public data?: IProductWithDiscount; //temporary container for response data
     private apiProduct: ApiProduct = new ApiProduct();
     private static singleton: ProductPage;
+    public productId: string | undefined;
 
     constructor() {
         if (ProductPage.singleton) {
@@ -43,8 +44,8 @@ export default class ProductPage {
         this.productFullDescription = this.element.querySelector('.product-full-description') as HTMLElement;
         this.productPrice = this.element.querySelector('.product-price') as HTMLElement;
         this.productPriceDiscount = this.element.querySelector('.product-price-discount') as HTMLElement;
+        this.productId = undefined;
         ProductPage.singleton = this;
-        this.showModalWindow();
     }
 
     public getElement(): HTMLElement {
@@ -91,7 +92,7 @@ export default class ProductPage {
                 const priceDiscount: number =
                     data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100 -
                     (+b.permyriad / 10000) *
-                        (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
+                    (data.product.masterData.current.masterVariant.prices[0].value.centAmount / 100);
                 productPriceDiscount.innerText = 'Discount price:' + priceDiscount + '€';
                 productPrice.classList.add('text-decoration-line-through');
             } else {
@@ -132,7 +133,7 @@ export default class ProductPage {
 
     public openModal(): void {
         const { element, data }: this = this; //local variable initialization
-        const modalProductImage: HTMLElement = element.querySelector('.product-modal-image-container') as HTMLElement;
+        const modalProductImage: HTMLElement = element.querySelector('#product-modal-image-container') as HTMLElement;
         const images: Image[] = data?.product.masterData.current.masterVariant.images ?? [];
         const modal: HTMLElement | null = document.getElementById('product-modal');
         const imagesArray: HTMLElement[] = this.data ? this.getImages(images) : [];
@@ -141,12 +142,7 @@ export default class ProductPage {
 
         if (modal) {
             modal.style.display = 'block';
-            const closeButton: HTMLElement | null = this.getCloseButtonElement();
-
-            if (closeButton) {
-                closeButton.addEventListener('click', this.closeModal.bind(this));
-            }
-            this.createSlider('.product-modal-image-container');
+            this.createSlider('#product-modal-image-container');
         }
     }
 
@@ -159,9 +155,8 @@ export default class ProductPage {
         }
     }
 
-    public showModalWindow(): void {
+    public showModalWindow = (): void => {
         const productImageContainer: HTMLElement | null = this.getProductImageContainer();
-
         if (productImageContainer) {
             productImageContainer.addEventListener('click', (event: MouseEvent): void => {
                 const target: HTMLElement = event.target as HTMLElement;
@@ -173,15 +168,9 @@ export default class ProductPage {
                 }
             });
         }
+    };
 
-        const closeButton: HTMLElement | null = this.getCloseButtonElement();
-
-        if (closeButton) {
-            closeButton.addEventListener('click', this.closeModal.bind(this));
-        }
-    }
-
-    private getBackgroundImageUrl(element: HTMLElement): string | undefined {
+    public getBackgroundImageUrl(element: HTMLElement): string | undefined {
         const style: CSSStyleDeclaration = getComputedStyle(element);
         const backgroundImage: string = style.getPropertyValue('background-image');
         const match: RegExpMatchArray | null = backgroundImage.match(/url\("(.+)"\)/);
@@ -201,7 +190,9 @@ export default class ProductPage {
         return this.element.querySelector('.product-image-container') as HTMLElement | null;
     }
 
-    public getData(productId: string): void {
+    public getData(productId: string, isInBasket: boolean): void {
+        this.productId = productId;
+        this.checkButton(isInBasket);
         this.apiProduct
             .getProductById(productId)
             ?.then((resp: ClientResponse<Product>) => resp.body)
@@ -222,5 +213,17 @@ export default class ProductPage {
                 this.retrieveContent(resp);
                 this.setContent();
             });
+    }
+
+    private checkButton(isInBasket: boolean): void {
+        const btnAdd = this.element.querySelector('#btn-add');
+        const btnRemove = this.element.querySelector('#btn-remove');
+        if (isInBasket) {
+            btnAdd?.classList.add('hidden');
+            btnRemove?.classList.remove('hidden');
+        } else {
+            btnAdd?.classList.remove('hidden');
+            btnRemove?.classList.add('hidden');
+        }
     }
 }

@@ -11,6 +11,7 @@ import { LoginPageController } from '../pages/login-page/login-page-controller';
 import { RegistrationPageController } from '../pages/registration-page/registration-page-controller';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 import { UserPageController } from '../pages/user-page/user-page-controller';
+import { ProductPageController } from '../pages/product-page/product-page-controller';
 
 export class Controllers {
     private app: App | null;
@@ -34,6 +35,7 @@ export class Controllers {
         new LoginPageController();
         new RegistrationPageController();
         new CatalogPageController();
+        new ProductPageController();
         this.addListeners();
     }
 

@@ -48,7 +48,10 @@ export class Router {
                 this.app?.catalogPage.showCatalog();
         }
         if (isProductPage) {
-            this.app?.productPage.getData(page.slice(8));
+            const productId: string = page.slice(8);
+            this.app?.basketPage.isProductInBasket(productId).then((isInBasket) => {
+                this.app?.productPage.getData(productId, isInBasket);
+            });
         }
     }
 }

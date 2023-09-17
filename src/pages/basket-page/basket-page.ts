@@ -47,4 +47,14 @@ export default class BasketPage {
     public get basketContainer(): HTMLElement {
         return this._element.querySelector('.basket-container') as HTMLElement;
     }
+
+    public isProductInBasket(productId: string): Promise<boolean> {
+        return Promise.resolve(this.getBasket()).then((cart) => {
+            if (cart) {
+                const foundItem = cart.lineItems.find((item) => item.productId === productId);
+                return !!foundItem;
+            }
+            return false;
+        });
+    }
 }

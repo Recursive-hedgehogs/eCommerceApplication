@@ -29,7 +29,9 @@ export class ProductCardController {
                 break;
             default:
                 this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
-                this.app.productPage.getData(this.productCard.productId);
+                this.app?.basketPage.isProductInBasket(this.productCard.productId).then((isInBasket) => {
+                    this.app?.productPage.getData(this.productCard.productId, isInBasket);
+                });
         }
     };
 
