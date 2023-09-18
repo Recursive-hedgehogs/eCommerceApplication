@@ -4,7 +4,7 @@ import emptyBasketTemplate from './empty-basket-template.html';
 import './basket-page.scss';
 import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { BasketItem } from '../../components/basket-item/basket-item';
-import { ApiBasket } from '../../api/api-basket';
+import { ApiBasket } from '../../api/api-basket/api-basket';
 import { BasketItemController } from '../../components/basket-item/basket-item-controller';
 import { State } from '../../state/state';
 import Header from '../../components/header/header';
@@ -13,7 +13,7 @@ export default class BasketPage {
     private readonly _element: HTMLElement;
     private apiBasket: ApiBasket = new ApiBasket();
     private state: State;
-    private cart: Cart | null = null;
+    public cart: Cart | null = null;
     private header: Header;
 
     constructor(header: Header) {
@@ -62,7 +62,7 @@ export default class BasketPage {
         this.state.basketId = '';
     }
 
-    public getBasket(): Promise<Cart | void | undefined> | undefined {
+    public getBasket(): Promise<Cart | undefined> | undefined {
         console.log('4', this.state.basketId);
         if (this.state.basketId) {
             console.log('5', this.state.basketId);
@@ -71,15 +71,18 @@ export default class BasketPage {
                 ?.then(({ body }) => body)
                 .catch(
                     () =>
-                        this.apiBasket.createCart()?.then((cart: Cart): void => {
+                        this.apiBasket.createCart()?.then((cart: Cart) => {
                             localStorage.setItem('cartID', cart.id);
                             this.state.basketId = cart.id;
+                            return cart;
                         })
                 );
         }
-        return this.apiBasket.createCart()?.then((cart: Cart): void => {
+        console.log('@@@API_BASKET_CREATE_CART', this.apiBasket.createCart);
+        return this.apiBasket.createCart()?.then((cart: Cart) => {
             localStorage.setItem('cartID', cart.id);
             this.state.basketId = cart.id;
+            return cart;
         });
     }
 
@@ -156,4 +159,41 @@ export default class BasketPage {
             });
         }
     }
+
+    public onSubmitPromo = (e: SubmitEvent) => {
+        const promoInput = this.element.querySelector('#promo') as HTMLInputElement;
+        e.preventDefault();
+        if (this.cart) {
+            this.apiBasket
+                .addDiscountCodeToCart(this.cart.id, this.cart.version, promoInput.value)
+                ?.then((resp) => {
+                    const totalCartPrice: HTMLElement = this._element.querySelector(
+                        '.basket-total-price'
+                    ) as HTMLElement;
+                    totalCartPrice.innerText = `Total price: ${resp.body.totalPrice.centAmount / 100} €`;
+                    this.cart = resp.body;
+                    // this.setContent(resp.body)
+                    // console.log(resp);
+                })
+                .catch(() => {
+                    if (this.cart?.discountCodes && this.cart?.discountCodes[0]) {
+                        this.apiBasket
+                            .removeDiscountCodeFromCart(
+                                this.cart.id,
+                                this.cart.version,
+                                this.cart.discountCodes[0].discountCode.id
+                            )
+                            ?.then((resp) => {
+                                const totalCartPrice: HTMLElement = this._element.querySelector(
+                                    '.basket-total-price'
+                                ) as HTMLElement;
+                                totalCartPrice.innerText = `Total price: ${resp.body.totalPrice.centAmount / 100} €`;
+                                this.cart = resp.body;
+                            });
+                    }
+                    alert('Wrong code');
+                });
+        }
+        console.log('ggggg');
+    };
 }

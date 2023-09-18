@@ -1,4 +1,4 @@
-import { ApiBasket } from '../../api/api-basket';
+import { ApiBasket } from '../../api/api-basket/api-basket';
 import App from '../../app/app';
 
 export class ProductPageController {
