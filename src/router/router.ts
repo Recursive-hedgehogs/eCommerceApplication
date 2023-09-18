@@ -59,7 +59,7 @@ export class Router {
         }
         if (isProductPage) {
             const productId: string = page.slice(8);
-            this.app?.basketPage.isProductInBasket(productId)?.then((isInBasket) => {
+            this.app?.basketPage.isProductInBasket(productId)?.then((isInBasket: boolean): void => {
                 this.app?.productPage.getData(productId, isInBasket);
             });
         }

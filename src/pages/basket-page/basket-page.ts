@@ -8,6 +8,7 @@ import { ApiBasket } from '../../api/api-basket/api-basket';
 import { BasketItemController } from '../../components/basket-item/basket-item-controller';
 import { State } from '../../state/state';
 import Header from '../../components/header/header';
+import App from '../../app/app';
 
 export default class BasketPage {
     private readonly _element: HTMLElement;
@@ -15,15 +16,17 @@ export default class BasketPage {
     private state: State;
     public cart: Cart | null = null;
     private header: Header;
+    private app: App;
 
-    constructor(header: Header) {
+    constructor(app: App) {
         this._element = new ElementCreator({
             tag: 'section',
             classNames: ['basket-page-container'],
             innerHTML: template,
         }).getElement();
         this.state = new State();
-        this.header = header;
+        this.app = app;
+        this.header = app.header;
     }
 
     public get element(): HTMLElement {
@@ -32,6 +35,24 @@ export default class BasketPage {
 
     public get basketContainer(): HTMLElement {
         return this._element.querySelector('.basket-container') as HTMLElement;
+    }
+
+    private setPriceBeforeDiscount(data: Cart): void {
+        const totalPriceWithoutDiscount: HTMLElement = this._element.querySelector(
+            '.basket-total-price-before-discount'
+        ) as HTMLElement;
+        if (data.discountCodes.length) {
+            const summ: number =
+                data.lineItems
+                    .map(
+                        (el: LineItem) =>
+                            (el.price.discounted?.value.centAmount ?? el.price.value.centAmount) * el.quantity
+                    )
+                    .reduce((a: number, b: number) => a + b) / 100;
+            totalPriceWithoutDiscount.innerText = `Price without code: ${summ} €`;
+        } else {
+            totalPriceWithoutDiscount.innerText = '';
+        }
     }
 
     public setContent(data: Cart): void {
@@ -43,6 +64,8 @@ export default class BasketPage {
         });
         this.basketContainer.append(...basketItemsArray);
         const totalCartPrice: HTMLElement = this._element.querySelector('.basket-total-price') as HTMLElement;
+        this.setPriceBeforeDiscount(data);
+
         totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
         const summa = this._element.querySelector('.basket-summa') as HTMLElement;
         const clearBasket = this._element.querySelector('.clear-basket') as HTMLElement;
@@ -58,8 +81,8 @@ export default class BasketPage {
             classNames: ['empty-basket-container'],
             innerHTML: emptyBasketTemplate,
         }).getElement();
-        const summa = this._element.querySelector('.basket-summa') as HTMLElement;
-        const clearBasket = this._element.querySelector('.clear-basket') as HTMLElement;
+        const summa: HTMLElement = this._element.querySelector('.basket-summa') as HTMLElement;
+        const clearBasket: HTMLElement = this._element.querySelector('.clear-basket') as HTMLElement;
         summa.classList.add('d-none');
         clearBasket.classList.add('d-none');
         this.basketContainer.append(emptyBasket);
@@ -69,9 +92,7 @@ export default class BasketPage {
     }
 
     public getBasket(): Promise<Cart | undefined> | undefined {
-        console.log('4', this.state.basketId);
         if (this.state.basketId) {
-            console.log('5', this.state.basketId);
             return this.apiBasket
                 .getCartById(this.state.basketId)
                 ?.then(({ body }) => body)
@@ -84,7 +105,6 @@ export default class BasketPage {
                         })
                 );
         }
-        console.log('@@@API_BASKET_CREATE_CART', this.apiBasket.createCart);
         return this.apiBasket.createCart()?.then((cart: Cart) => {
             localStorage.setItem('cartID', cart.id);
             this.state.basketId = cart.id;
@@ -166,20 +186,20 @@ export default class BasketPage {
         }
     }
 
-    public onSubmitPromo = (e: SubmitEvent) => {
-        const promoInput = this.element.querySelector('#promo') as HTMLInputElement;
+    public onSubmitPromo = (e: SubmitEvent): void => {
+        const promoInput: HTMLInputElement = this.element.querySelector('#promo') as HTMLInputElement;
         e.preventDefault();
         if (this.cart) {
             this.apiBasket
                 .addDiscountCodeToCart(this.cart.id, this.cart.version, promoInput.value)
-                ?.then((resp) => {
+                ?.then((resp: ClientResponse<Cart>): void => {
                     const totalCartPrice: HTMLElement = this._element.querySelector(
                         '.basket-total-price'
                     ) as HTMLElement;
                     totalCartPrice.innerText = `Total price: ${resp.body.totalPrice.centAmount / 100} €`;
+                    this.setPriceBeforeDiscount(resp.body);
                     this.cart = resp.body;
-                    // this.setContent(resp.body)
-                    // console.log(resp);
+                    this.app.showMessage('Promo code activated');
                 })
                 .catch(() => {
                     if (this.cart?.discountCodes && this.cart?.discountCodes[0]) {
@@ -189,17 +209,17 @@ export default class BasketPage {
                                 this.cart.version,
                                 this.cart.discountCodes[0].discountCode.id
                             )
-                            ?.then((resp) => {
+                            ?.then((resp: ClientResponse<Cart>): void => {
                                 const totalCartPrice: HTMLElement = this._element.querySelector(
                                     '.basket-total-price'
                                 ) as HTMLElement;
                                 totalCartPrice.innerText = `Total price: ${resp.body.totalPrice.centAmount / 100} €`;
+                                this.setPriceBeforeDiscount(resp.body);
                                 this.cart = resp.body;
                             });
                     }
-                    alert('Wrong code');
+                    this.app.showMessage('You entered the wrong code. Please check it and try again', 'red');
                 });
         }
-        console.log('ggggg');
     };
 }
