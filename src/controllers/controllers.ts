@@ -96,6 +96,8 @@ export class Controllers {
             this.apiRefreshTokenFlow.setUserData(refreshToken);
         } else if (window.location.pathname.slice(1) === ROUTE.USER) {
             this.router.navigate(ROUTE.LOGIN); //add redirection from user to LOGIN page
+        } else {
+            this.app?.setBasket();
         }
         window.removeEventListener('load', this.onFirstLoad);
     };

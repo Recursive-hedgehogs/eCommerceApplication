@@ -55,8 +55,6 @@ class App implements IApp {
         this.productPage = new ProductPage();
         this.catalogPage = new CatalogPage();
         this.notFoundPage = new NotFoundPage();
-
-        this.basketPage = new BasketPage();
         this.aboutUsPage = new AboutUsPage();
         this.basketPage = new BasketPage(this);
         this.router = new Router();
