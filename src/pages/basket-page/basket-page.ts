@@ -67,8 +67,8 @@ export default class BasketPage {
         this.setPriceBeforeDiscount(data);
 
         totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
-        const summa = this._element.querySelector('.basket-summa') as HTMLElement;
-        const clearBasket = this._element.querySelector('.clear-basket') as HTMLElement;
+        const summa: HTMLElement = this._element.querySelector('.basket-summa') as HTMLElement;
+        const clearBasket: HTMLElement = this._element.querySelector('.clear-basket') as HTMLElement;
         summa.classList.remove('d-none');
         clearBasket.classList.remove('d-none');
         this.cart = data;
@@ -95,7 +95,7 @@ export default class BasketPage {
         if (this.state.basketId) {
             return this.apiBasket
                 .getCartById(this.state.basketId)
-                ?.then(({ body }) => body)
+                ?.then(({ body }: ClientResponse<Cart>) => body)
                 .catch(
                     () =>
                         this.apiBasket.createCart()?.then((cart: Cart) => {
@@ -113,7 +113,7 @@ export default class BasketPage {
     }
 
     public isProductInBasket(productId: string): Promise<boolean> {
-        return Promise.resolve(this.getBasket()).then((cart: Cart | void | undefined): boolean => {
+        return Promise.resolve(this.getBasket()).then((cart: Cart | undefined): boolean => {
             if (cart) {
                 const foundItem: LineItem | undefined = cart.lineItems.find(
                     (item: LineItem): boolean => item.productId === productId

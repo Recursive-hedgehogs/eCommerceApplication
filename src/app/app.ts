@@ -14,7 +14,7 @@ import BasketPage from '../pages/basket-page/basket-page';
 import { State } from '../state/state';
 import { validateEmail, validatePassword } from '../utils/validations';
 import { apiCustomer } from '../api/api-customer';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, Customer, CustomerSignInResult, LineItem } from '@commercetools/platform-sdk';
 import { ROUTE } from '../constants/enums/enum';
 import { Router } from '../router/router';
 
@@ -58,10 +58,6 @@ class App implements IApp {
 
     public start(view: View): void {
         this.view = view;
-    }
-
-    public getCountryFromCode(code: string): string {
-        return this.countriesArray.find((el: ISO31661AssignedEntry): boolean => el.alpha2 === code)?.name ?? '';
     }
 
     public getCodeFromCountryName(name: string): string {
@@ -135,6 +131,19 @@ class App implements IApp {
                 });
         }
     };
+
+    public setBasket(): void {
+        this.basketPage.getBasket()?.then((cart: Cart | undefined): void => {
+            if (cart?.lineItems.length) {
+                this.header.setItemsNumInBasket(cart?.totalLineItemQuantity ?? 0);
+                this.basketPage.setContent(cart);
+                const idArray: string[] = cart.lineItems.map(({ productId }: LineItem) => productId);
+                this.catalogPage.updateCardsButtonAddToCart(idArray);
+            } else {
+                this.basketPage.setEmptyBasket();
+            }
+        });
+    }
 }
 
 export default App;

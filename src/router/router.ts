@@ -65,6 +65,7 @@ export class Router {
         }
         if (isCatalogPage) {
             this.app?.catalogPage.showCatalog(page.slice(8));
+            this.app?.setBasket();
         }
     }
 }
