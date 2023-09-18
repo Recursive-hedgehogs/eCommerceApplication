@@ -11,6 +11,7 @@ import NotFoundPage from '../pages/not-found-page/not-found-page';
 import UserPage from '../pages/user-page/user-page';
 import Header from '../components/header/header';
 import BasketPage from '../pages/basket-page/basket-page';
+import AboutUsPage from '../pages/about-us-page/about-us-page';
 
 class App implements IApp {
     private countriesArray!: Array<ISO31661AssignedEntry>;
@@ -26,6 +27,7 @@ class App implements IApp {
     public notFoundPage!: NotFoundPage;
     public header!: Header;
     public basketPage!: BasketPage;
+    public aboutUsPage!: AboutUsPage;
     private static singleton: App;
 
     constructor() {
@@ -44,6 +46,7 @@ class App implements IApp {
         this.catalogPage = new CatalogPage();
         this.notFoundPage = new NotFoundPage();
         this.basketPage = new BasketPage();
+        this.aboutUsPage = new AboutUsPage();
         App.singleton = this;
     }
 
