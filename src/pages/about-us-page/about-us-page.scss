@@ -39,13 +39,54 @@
 }
 
 .img-team {
-    widows: 50%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     border: 5px solid #ffcea4;
+    background-size: cover;
 }
 
 .img-container {
     justify-content: center;
     align-items: center;
-    
+    width: 200px;
+    height: 200px;
+
+}
+
+.text-team {
+  width: 60%;
+  padding: 0 5%;
+}
+
+.align-flex {
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rs-logo {
+  display: inline-block;
+  min-width: 260px;
+  height: 110px;
+  background-image: url(../../assets/icons/rsschooljs.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: all .3s ease;
+}
+
+.regards {
+  gap: 5%
+}
+
+@media (max-width: 500px) {
+  .text-team {
+    width: 100%;
+    padding: 0 2%;
+  }
+
+  .img-container {
+    order: -1;
+    margin-top: 2%;
+  }
 }
