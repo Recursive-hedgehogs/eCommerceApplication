@@ -2,7 +2,7 @@ import { ProductCard } from './product-card';
 import { Router } from '../../router/router';
 import { ROUTE } from '../../constants/enums/enum';
 import App from '../../app/app';
-import { ApiBasket } from '../../api/api-basket';
+import { ApiBasket } from '../../api/api-basket/api-basket';
 import { Cart } from '@commercetools/platform-sdk';
 import { Spinner } from '../spinner/spinner';
 
@@ -35,15 +35,16 @@ export class ProductCardController {
                 break;
             default:
                 this.router.navigate(`${ROUTE.PRODUCT}/${this.productCard.productId}`);
-                this.app?.basketPage.isProductInBasket(this.productCard.productId).then((isInBasket) => {
-                    this.app?.productPage.getData(this.productCard.productId, isInBasket);
-                });
+            // this.app?.basketPage.isProductInBasket(this.productCard.productId)?.then((isInBasket) => {
+            //     this.app?.productPage.getData(this.productCard.productId, isInBasket);
+            // });
         }
     };
 
     public addProductToCart(): Promise<void> | undefined {
         this.productCard.element?.append(this.spinner.element as Node);
         return this.app.basketPage.getBasket()?.then((cart: Cart | undefined | void): void => {
+            console.log('@@@cart after get basket', cart);
             if (cart) {
                 this.apiBasket
                     .updateCart(cart.id, cart.version, this.productCard.productId)

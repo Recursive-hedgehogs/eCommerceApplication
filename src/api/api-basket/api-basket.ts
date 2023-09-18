@@ -1,6 +1,7 @@
-import { ApiAnonymousSessionFlow } from './api-flows/api-anonymous-session-flow';
-import { ApiExistingTokenFlow } from './api-flows/api-existing-token-flow';
-import { State } from '../state/state';
+import { ApiAnonymousSessionFlow } from '../api-flows/api-anonymous-session-flow';
+import { ApiExistingTokenFlow } from '../api-flows/api-existing-token-flow';
+import { State } from '../../state/state';
+import { Cart, ClientResponse } from '@commercetools/platform-sdk';
 
 export class ApiBasket {
     private state: State = new State();
@@ -38,13 +39,17 @@ export class ApiBasket {
     };
 
     public createCart = () => {
+        console.log(this.currentFlow);
         return this.currentFlow.apiRoot
             ?.carts()
             .post({
                 body: { currency: 'EUR' },
             })
             .execute()
-            .then(({ body }) => body)
+            .then(({ body }: ClientResponse<Cart>) => {
+                console.log('createCartResp@@@', body);
+                return body;
+            })
             .catch((err) => {
                 throw Error(err);
             });
@@ -142,6 +147,51 @@ export class ApiBasket {
                         {
                             action: 'removeLineItem',
                             lineItemId,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public addDiscountCodeToCart = (cartId: string, version: number, code: string) => {
+        return this.currentFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'addDiscountCode',
+                            code,
+                        },
+                    ],
+                },
+            })
+            .execute()
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public removeDiscountCodeFromCart = (cartId: string, version: number, discountCodeId: string) => {
+        return this.currentFlow.apiRoot
+            ?.carts()
+            .withId({ ID: cartId })
+            .post({
+                body: {
+                    version,
+                    actions: [
+                        {
+                            action: 'removeDiscountCode',
+                            discountCode: {
+                                typeId: 'discount-code',
+                                id: discountCodeId,
+                            },
                         },
                     ],
                 },
