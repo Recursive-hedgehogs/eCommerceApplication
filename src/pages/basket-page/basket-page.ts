@@ -44,6 +44,10 @@ export default class BasketPage {
         this.basketContainer.append(...basketItemsArray);
         const totalCartPrice: HTMLElement = this._element.querySelector('.basket-total-price') as HTMLElement;
         totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
+        const summa = this._element.querySelector('.basket-summa') as HTMLElement;
+        const clearBasket = this._element.querySelector('.clear-basket') as HTMLElement;
+        summa.classList.remove('d-none');
+        clearBasket.classList.remove('d-none');
         this.cart = data;
     }
 
@@ -54,8 +58,10 @@ export default class BasketPage {
             classNames: ['empty-basket-container'],
             innerHTML: emptyBasketTemplate,
         }).getElement();
-        const totalCartPrice: HTMLElement = this._element.querySelector('.basket-total-price') as HTMLElement;
-        totalCartPrice.innerText = '';
+        const summa = this._element.querySelector('.basket-summa') as HTMLElement;
+        const clearBasket = this._element.querySelector('.clear-basket') as HTMLElement;
+        summa.classList.add('d-none');
+        clearBasket.classList.add('d-none');
         this.basketContainer.append(emptyBasket);
         this.header.setItemsNumInBasket(0);
         localStorage.removeItem('cartID');
