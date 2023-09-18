@@ -13,7 +13,8 @@ export class ProductCard {
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
     public readonly prices: Price[] | undefined;
-    public productAddToCart: HTMLElement;
+    public productAddToCart: HTMLButtonElement;
+    private _inCart = false;
 
     constructor(data: ProductProjection) {
         this.prices = data.masterVariant.prices;
@@ -21,7 +22,7 @@ export class ProductCard {
         this.productKey = data.key;
         this._element = new ElementCreator({
             tag: 'div',
-            classNames: ['product'],
+            classNames: ['product', 'd-flex', 'flex-column'],
             innerHTML: template,
         }).getElement();
         this.productName = new ElementCreator({
@@ -62,9 +63,9 @@ export class ProductCard {
         }
         this.productAddToCart = new ElementCreator({
             tag: 'button',
-            classNames: ['product-add-to-cart'],
+            classNames: ['product-add-to-cart', 'btn', 'btn-secondary', 'text-primary'],
             innerHTML: 'Add to Cart',
-        }).getElement();
+        }).getElement() as HTMLButtonElement;
         this.productAddToCart.id = 'add-product-to-cart';
 
         this._element.append(
@@ -79,5 +80,11 @@ export class ProductCard {
 
     public get element(): HTMLElement | null {
         return this._element;
+    }
+
+    public set inCart(status: boolean) {
+        this.productAddToCart.innerText = status ? 'In Cart' : 'Add To Cart';
+        this.productAddToCart.disabled = status;
+        this._inCart = status;
     }
 }

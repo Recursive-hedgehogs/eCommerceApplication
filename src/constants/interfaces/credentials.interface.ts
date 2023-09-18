@@ -36,11 +36,6 @@ export interface IEmailTokenCredentials {
     id: string;
     ttlMinutes: number;
 }
-
-export interface IPasswordResetTokenCredentials {
-    email: string;
-}
-
 export interface IProductFiltersCredentials {
     filter?: string[];
     search?: string;

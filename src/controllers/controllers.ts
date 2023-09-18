@@ -13,13 +13,15 @@ import { CatalogPageController } from '../pages/catalog-page/catalog-page-contro
 import { UserPageController } from '../pages/user-page/user-page-controller';
 import { ProductPageController } from '../pages/product-page/product-page-controller';
 import { BasketPageController } from '../pages/basket-page/basket-page-controller';
+import { State } from '../state/state';
 
 export class Controllers {
     private app: App | null;
     private apiRefreshTokenFlow: ApiRefreshTokenFlow;
     private apiExistingTokenFlow: ApiExistingTokenFlow;
     private router: Router;
-    userPageControllers: UserPageController;
+    private userPageControllers: UserPageController;
+    private state: State = new State();
 
     constructor() {
         this.app = null;
@@ -47,9 +49,12 @@ export class Controllers {
     }
 
     private onFirstLoad = (): void => {
+        const cartID: string | null = localStorage.getItem('cartID');
+        this.state.basketId = cartID ?? '';
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
         this.router.navigate(currentLocation);
         const refreshToken: string | null = localStorage.getItem('refreshToken');
+        console.log('@basketId', this.state.basketId, cartID);
         if (refreshToken) {
             const authClient = new SdkAuth({
                 host: process.env.CTP_AUTH_URL,
@@ -70,7 +75,7 @@ export class Controllers {
                 );
                 const customerId: string | null = customerIdScope ? customerIdScope.split(':')[1] : null;
                 if (customerId) {
-                    this.app?.userPage.setUserData(customerId, () => {
+                    this.app?.userPage.setUserData(customerId, (): void => {
                         this.app?.userPage.showUserData();
                         this.userPageControllers.addListenersToAddresses();
                     });
@@ -89,29 +94,9 @@ export class Controllers {
                 registrBtn?.classList.add('hidden');
             });
             this.apiRefreshTokenFlow.setUserData(refreshToken);
-            // this.apiRefreshTokenFlow.apiRoot
-            //     ?.get()
-            //     .execute()
-            // .then((resp: ClientResponse<Project>): void => {
-            // if (resp.headers) {
-            //     const headers: { Authorization: string } = resp.headers as { Authorization: string };
-            //     this.apiExistingTokenFlow.setUserData(headers.Authorization);
-            //     this.app?.showMessage('You are logged in');
-            //     this.app?.setAuthenticationStatus(true); // set authentication state
-            //     this.app?.setCurrentPage(ROUTE.MAIN); //add redirection to MAIN page
-            //     const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-            //     const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-            //     logoutBtn?.classList.remove('hidden');
-            //     loginBtn?.classList.add('hidden');
-            // }
-            // })
-            // .catch((err) => {
-            //     throw Error(err);
-            // });
         } else if (window.location.pathname.slice(1) === ROUTE.USER) {
             this.router.navigate(ROUTE.LOGIN); //add redirection from user to LOGIN page
         }
-        this.setBasket();
         window.removeEventListener('load', this.onFirstLoad);
     };
 
@@ -121,15 +106,4 @@ export class Controllers {
             this.router.navigate(currentPath, e.state.route === currentPath);
         }
     };
-
-    private setBasket(): void {
-        this.app?.basketPage.getBasket()?.then((cart) => {
-            if (cart?.lineItems.length) {
-                this.app?.header.setItemsNumInBasket(cart?.lineItems.length);
-                this.app?.basketPage.setContent(cart);
-            } else {
-                this.app?.basketPage.setEmptyBasket();
-            }
-        });
-    }
 }

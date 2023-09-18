@@ -115,18 +115,4 @@ export default class RegistrationPage {
             target.value = `${numValue.substring(0, 2)}${separator}${numValue.substring(2)}`;
         }
     };
-
-    public changePasswordVisibility(): void {
-        const passwordInput: HTMLInputElement = <HTMLInputElement>document.getElementById('input-registr-password');
-        const passwordIcon: HTMLElement = <HTMLElement>document.getElementById('password-icon-registr');
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            passwordIcon.classList.remove('fa-eye-slash');
-            passwordIcon.classList.add('fa-eye');
-        } else {
-            passwordInput.type = 'password';
-            passwordIcon.classList.remove('fa-eye');
-            passwordIcon.classList.add('fa-eye-slash');
-        }
-    }
 }
