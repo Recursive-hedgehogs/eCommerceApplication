@@ -44,7 +44,8 @@ export class ProductPageController {
             const foundObject = cart?.lineItems.find((item) => item.productId === productId);
             if (cart && foundObject?.id) {
                 this.apiBasket
-                    .deleteItemInCart(cart.id, cart.version, foundObject.id)
+                    // .deleteItemInCart(cart.id, cart.version, foundObject.id)
+                    .removeCartItem(cart.id, foundObject.id, cart.version)
                     ?.then(({ body }) => {
                         this.app?.showMessage('Item removed from the cart successfully');
                         target.classList.add('hidden');

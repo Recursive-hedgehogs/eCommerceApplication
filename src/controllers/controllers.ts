@@ -50,11 +50,12 @@ export class Controllers {
     }
 
     private onFirstLoad = (): void => {
+        const cartID: string | null = localStorage.getItem('cartID');
+        this.state.basketId = cartID ?? '';
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
         this.router.navigate(currentLocation);
         const refreshToken: string | null = localStorage.getItem('refreshToken');
-        const cartID: string | null = localStorage.getItem('cartID');
-        this.state.basketId = cartID ?? '';
+        console.log('@basketId', this.state.basketId, cartID);
         if (refreshToken) {
             const authClient = new SdkAuth({
                 host: process.env.CTP_AUTH_URL,
@@ -133,7 +134,7 @@ export class Controllers {
     };
 
     private setBasket(): void {
-        this.app?.basketPage.getBasket()?.then((cart: Cart | void | undefined): void => {
+        this.app?.basketPage.getBasket()?.then((cart: Cart | undefined): void => {
             if (cart?.lineItems.length) {
                 this.app?.header.setItemsNumInBasket(cart?.totalLineItemQuantity ?? 0);
                 this.app?.basketPage.setContent(cart);

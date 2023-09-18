@@ -1,9 +1,12 @@
 import { Filters } from './filters';
 import CatalogPage from '../../pages/catalog-page/catalog-page';
+import { Router } from '../../router/router';
+import { ROUTE } from '../../constants/enums/enum';
 
 export class FiltersController {
     private filters: Filters;
     private catalogPage: CatalogPage;
+    private router: Router = new Router();
 
     constructor(filters: Filters, catalogPage: CatalogPage) {
         this.filters = filters;
@@ -68,7 +71,8 @@ export class FiltersController {
             filterResult.innerHTML = filtersArray.join(' ');
         }
         const filter: string[] = this.filters.convertToFilter(map);
-        this.catalogPage.updateContent({ filter });
+        this.router.navigate(`${ROUTE.CATALOG}/1`);
+        this.catalogPage.updateContent({ filter }, 1);
     };
 
     public onClick = (e: Event): void => {
@@ -80,7 +84,7 @@ export class FiltersController {
         const maxResult: HTMLDivElement = this.filters.element?.querySelector('.max-result') as HTMLDivElement;
         const target: HTMLButtonElement = e.target as HTMLButtonElement;
         if (target.id === 'filters-reset') {
-            this.catalogPage.updateContent({});
+            this.router.navigate(`${ROUTE.CATALOG}/1`);
             const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
             filterResult.innerHTML = '';
             inputsCheck?.forEach((el: HTMLInputElement): boolean => (el.checked = false));

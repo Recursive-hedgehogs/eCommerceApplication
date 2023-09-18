@@ -20,6 +20,7 @@ export class Pagination {
     }
 
     public setContent(pagesCount: number, currentPage: number): void {
+        this._currentPage = currentPage - 1;
         if (pagesCount > 1) {
             this._element.classList.remove('d-none');
             this.pages = Array.from({ length: pagesCount }, (_, i: number) => new PageItem(i));
