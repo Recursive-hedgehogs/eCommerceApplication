@@ -136,6 +136,9 @@ export default class BasketPage {
                         this.setContent(response.body);
                         this.header.setItemsNumInBasket(response.body.totalLineItemQuantity ?? 0);
                     })
+                    ?.then((): void => {
+                        this.app.setBasket();
+                    })
                     .catch((error) => {
                         console.error('Error decreasing quantity:', error);
                     });
@@ -158,6 +161,9 @@ export default class BasketPage {
                     ?.then((response: ClientResponse<Cart>): void => {
                         this.setContent(response.body);
                         this.header.setItemsNumInBasket(response.body.totalLineItemQuantity ?? 0);
+                    })
+                    ?.then((): void => {
+                        this.app.setBasket();
                     })
                     .catch((error) => {
                         console.error('Error product delete:', error);
