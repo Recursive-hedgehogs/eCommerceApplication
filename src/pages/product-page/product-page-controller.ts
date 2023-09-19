@@ -51,6 +51,7 @@ export class ProductPageController {
                         target.classList.add('hidden');
                         btnAdd?.classList.remove('hidden');
                         this.app?.header.setItemsNumInBasket(body.totalLineItemQuantity ?? 0);
+                        this.app.setBasket();
                     })
                     .catch((error) => {
                         console.error('Error removing item from the cart:', error);
