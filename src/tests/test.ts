@@ -6,7 +6,7 @@ import 'jest-fetch-mock';
 import { Controllers } from '../controllers/controllers';
 import UserPage from '../pages/user-page/user-page';
 import { apiCustomer } from '../api/api-customer';
-import { Customer, LineItem } from '@commercetools/platform-sdk';
+import { Customer } from '@commercetools/platform-sdk';
 import { ROUTE } from '../constants/enums/enum';
 import { Router } from '../router/router';
 import { Filters } from '../components/filters/filters';
@@ -23,8 +23,6 @@ import {
 import { Message } from '../components/message/message';
 import { BasketPageController } from '../pages/basket-page/basket-page-controller';
 import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
-import { BasketItem } from '../components/basket-item/basket-item';
-import { BasketItemController } from '../components/basket-item/basket-item-controller';
 
 config();
 
@@ -81,7 +79,6 @@ describe('App', () => {
     test('setCurrentPage redirects to MAIN when authenticated user goes to LOGIN', () => {
         const app: App = new App();
         app.setAuthenticationStatus(true);
-        // app.setCurrentPage(ROUTE.LOGIN);
     });
     afterEach(() => {
         process.env = env;
@@ -109,22 +106,10 @@ describe('Controllers', () => {
         const logoLink = document.createElement('a');
         logoLink.classList.add('navbar-brand');
         document.body.appendChild(logoLink);
-        // fetchMock.mockResponse(JSON.stringify({ data: 'some response data' }));
         controllers.addListeners();
-        // loginBtn.click();
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('login');
-        //
         logoutBtn.click();
-        // expect(mockApp.setAuthenticationStatus).toHaveBeenCalledWith(false);
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('login');
         expect(logoutBtn.classList.contains('hidden')).toBe(false);
         expect(loginBtn.classList.contains('hidden')).toBe(false);
-        //
-        // registrBtn.click();
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('registration');
-        //
-        // logoLink.click();
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('main');
         document.body.removeChild(loginBtn);
         document.body.removeChild(logoutBtn);
         document.body.removeChild(registrBtn);
@@ -227,11 +212,6 @@ describe('FiltersController', () => {
     it('should be defined', () => {
         expect(filtersController).toBeDefined();
     });
-
-    // it('should update content when submitted', () => {
-    //     const submitEvent = new Event('submit');
-    //     filters.element?.dispatchEvent(submitEvent);
-    // });
 });
 
 describe('Validation Functions', () => {
@@ -412,200 +392,3 @@ describe('CatalogPageController', () => {
         expect(catalogPageController.catalogPage).toBeDefined();
     });
 });
-
-/*describe('BasketItemController', () => {
-    let basketItemController: BasketItemController;
-    let basketItem: BasketItem;
-    let app: App;
-
-    const lineItemData: LineItem = {
-        id: '1',
-        productId: 'product-1',
-        name: { en: 'Sample Product' },
-        productType: { typeId: 'product-type', id: 'sample-product-type' },
-        variant: { id: 1, sku: 'SKU123' },
-        price: {
-            value: {
-                centAmount: 1000,
-                currencyCode: 'USD',
-                type: 'centPrecision',
-                fractionDigits: 2,
-            },
-            id: '',
-        },
-        quantity: 0,
-        totalPrice: {
-            centAmount: 1000,
-            currencyCode: 'USD',
-            type: 'centPrecision',
-            fractionDigits: 2,
-        },
-        discountedPricePerQuantity: [],
-        taxedPricePortions: [],
-        state: [],
-        perMethodTaxRate: [],
-        priceMode: '',
-        lineItemMode: '',
-    };
-
-    beforeEach(() => {
-        app = new App();
-        const basketPage = app.basketPage;
-        basketItem = new BasketItem(lineItemData, basketPage);
-
-        const basketItemName = document.createElement('div');
-        basketItemName.className = 'basket-item-name';
-        basketItem.element.appendChild(basketItemName);
-
-        const basketItemImage = document.createElement('div');
-        basketItemImage.className = 'basket-item-image';
-        basketItem.element.appendChild(basketItemImage);
-
-        basketItemController = new BasketItemController(basketItem);
-    });
-
-    it('should create an instance of BasketItemController', () => {
-        expect(basketItemController).toBeInstanceOf(BasketItemController);
-    });
-
-    it('should handle click on delete button', () => {
-        const deleteButton = document.createElement('button');
-        deleteButton.id = 'delete-button';
-        basketItem.element.appendChild(deleteButton);
-
-        const lineItemId = '123';
-
-        const deleteCartFromBasketSpy = jest.spyOn(app.basketPage, 'deleteCartFromBasket');
-
-        basketItemController.onClick({
-            target: deleteButton,
-            bubbles: false,
-            cancelBubble: false,
-            cancelable: false,
-            composed: false,
-            currentTarget: null,
-            defaultPrevented: false,
-            eventPhase: 0,
-            isTrusted: false,
-            returnValue: false,
-            srcElement: null,
-            timeStamp: 0,
-            type: '',
-            composedPath: function (): EventTarget[] {
-                throw new Error('Function not implemented.');
-            },
-            initEvent: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            preventDefault: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            stopImmediatePropagation: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            stopPropagation: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            NONE: 0,
-            CAPTURING_PHASE: 1,
-            AT_TARGET: 2,
-            BUBBLING_PHASE: 3,
-        });
-
-        expect(deleteCartFromBasketSpy).toHaveBeenCalledWith(lineItemId);
-    });
-
-    it('should handle click on quantity decrease button', () => {
-        const quantityDecreaseButton = document.createElement('button');
-        quantityDecreaseButton.id = 'quantity-decrease-button';
-        basketItem.element.appendChild(quantityDecreaseButton);
-
-        const lineItemId = '123';
-
-        const changeQuantitySpy = jest.spyOn(app.basketPage, 'changeQuantity');
-
-        basketItemController.onClick({
-            target: quantityDecreaseButton,
-            bubbles: false,
-            cancelBubble: false,
-            cancelable: false,
-            composed: false,
-            currentTarget: null,
-            defaultPrevented: false,
-            eventPhase: 0,
-            isTrusted: false,
-            returnValue: false,
-            srcElement: null,
-            timeStamp: 0,
-            type: '',
-            composedPath: function (): EventTarget[] {
-                throw new Error('Function not implemented.');
-            },
-            initEvent: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            preventDefault: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            stopImmediatePropagation: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            stopPropagation: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            NONE: 0,
-            CAPTURING_PHASE: 1,
-            AT_TARGET: 2,
-            BUBBLING_PHASE: 3,
-        });
-
-        expect(changeQuantitySpy).toHaveBeenCalledWith(lineItemId, expect.any(Number));
-    });
-
-    it('should handle click on quantity increase button', () => {
-        const quantityIncreaseButton = document.createElement('button');
-        quantityIncreaseButton.id = 'quantity-increase-button';
-        basketItem.element.appendChild(quantityIncreaseButton);
-
-        const lineItemId = '123';
-
-        const changeQuantitySpy = jest.spyOn(app.basketPage, 'changeQuantity');
-
-        basketItemController.onClick({
-            target: quantityIncreaseButton,
-            bubbles: false,
-            cancelBubble: false,
-            cancelable: false,
-            composed: false,
-            currentTarget: null,
-            defaultPrevented: false,
-            eventPhase: 0,
-            isTrusted: false,
-            returnValue: false,
-            srcElement: null,
-            timeStamp: 0,
-            type: '',
-            composedPath: function (): EventTarget[] {
-                throw new Error('Function not implemented.');
-            },
-            initEvent: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            preventDefault: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            stopImmediatePropagation: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            stopPropagation: function (): void {
-                throw new Error('Function not implemented.');
-            },
-            NONE: 0,
-            CAPTURING_PHASE: 1,
-            AT_TARGET: 2,
-            BUBBLING_PHASE: 3,
-        });
-
-        expect(changeQuantitySpy).toHaveBeenCalledWith(lineItemId, expect.any(Number));
-    });
-});*/
