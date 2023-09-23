@@ -272,9 +272,12 @@ describe('message-tests', () => {
 
 describe('BasketPageController', () => {
     let basketPageController: BasketPageController;
+    let app: App;
 
     beforeEach(() => {
+        app = new App();
         basketPageController = new BasketPageController();
+        global.confirm = (): boolean => true;
     });
 
     it('should create an instance of BasketPageController', () => {
@@ -286,7 +289,7 @@ describe('BasketPageController', () => {
         clearCartButton.id = 'clear-cart';
         document.body.appendChild(clearCartButton);
 
-        const clearBasketMock = jest.spyOn(basketPageController.basketPage, 'clearBasket');
+        const clearBasketMock = jest.spyOn(app.basketPage, 'clearBasket');
 
         basketPageController.onClick({
             target: clearCartButton,
@@ -335,7 +338,7 @@ describe('BasketPageController', () => {
 
         const onClickMock = jest.spyOn(basketPageController, 'onClick');
 
-        basketPageController.onClick({
+        basketPageController['onClick']({
             target: notFoundLink,
             bubbles: false,
             cancelBubble: false,
@@ -388,7 +391,7 @@ describe('CatalogPageController', () => {
     });
 
     it('should have initialized app and catalogPage properties', () => {
-        expect(catalogPageController.app).toBeDefined();
-        expect(catalogPageController.catalogPage).toBeDefined();
+        expect(catalogPageController['app']).toBeDefined();
+        expect(catalogPageController['catalogPage']).toBeDefined();
     });
 });

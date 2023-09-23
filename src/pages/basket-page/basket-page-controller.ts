@@ -20,7 +20,7 @@ export class BasketPageController {
         this.basketPage.element.addEventListener('submit', this.basketPage.onSubmitPromo);
     }
 
-    private onClick = (e: Event): void => {
+    public onClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
             this.router.navigate(ROUTE.CATALOG);
         }
