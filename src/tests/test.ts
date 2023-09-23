@@ -322,7 +322,7 @@ describe('BasketPageController', () => {
             composedPath: function (): EventTarget[] {
                 throw new Error('Function not implemented.');
             },
-            initEvent: function (type: string, bubbles?: boolean | undefined, cancelable?: boolean | undefined): void {
+            initEvent: function (): void {
                 throw new Error('Function not implemented.');
             },
             preventDefault: function (): void {
@@ -369,7 +369,7 @@ describe('BasketPageController', () => {
             composedPath: function (): EventTarget[] {
                 throw new Error('Function not implemented.');
             },
-            initEvent: function (type: string, bubbles?: boolean | undefined, cancelable?: boolean | undefined): void {
+            initEvent: function (): void {
                 throw new Error('Function not implemented.');
             },
             preventDefault: function (): void {
