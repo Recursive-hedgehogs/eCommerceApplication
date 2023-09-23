@@ -32,7 +32,7 @@ export default class Header {
         links.forEach((link: Element): void => {
             link.classList.remove('active');
         });
-        targetLink.classList.add('active');
+        targetLink?.classList.add('active');
     };
 
     public setItemsNumInBasket(count: number): void {

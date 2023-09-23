@@ -14,7 +14,7 @@ export class BasketItemController {
         this.basketItem.element.addEventListener('click', this.onClick);
     }
 
-    private onClick = (e: Event): void => {
+    public onClick = (e: Event): void => {
         const lineItemId: string = this.basketItem.data?.id;
         let newQuantity: number = this.basketItem.data?.quantity;
         switch (e.target) {

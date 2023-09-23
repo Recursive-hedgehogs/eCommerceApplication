@@ -21,6 +21,9 @@ import {
     validatePassword,
 } from '../utils/validations';
 import { Message } from '../components/message/message';
+import { BasketPageController } from '../pages/basket-page/basket-page-controller';
+import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
+
 config();
 
 test('Husky is configured in package.json', () => {
@@ -76,7 +79,6 @@ describe('App', () => {
     test('setCurrentPage redirects to MAIN when authenticated user goes to LOGIN', () => {
         const app: App = new App();
         app.setAuthenticationStatus(true);
-        // app.setCurrentPage(ROUTE.LOGIN);
     });
     afterEach(() => {
         process.env = env;
@@ -104,22 +106,10 @@ describe('Controllers', () => {
         const logoLink = document.createElement('a');
         logoLink.classList.add('navbar-brand');
         document.body.appendChild(logoLink);
-        // fetchMock.mockResponse(JSON.stringify({ data: 'some response data' }));
         controllers.addListeners();
-        // loginBtn.click();
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('login');
-        //
         logoutBtn.click();
-        // expect(mockApp.setAuthenticationStatus).toHaveBeenCalledWith(false);
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('login');
         expect(logoutBtn.classList.contains('hidden')).toBe(false);
         expect(loginBtn.classList.contains('hidden')).toBe(false);
-        //
-        // registrBtn.click();
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('registration');
-        //
-        // logoLink.click();
-        // expect(mockApp.setCurrentPage).toHaveBeenCalledWith('main');
         document.body.removeChild(loginBtn);
         document.body.removeChild(logoutBtn);
         document.body.removeChild(registrBtn);
@@ -222,11 +212,6 @@ describe('FiltersController', () => {
     it('should be defined', () => {
         expect(filtersController).toBeDefined();
     });
-
-    // it('should update content when submitted', () => {
-    //     const submitEvent = new Event('submit');
-    //     filters.element?.dispatchEvent(submitEvent);
-    // });
 });
 
 describe('Validation Functions', () => {
@@ -282,5 +267,131 @@ describe('message-tests', () => {
     });
     it('should have correct message', () => {
         expect(message.element?.innerHTML).toBe(messageText);
+    });
+});
+
+describe('BasketPageController', () => {
+    let basketPageController: BasketPageController;
+    let app: App;
+
+    beforeEach(() => {
+        app = new App();
+        basketPageController = new BasketPageController();
+        global.confirm = (): boolean => true;
+    });
+
+    it('should create an instance of BasketPageController', () => {
+        expect(basketPageController).toBeInstanceOf(BasketPageController);
+    });
+
+    it('should handle click on clear cart button', () => {
+        const clearCartButton = document.createElement('button');
+        clearCartButton.id = 'clear-cart';
+        document.body.appendChild(clearCartButton);
+
+        const clearBasketMock = jest.spyOn(app.basketPage, 'clearBasket');
+
+        basketPageController.onClick({
+            target: clearCartButton,
+            bubbles: false,
+            cancelBubble: false,
+            cancelable: false,
+            composed: false,
+            currentTarget: null,
+            defaultPrevented: false,
+            eventPhase: 0,
+            isTrusted: false,
+            returnValue: false,
+            srcElement: null,
+            timeStamp: 0,
+            type: '',
+            composedPath: function (): EventTarget[] {
+                throw new Error('Function not implemented.');
+            },
+            initEvent: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            preventDefault: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopImmediatePropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopPropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            NONE: 0,
+            CAPTURING_PHASE: 1,
+            AT_TARGET: 2,
+            BUBBLING_PHASE: 3,
+        });
+
+        expect(clearBasketMock).toHaveBeenCalled();
+
+        document.body.removeChild(clearCartButton);
+    });
+
+    it('should handle click on not found link', () => {
+        const notFoundLink = document.createElement('a');
+        notFoundLink.dataset.link = ROUTE.NOT_FOUND;
+        document.body.appendChild(notFoundLink);
+
+        const onClickMock = jest.spyOn(basketPageController, 'onClick');
+
+        basketPageController['onClick']({
+            target: notFoundLink,
+            bubbles: false,
+            cancelBubble: false,
+            cancelable: false,
+            composed: false,
+            currentTarget: null,
+            defaultPrevented: false,
+            eventPhase: 0,
+            isTrusted: false,
+            returnValue: false,
+            srcElement: null,
+            timeStamp: 0,
+            type: '',
+            composedPath: function (): EventTarget[] {
+                throw new Error('Function not implemented.');
+            },
+            initEvent: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            preventDefault: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopImmediatePropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopPropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            NONE: 0,
+            CAPTURING_PHASE: 1,
+            AT_TARGET: 2,
+            BUBBLING_PHASE: 3,
+        });
+
+        expect(onClickMock).toHaveBeenCalled();
+
+        document.body.removeChild(notFoundLink);
+    });
+});
+
+describe('CatalogPageController', () => {
+    let catalogPageController: CatalogPageController;
+
+    beforeEach(() => {
+        catalogPageController = new CatalogPageController();
+    });
+
+    it('should create an instance of CatalogPageController', () => {
+        expect(catalogPageController).toBeInstanceOf(CatalogPageController);
+    });
+
+    it('should have initialized app and catalogPage properties', () => {
+        expect(catalogPageController['app']).toBeDefined();
+        expect(catalogPageController['catalogPage']).toBeDefined();
     });
 });
