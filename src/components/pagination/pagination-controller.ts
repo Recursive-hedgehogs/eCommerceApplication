@@ -9,8 +9,8 @@ export class PaginationController {
     }
 
     private addListeners(): void {
-        this.pagination.prev.addEventListener('click', this.onPrevClick);
-        this.pagination.next.addEventListener('click', this.onNextClick);
+        this.pagination.prev?.addEventListener('click', this.onPrevClick);
+        this.pagination.next?.addEventListener('click', this.onNextClick);
     }
 
     public updateListeners(): void {
