@@ -14,7 +14,6 @@ export class SortController {
 
     private addListeners(): void {
         const sortSelect: HTMLSelectElement = this.sort.element?.querySelector('#sort-select') as HTMLSelectElement;
-
         if (sortSelect) {
             sortSelect.addEventListener('change', (): void => {
                 const selectedOption: string = sortSelect.value;

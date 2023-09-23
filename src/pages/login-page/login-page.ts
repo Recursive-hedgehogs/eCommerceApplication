@@ -22,7 +22,6 @@ export default class LoginPage {
         if (!parentDiv) return;
         const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
         const errorMessage: string | null = validationUtils.validateEmail(emailInput.value);
-
         if (inputError) {
             emailInput.classList.add('is-invalid');
             inputError.textContent = errorMessage;

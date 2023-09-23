@@ -12,11 +12,14 @@ import { apiCustomer } from '../../api/api-customer';
 import {
     ClientResponse,
     Customer,
+    CustomerSetDefaultShippingAddressAction,
     CustomerSignInResult,
     CustomerUpdate,
     CustomerUpdateAction,
 } from '@commercetools/platform-sdk';
-import { ILoginCredentials } from '../../constants/interfaces/credentials.interface';
+import { ICreateCustomerCredentials, ILoginCredentials } from '../../constants/interfaces/credentials.interface';
+import { IAddress } from '../../constants/interfaces/interface';
+import { CustomerSetDefaultBillingAddressAction } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/customer';
 
 export class UserPageController {
     private app: App;
@@ -36,24 +39,24 @@ export class UserPageController {
         const passwordIcons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.password-icon');
         this.userPage.element.addEventListener('submit', this.onSubmit);
         this.userPage.element.addEventListener('input', this.onEditValidate);
-        passwordIcons.forEach((icon) => {
+        passwordIcons.forEach((icon: HTMLElement): void => {
             icon.addEventListener('click', this.togglePassword);
         });
-        editButtons.forEach((editButton) => {
+        editButtons.forEach((editButton: HTMLElement): void => {
             editButton.addEventListener('click', this.openEditMode);
         });
-        cancelButtons.forEach((cancelButton) => {
+        cancelButtons.forEach((cancelButton: HTMLElement): void => {
             cancelButton.addEventListener('click', this.closeEditMode);
         });
-        saveButtons.forEach((saveButton) => {
+        saveButtons.forEach((saveButton: HTMLElement): void => {
             saveButton.addEventListener('click', this.saveUpdatedAddress);
         });
-        addButtons.forEach((addButton) => {
+        addButtons.forEach((addButton: HTMLElement): void => {
             addButton.addEventListener('click', this.addNewAddress);
         });
     }
 
-    public addListenersToAddresses() {
+    public addListenersToAddresses(): void {
         const cancelButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-cancel');
         const editButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-edit');
         const deleteButtons: NodeListOf<HTMLElement> = this.userPage.element.querySelectorAll('.btn-delete');
@@ -61,28 +64,28 @@ export class UserPageController {
         const saveMainButton: HTMLElement = <HTMLElement>this.userPage.element.querySelector('.btn-save-main');
         saveMainButton.addEventListener('click', this.saveUpdatedMain);
         this.userPage.element.addEventListener('input', this.onEditValidate);
-        cancelButtons.forEach((cancelButton) => {
+        cancelButtons.forEach((cancelButton: HTMLElement): void => {
             cancelButton.addEventListener('click', this.closeEditMode);
         });
 
-        editButtons.forEach((editButton) => {
+        editButtons.forEach((editButton: HTMLElement): void => {
             editButton.addEventListener('click', this.openEditMode);
         });
-        saveButtons.forEach((saveButton) => {
+        saveButtons.forEach((saveButton: HTMLElement): void => {
             saveButton.addEventListener('click', this.saveUpdatedAddress);
         });
-        deleteButtons.forEach((deleteButton) => {
+        deleteButtons.forEach((deleteButton: HTMLElement): void => {
             deleteButton.addEventListener('click', this.deleteAddress);
         });
     }
 
     private addNewListeners(): void {
-        const resetNewAddressBtns = this.userPage.element.querySelectorAll('.btn-reset-new');
-        const saveNewAddressBtns = this.userPage.element.querySelectorAll('.btn-save-new');
-        resetNewAddressBtns.forEach((resetButton) => {
+        const resetNewAddressBtns: NodeListOf<Element> = this.userPage.element.querySelectorAll('.btn-reset-new');
+        const saveNewAddressBtns: NodeListOf<Element> = this.userPage.element.querySelectorAll('.btn-save-new');
+        resetNewAddressBtns.forEach((resetButton: Element): void => {
             resetButton.addEventListener('click', this.resetNewField);
         });
-        saveNewAddressBtns.forEach((saveButton) => {
+        saveNewAddressBtns.forEach((saveButton: Element): void => {
             saveButton.addEventListener('click', this.saveNewAddress);
         });
     }
@@ -101,7 +104,7 @@ export class UserPageController {
 
     private togglePassword = (event: Event): void => {
         const icon: HTMLElement = <HTMLElement>event.target;
-        const inputId = icon.getAttribute('for');
+        const inputId: string | null = icon.getAttribute('for');
         const input: HTMLInputElement = <HTMLInputElement>this.userPage.element.querySelector(`#${inputId}`);
         this.app?.changePasswordVisibility(input, icon);
     };
@@ -179,11 +182,11 @@ export class UserPageController {
         };
         apiCustomer
             .updateUser(newAddress, userID)
-            ?.then((res1) => {
+            ?.then((res1: ClientResponse<Customer>) => {
                 this.app?.showMessage('You have successfully added new address');
                 this.app.userPage.userData = res1.body;
-                const length = res1.body.addresses.length;
-                const addressId = res1.body.addresses[length - 1].id;
+                const length: number = res1.body.addresses.length;
+                const addressId: string | undefined = res1.body.addresses[length - 1].id;
                 const newUserVersion: number = <number>this.app.userPage.userData?.version;
                 if (billAddressesCont) {
                     const newBilling: CustomerUpdate = {
@@ -209,7 +212,7 @@ export class UserPageController {
                     return apiCustomer.updateUser(newShipping, userID);
                 }
             })
-            .then((res2) => {
+            .then((res2?: ClientResponse<Customer>): void => {
                 if (res2) {
                     this.app.userPage.userData = res2.body;
                     console.log(this.app.userPage.userData);
@@ -223,7 +226,7 @@ export class UserPageController {
     };
 
     private saveUpdatedMain = (e: Event): void => {
-        const customerData = this.userPage.prepareCustomerData();
+        const customerData: ICreateCustomerCredentials = this.userPage.prepareCustomerData();
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
         if (
@@ -258,7 +261,7 @@ export class UserPageController {
         };
         apiCustomer
             .updateUser(data, userID)
-            ?.then((res): void => {
+            ?.then((res: ClientResponse<Customer>): void => {
                 this.app?.showMessage('You have successfully changed your personal data');
                 this.app.userPage.userData = res.body;
             })
@@ -275,7 +278,7 @@ export class UserPageController {
         const target: HTMLInputElement = <HTMLInputElement>e.target;
         const billAddressesCont: HTMLElement = <HTMLElement>target.closest('.billing-addresses');
         const curentCard: HTMLElement = <HTMLElement>target.closest('.card');
-        const addressData = this.userPage.prepareAddressData('.address-input', curentCard);
+        const addressData: IAddress = this.userPage.prepareAddressData('.address-input', curentCard);
         const checkInput: HTMLInputElement = <HTMLInputElement>curentCard.querySelector('.form-check-input');
         addressData.country = this.app?.getCodeFromCountryName(addressData.country);
         if (
@@ -285,10 +288,8 @@ export class UserPageController {
         ) {
             return;
         }
-
         const userID: string = <string>this.app.userPage.userData?.id;
         const userVersion: number = <number>this.app.userPage.userData?.version;
-
         const actions: CustomerUpdateAction[] = [
             {
                 action: 'changeAddress',
@@ -301,10 +302,12 @@ export class UserPageController {
                 },
             },
         ];
-
         if (checkInput.checked) {
-            const actionType = billAddressesCont ? 'setDefaultBillingAddress' : 'setDefaultShippingAddress';
-
+            const actionType:
+                | CustomerSetDefaultBillingAddressAction['action']
+                | CustomerSetDefaultShippingAddressAction['action'] = billAddressesCont
+                ? 'setDefaultBillingAddress'
+                : 'setDefaultShippingAddress';
             actions.push({
                 action: actionType,
                 addressId: addressData.id,
@@ -318,7 +321,7 @@ export class UserPageController {
 
         apiCustomer
             .updateUser(updatedAddress, userID)
-            ?.then((res): void => {
+            ?.then((res: ClientResponse<Customer>): void => {
                 this.app?.showMessage('You have successfully changed your address');
                 this.app.userPage.userData = res.body;
             })
@@ -345,7 +348,7 @@ export class UserPageController {
     };
 
     private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
-        target.addEventListener('keypress', (event) => {
+        target.addEventListener('keypress', (event: KeyboardEvent): void => {
             if (country.value === 'Poland') {
                 this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
             } else if (country.value === 'Germany') {
@@ -354,16 +357,16 @@ export class UserPageController {
         });
     }
 
-    private onSubmit = (e: SubmitEvent) => {
+    private onSubmit = (e: SubmitEvent): void => {
         e.preventDefault();
-        const target = e.target as HTMLElement;
+        const target: HTMLElement = e.target as HTMLElement;
         switch (target.id) {
             case 'password-form':
                 this.onPasswordSubmit(target);
         }
     };
 
-    private onPasswordSubmit = (target: HTMLElement) => {
+    private onPasswordSubmit = (target: HTMLElement): void => {
         const currentPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#user-password');
         const newPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#new-password');
         const confirmPassword: HTMLInputElement = <HTMLInputElement>target.querySelector('#confirm-new-password');
@@ -387,9 +390,9 @@ export class UserPageController {
                     currentPassword: currentPassword.value, //data from input
                     newPassword: newPassword.value, //data from input
                 })
-                ?.then(({ body }) => {
+                ?.then(({ body }: ClientResponse<Customer>): void => {
                     const email: string = body.email;
-                    const password = newPassword.value;
+                    const password: string = newPassword.value;
                     this.relogin({ email, password });
                 })
                 .catch((e: Error) => {
@@ -407,10 +410,10 @@ export class UserPageController {
         }
     };
 
-    private relogin(data: ILoginCredentials) {
+    private relogin(data: ILoginCredentials): void {
         apiCustomer
             .signIn(data)
-            .then((resp: ClientResponse<CustomerSignInResult>) => {
+            .then((resp: ClientResponse<CustomerSignInResult>): void => {
                 const customer: Customer = resp.body.customer;
                 this.app?.userPage.setUserData(customer.id);
                 this.app?.setAuthenticationStatus(true); // set authentication state
@@ -427,8 +430,7 @@ export class UserPageController {
         const cardContainer: HTMLElement = <HTMLElement>target.closest('.addresses-container');
         cardContainer.removeChild(curentCard);
         const addressIdInput: HTMLInputElement = <HTMLInputElement>curentCard.querySelector('#address-id');
-        const addressId = addressIdInput.value;
-
+        const addressId: string = addressIdInput.value;
         const deletedAddress: CustomerUpdate = {
             version: userVersion,
             actions: [
@@ -438,10 +440,9 @@ export class UserPageController {
                 },
             ],
         };
-
         apiCustomer
             .updateUser(deletedAddress, userID)
-            ?.then((res): void => {
+            ?.then((res: ClientResponse<Customer>): void => {
                 this.app?.showMessage('You have deleted address');
                 this.app.userPage.userData = res.body;
             })

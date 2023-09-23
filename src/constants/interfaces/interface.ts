@@ -1,6 +1,6 @@
 import { Controllers } from '../../controllers/controllers';
 import { TokenCache } from '@commercetools/sdk-client-v2';
-import { IAnonymusCredentials, IClientCredentials, IUserCredentials } from './credentials.interface';
+import { IClientCredentials, IUserCredentials } from './credentials.interface';
 import { Product, ProductDiscount } from '@commercetools/platform-sdk';
 
 export interface IView {
@@ -9,7 +9,6 @@ export interface IView {
 
 export interface IApp {
     view: IView | null;
-
     start(view: IView, controllers: Controllers): void;
 }
 
@@ -48,16 +47,6 @@ export interface IRefreshAuthMiddlewareOptions {
     tokenCache?: TokenCache;
     oauthUri?: string;
     fetch?: unknown;
-}
-
-export interface IAnonymousAuthMiddlewareOptions {
-    host: string;
-    projectKey: string;
-    credentials: IAnonymusCredentials;
-    scopes?: Array<string>;
-    oauthUri?: string;
-    fetch?: unknown;
-    tokenCache?: TokenCache;
 }
 
 export interface IProductWithDiscount {

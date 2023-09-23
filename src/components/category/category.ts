@@ -4,10 +4,10 @@ import { CategoryController } from './category-controller';
 import './category.scss';
 
 export class CategoryComponent {
-    private readonly _element: HTMLElement;
     public categoryButton!: HTMLElement;
     public category: Category;
     private readonly categories: Category[];
+    private readonly _element: HTMLElement;
     constructor(category: Category, categories: Category[]) {
         this.category = category;
         this.categories = categories;

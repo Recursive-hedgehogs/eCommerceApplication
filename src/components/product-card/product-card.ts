@@ -1,20 +1,19 @@
 import ElementCreator from '../../utils/template-creation';
-import template from './product-card.html';
 import './product-card.scss';
 import { DiscountedPrice, Price, ProductProjection } from '@commercetools/platform-sdk';
 
 export class ProductCard {
-    private readonly _element: HTMLElement | null = null;
+    private readonly _element: HTMLElement;
     private readonly productName: HTMLElement;
     private readonly productImage: HTMLElement;
     private readonly productDescription: HTMLElement;
-    public productId: string;
-    public productKey: string | undefined;
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
-    public readonly prices: Price[] | undefined;
-    public productAddToCart: HTMLButtonElement;
     private _inCart = false;
+    public readonly prices: Price[] | undefined;
+    public productId: string;
+    public productKey: string | undefined;
+    public productAddToCart: HTMLButtonElement;
 
     constructor(data: ProductProjection) {
         this.prices = data.masterVariant.prices;
@@ -23,7 +22,6 @@ export class ProductCard {
         this._element = new ElementCreator({
             tag: 'div',
             classNames: ['product', 'd-flex', 'flex-column'],
-            innerHTML: template,
         }).getElement();
         this.productName = new ElementCreator({
             tag: 'h5',
@@ -67,7 +65,6 @@ export class ProductCard {
             innerHTML: 'Add to Cart',
         }).getElement() as HTMLButtonElement;
         this.productAddToCart.id = 'add-product-to-cart';
-
         this._element.append(
             this.productName,
             this.productImage,
@@ -78,7 +75,7 @@ export class ProductCard {
         );
     }
 
-    public get element(): HTMLElement | null {
+    public get element(): HTMLElement {
         return this._element;
     }
 

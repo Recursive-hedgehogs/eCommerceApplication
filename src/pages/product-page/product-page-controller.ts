@@ -1,5 +1,6 @@
 import { ApiBasket } from '../../api/api-basket/api-basket';
 import App from '../../app/app';
+import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 
 export class ProductPageController {
     private app: App;
@@ -17,9 +18,9 @@ export class ProductPageController {
     }
 
     private onProductPageClick = (e: MouseEvent): void => {
-        const productId = this.app.productPage.productId;
+        const productId: string | undefined = this.app.productPage.productId;
         e.preventDefault();
-        const target = <HTMLElement>e.target;
+        const target: HTMLElement = <HTMLElement>e.target;
         if (productId) {
             switch (target.id) {
                 case 'btn-remove':
@@ -38,15 +39,16 @@ export class ProductPageController {
         }
     };
 
-    private removeItemFromCart = (target: HTMLElement, productId: string) => {
-        const btnAdd = this.productPage.querySelector('#btn-add');
-        this.app.basketPage.getBasket()?.then((cart) => {
-            const foundObject = cart?.lineItems.find((item) => item.productId === productId);
+    private removeItemFromCart = (target: HTMLElement, productId: string): void => {
+        const btnAdd: Element | null = this.productPage.querySelector('#btn-add');
+        this.app.basketPage.getBasket()?.then((cart?: Cart): void => {
+            const foundObject: LineItem | undefined = cart?.lineItems.find(
+                (item: LineItem): boolean => item.productId === productId
+            );
             if (cart && foundObject?.id) {
                 this.apiBasket
-                    // .deleteItemInCart(cart.id, cart.version, foundObject.id)
                     .removeCartItem(cart.id, foundObject.id, cart.version)
-                    ?.then(({ body }) => {
+                    ?.then(({ body }: ClientResponse<Cart>): void => {
                         this.app?.showMessage('Item removed from the cart successfully');
                         target.classList.add('hidden');
                         btnAdd?.classList.remove('hidden');
@@ -61,16 +63,18 @@ export class ProductPageController {
         });
     };
 
-    private addItemToCart = (target: HTMLElement, productId: string) => {
-        const btnRemove = this.productPage.querySelector('#btn-remove');
-        this.app.basketPage.getBasket()?.then((cart) => {
+    private addItemToCart = (target: HTMLElement, productId: string): void => {
+        const btnRemove: Element | null = this.productPage.querySelector('#btn-remove');
+        this.app.basketPage.getBasket()?.then((cart?: Cart): void => {
             if (cart && productId) {
-                this.apiBasket.updateCart(cart.id, cart.version, productId)?.then(({ body }) => {
-                    this.app.basketPage.setContent(body);
-                    this.app.header.setItemsNumInBasket(body.totalLineItemQuantity ?? 0);
-                    target.classList.add('hidden');
-                    btnRemove?.classList.remove('hidden');
-                });
+                this.apiBasket
+                    .updateCart(cart.id, cart.version, productId)
+                    ?.then(({ body }: ClientResponse<Cart>): void => {
+                        this.app.basketPage.setContent(body);
+                        this.app.header.setItemsNumInBasket(body.totalLineItemQuantity ?? 0);
+                        target.classList.add('hidden');
+                        btnRemove?.classList.remove('hidden');
+                    });
             }
         });
     };
