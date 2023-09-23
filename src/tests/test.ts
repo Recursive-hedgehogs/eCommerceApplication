@@ -22,6 +22,7 @@ import {
 } from '../utils/validations';
 import { Message } from '../components/message/message';
 import { BasketPageController } from '../pages/basket-page/basket-page-controller';
+import { CatalogPageController } from '../pages/catalog-page/catalog-page-controller';
 
 config();
 
@@ -390,5 +391,22 @@ describe('BasketPageController', () => {
         expect(onClickMock).toHaveBeenCalled();
 
         document.body.removeChild(notFoundLink);
+    });
+});
+
+describe('CatalogPageController', () => {
+    let catalogPageController: CatalogPageController;
+
+    beforeEach(() => {
+        catalogPageController = new CatalogPageController();
+    });
+
+    it('should create an instance of CatalogPageController', () => {
+        expect(catalogPageController).toBeInstanceOf(CatalogPageController);
+    });
+
+    it('should have initialized app and catalogPage properties', () => {
+        expect(catalogPageController.app).toBeDefined();
+        expect(catalogPageController.catalogPage).toBeDefined();
     });
 });
