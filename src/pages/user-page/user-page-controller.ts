@@ -215,7 +215,6 @@ export class UserPageController {
             .then((res2?: ClientResponse<Customer>): void => {
                 if (res2) {
                     this.app.userPage.userData = res2.body;
-                    console.log(this.app.userPage.userData);
                 }
                 this.closeEditMode(e);
                 this.addListenersToAddresses();
@@ -404,7 +403,6 @@ export class UserPageController {
                             this.app?.showMessage('Password is not valid', 'red');
                             break;
                         default:
-                            console.log(e);
                     }
                 });
         }

@@ -35,7 +35,6 @@ export class PaginationController {
     };
 
     private onPageClick(i: number): void {
-        console.log(i, this.pagination.currentPage);
         this.pagination.currentPage = i;
     }
 }

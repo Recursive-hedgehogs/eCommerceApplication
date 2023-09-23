@@ -28,7 +28,6 @@ export class ApiBasket {
     };
 
     public createCart = () => {
-        console.log(this.currentFlow);
         return this.currentFlow.apiRoot
             ?.carts()
             .post({
@@ -36,7 +35,6 @@ export class ApiBasket {
             })
             .execute()
             .then(({ body }: ClientResponse<Cart>) => {
-                console.log('createCartResp@@@', body);
                 return body;
             })
             .catch((err) => {
