@@ -4,9 +4,9 @@ import { Router } from '../../router/router';
 import { ROUTE } from '../../constants/enums/enum';
 
 export class CatalogPageController {
-    public app: App;
-    public catalogPage: CatalogPage;
-    private router = new Router();
+    private app: App;
+    private catalogPage: CatalogPage;
+    private router: Router = new Router();
 
     constructor() {
         this.app = new App();

@@ -4,10 +4,10 @@ import { PageItem } from './pages-item/page-item';
 
 export class Pagination {
     private readonly _element: HTMLElement;
+    private _currentPage = 0;
     public pages?: PageItem[];
     public prev: HTMLLIElement;
     public next: HTMLLIElement;
-    private _currentPage = 0;
 
     constructor() {
         this._element = new ElementCreator({
@@ -24,17 +24,15 @@ export class Pagination {
         if (pagesCount > 1) {
             this._element.classList.remove('d-none');
             this.pages = Array.from({ length: pagesCount }, (_, i: number) => new PageItem(i));
-
             this.element.querySelectorAll('.pages').forEach((el: Element) => el.remove());
-            const pages: HTMLElement[] = this.pages?.map(({ element }) => element);
-            pages.forEach((element, i: number): void => {
+            const pageElements: HTMLElement[] = this.pages?.map(({ element }: PageItem) => element);
+            pageElements.forEach((element: HTMLElement, i: number): void => {
                 element.classList.remove('active');
-                console.log(i, currentPage);
                 if (i + 1 === currentPage) {
                     element.classList.add('active');
                 }
             });
-            this.prev.after(...pages);
+            this.prev.after(...pageElements);
         } else {
             this.element.classList.add('d-none');
         }
@@ -49,12 +47,6 @@ export class Pagination {
             return;
         }
         this._currentPage = value;
-        // this.pages?.forEach(({ element }, i: number): void => {
-        //     element.classList.remove('active');
-        //     if (i === value) {
-        //         element.classList.add('active');
-        //     }
-        // });
         this.element.dispatchEvent(new CustomEvent('changePage', { bubbles: true, detail: this.currentPage + 1 }));
     }
 

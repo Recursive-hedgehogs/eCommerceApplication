@@ -1,4 +1,5 @@
 import { Pagination } from './pagination';
+import { PageItem } from './pages-item/page-item';
 
 export class PaginationController {
     private pagination: Pagination;
@@ -14,7 +15,7 @@ export class PaginationController {
     }
 
     public updateListeners(): void {
-        this.pagination.pages?.forEach(({ element }, i: number) =>
+        this.pagination.pages?.forEach(({ element }: PageItem, i: number) =>
             element.addEventListener('click', (): void => {
                 this.onPageClick(i);
             })
@@ -34,7 +35,6 @@ export class PaginationController {
     };
 
     private onPageClick(i: number): void {
-        console.log(i, this.pagination.currentPage);
         this.pagination.currentPage = i;
     }
 }

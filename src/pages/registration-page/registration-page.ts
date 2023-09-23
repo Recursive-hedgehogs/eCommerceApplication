@@ -2,6 +2,7 @@ import ElementCreator from '../../utils/template-creation';
 import template from './registration-page.html';
 import * as validationUtils from '../../utils/validations';
 import './registration-page.scss';
+
 export default class RegistrationPage {
     element: HTMLElement;
 
@@ -18,69 +19,18 @@ export default class RegistrationPage {
     }
 
     public onNameValidate = (nameInput: HTMLInputElement): void => {
-        const parentDiv: Element | null = nameInput.closest('.form-item');
-        if (!parentDiv) return;
-        const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
         const errorMessage: string | null = validationUtils.validateName(nameInput.value);
-        if (errorMessage) {
-            nameInput.classList.add('is-invalid');
-        }
-        if (inputError) {
-            nameInput.classList.add('is-invalid');
-            inputError.textContent = errorMessage;
-            if (!errorMessage) {
-                nameInput.classList.remove('is-invalid');
-            }
-        } else {
-            const newErrorDiv: HTMLDivElement = document.createElement('div');
-            newErrorDiv.classList.add('invalid-feedback');
-            newErrorDiv.textContent = errorMessage;
-            parentDiv.append(newErrorDiv);
-        }
+        this.onError(errorMessage, nameInput);
     };
 
     public onStreetValidate = (nameInput: HTMLInputElement): void => {
-        const parentDiv: Element | null = nameInput.closest('.form-item');
-        if (!parentDiv) return;
-        const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
         const errorMessage: string | null = validationUtils.validateStreet(nameInput.value);
-        if (errorMessage) {
-            nameInput.classList.add('is-invalid');
-        }
-        if (inputError) {
-            nameInput.classList.add('is-invalid');
-            inputError.textContent = errorMessage;
-            if (!errorMessage) {
-                nameInput.classList.remove('is-invalid');
-            }
-        } else {
-            const newErrorDiv: HTMLDivElement = document.createElement('div');
-            newErrorDiv.classList.add('invalid-feedback');
-            newErrorDiv.textContent = errorMessage;
-            parentDiv.append(newErrorDiv);
-        }
+        this.onError(errorMessage, nameInput);
     };
 
     public onDateDateOfBirth = (nameInput: HTMLInputElement): void => {
-        const parentDiv: Element | null = nameInput.closest('.form-item');
-        if (!parentDiv) return;
-        const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
         const errorMessage: string | null = validationUtils.validateDateOfBirth(nameInput.value);
-        if (errorMessage) {
-            nameInput.classList.add('is-invalid');
-        }
-        if (inputError) {
-            nameInput.classList.add('is-invalid');
-            inputError.textContent = errorMessage;
-            if (!errorMessage) {
-                nameInput.classList.remove('is-invalid');
-            }
-        } else {
-            const newErrorDiv: HTMLDivElement = document.createElement('div');
-            newErrorDiv.classList.add('invalid-feedback');
-            newErrorDiv.textContent = errorMessage;
-            parentDiv.append(newErrorDiv);
-        }
+        this.onError(errorMessage, nameInput);
     };
 
     public onPostalValidate = (codeInput: HTMLInputElement): void => {
@@ -115,4 +65,25 @@ export default class RegistrationPage {
             target.value = `${numValue.substring(0, 2)}${separator}${numValue.substring(2)}`;
         }
     };
+
+    private onError(errorMessage: string | null, nameInput: HTMLInputElement) {
+        const parentDiv: Element | null = nameInput.closest('.form-item');
+        if (!parentDiv) return;
+        const inputError: HTMLElement = <HTMLElement>parentDiv.querySelector('.invalid-feedback');
+        if (errorMessage) {
+            nameInput.classList.add('is-invalid');
+        }
+        if (inputError) {
+            nameInput.classList.add('is-invalid');
+            inputError.textContent = errorMessage;
+            if (!errorMessage) {
+                nameInput.classList.remove('is-invalid');
+            }
+        } else {
+            const newErrorDiv: HTMLDivElement = document.createElement('div');
+            newErrorDiv.classList.add('invalid-feedback');
+            newErrorDiv.textContent = errorMessage;
+            parentDiv.append(newErrorDiv);
+        }
+    }
 }

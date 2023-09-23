@@ -25,18 +25,17 @@ export default class CatalogPage {
     public element!: HTMLElement;
     private readonly catalogContainer!: Element | null;
     private readonly sort?: Sort;
-    private products?: ProductCard[];
     private readonly filters?: Filters;
-    private apiProduct: ApiProduct = new ApiProduct();
     private readonly pagination?: Pagination;
     private static singleton: CatalogPage;
+    private products?: ProductCard[];
+    private apiProduct: ApiProduct = new ApiProduct();
     private paginationController?: PaginationController;
 
     constructor() {
         if (CatalogPage.singleton) {
             return CatalogPage.singleton;
         }
-
         this.element = new ElementCreator({
             tag: 'section',
             classNames: ['catalog-page', 'flex-grow-1', 'd-flex', 'flex-row'],
@@ -62,7 +61,6 @@ export default class CatalogPage {
         if (catalogFilters && this.filters?.element) {
             catalogFilters.append(this.filters.element);
         }
-
         const catalogSorting: Element | null = this.element.querySelector('.catalog-sorting');
         if (catalogSorting && this.sort?.element) {
             catalogSorting.append(this.sort.element);
@@ -104,7 +102,7 @@ export default class CatalogPage {
         const categoriesContainer: HTMLElement = this.element.querySelector('.categories-container') as HTMLElement;
         const categoriesArray: HTMLElement[] = categories
             .filter((category: Category) => !category.parent)
-            .map((category: Category) => {
+            .map((category: Category): HTMLElement => {
                 const categoryComponent: CategoryComponent = new CategoryComponent(category, categories);
                 new CategoryController(categoryComponent);
                 return categoryComponent.element;
