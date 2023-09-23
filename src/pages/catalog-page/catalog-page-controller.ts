@@ -6,7 +6,7 @@ import { ROUTE } from '../../constants/enums/enum';
 export class CatalogPageController {
     private app: App;
     private catalogPage: CatalogPage;
-    private router = new Router();
+    private router: Router = new Router();
 
     constructor() {
         this.app = new App();

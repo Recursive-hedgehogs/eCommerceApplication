@@ -32,7 +32,6 @@ class App implements IApp {
     public notFoundPage!: NotFoundPage;
     public header!: Header;
     public basketPage!: BasketPage;
-
     public aboutUsPage!: AboutUsPage;
     private state: State = new State();
     private countriesArray!: Array<ISO31661AssignedEntry>;

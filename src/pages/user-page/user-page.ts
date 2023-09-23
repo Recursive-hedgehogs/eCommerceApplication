@@ -101,12 +101,10 @@ export default class UserPage {
         this.changeDisabled(inputFields, selectField);
         const checkbox: HTMLInputElement = <HTMLInputElement>container.querySelector('.form-check-input');
         const label: HTMLInputElement = <HTMLInputElement>container.querySelector('.form-check-label');
-
         //check if address set as the default
         const isDefault: boolean = isBilling
             ? this.userData?.defaultBillingAddressId === address.id
             : this.userData?.defaultShippingAddressId === address.id;
-
         checkbox.checked = isDefault;
         if (label) {
             label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
@@ -207,16 +205,6 @@ export default class UserPage {
             el.value,
         ]);
 
-        return Object.fromEntries(addressArray);
-    }
-
-    public prepareNewAddressData(addressSelector: string): Record<string, string> {
-        const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
-        const addressElements: NodeListOf<HTMLInputElement> = this.element.querySelectorAll(addressSelector);
-        const addressArray: string[][] = [...addressElements].map((el: HTMLInputElement, i: number) => [
-            addressFields[i],
-            el.value,
-        ]);
         return Object.fromEntries(addressArray);
     }
 }

@@ -16,17 +16,6 @@ export class ApiBasket {
     get currentFlow(): ApiExistingTokenFlow | ApiAnonymousSessionFlow {
         return this.state.isLogIn ? this.apiExistingTokenFlow : this.apiAnonymousSessionFlow;
     }
-
-    public getCarts = () => {
-        return this.currentFlow.apiRoot
-            ?.carts()
-            .get()
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
     public getCartById = (ID: string) => {
         return this.currentFlow.apiRoot
             ?.carts()
@@ -39,7 +28,6 @@ export class ApiBasket {
     };
 
     public createCart = () => {
-        console.log(this.currentFlow);
         return this.currentFlow.apiRoot
             ?.carts()
             .post({
@@ -47,9 +35,23 @@ export class ApiBasket {
             })
             .execute()
             .then(({ body }: ClientResponse<Cart>) => {
-                console.log('createCartResp@@@', body);
                 return body;
             })
+            .catch((err) => {
+                throw Error(err);
+            });
+    };
+
+    public deleteCart = (ID: string, version: number) => {
+        return this.currentFlow.apiRoot
+            ?.carts()
+            .withId({ ID })
+            .delete({
+                queryArgs: {
+                    version,
+                },
+            })
+            .execute()
             .catch((err) => {
                 throw Error(err);
             });
@@ -69,21 +71,6 @@ export class ApiBasket {
                             quantity: 1,
                         },
                     ],
-                },
-            })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
-    public deleteCart = (ID: string, version: number) => {
-        return this.currentFlow.apiRoot
-            ?.carts()
-            .withId({ ID })
-            .delete({
-                queryArgs: {
-                    version,
                 },
             })
             .execute()
@@ -113,29 +100,6 @@ export class ApiBasket {
                 throw Error(error);
             });
     }
-
-    public deleteItemInCart = (cartId: string, version: number, lineItemId: string) => {
-        return this.currentFlow.apiRoot
-            ?.carts()
-            .withId({ ID: cartId })
-            .post({
-                body: {
-                    version,
-                    actions: [
-                        {
-                            action: 'removeLineItem',
-                            lineItemId,
-                            quantity: 1,
-                        },
-                    ],
-                },
-            })
-            .execute()
-            .catch((err) => {
-                throw Error(err);
-            });
-    };
-
     public removeCartItem = (cartId: string, lineItemId: string, version: number) => {
         return this.currentFlow.apiRoot
             ?.carts()

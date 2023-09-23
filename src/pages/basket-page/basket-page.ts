@@ -14,9 +14,9 @@ export default class BasketPage {
     private readonly _element: HTMLElement;
     private apiBasket: ApiBasket = new ApiBasket();
     private state: State;
-    public cart: Cart | null = null;
     private header: Header;
     private app: App;
+    public cart: Cart | null = null;
 
     constructor(app: App) {
         this._element = new ElementCreator({
@@ -65,7 +65,6 @@ export default class BasketPage {
         this.basketContainer.append(...basketItemsArray);
         const totalCartPrice: HTMLElement = this._element.querySelector('.basket-total-price') as HTMLElement;
         this.setPriceBeforeDiscount(data);
-
         totalCartPrice.innerText = `Total price: ${data.totalPrice.centAmount / 100} €`;
         const summa: HTMLElement = this._element.querySelector('.basket-summa') as HTMLElement;
         const clearBasket: HTMLElement = this._element.querySelector('.clear-basket') as HTMLElement;
@@ -128,7 +127,6 @@ export default class BasketPage {
         if (this.cart && this.apiBasket && typeof this.apiBasket.changeCartItemQuantity === 'function') {
             const cartId: string = this.cart?.id;
             const version: number = this.cart?.version;
-
             if (cartId) {
                 this.apiBasket
                     ?.changeCartItemQuantity(cartId, lineItemId, version, newQuantity)
@@ -154,7 +152,6 @@ export default class BasketPage {
         if (this.cart && this.apiBasket && typeof this.apiBasket.removeCartItem === 'function') {
             const cartId: string = this.cart?.id;
             const version: number = this.cart?.version;
-
             if (cartId) {
                 this.apiBasket
                     ?.removeCartItem(cartId, lineItemId, version)

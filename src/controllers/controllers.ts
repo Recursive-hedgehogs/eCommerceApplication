@@ -54,7 +54,6 @@ export class Controllers {
         const currentLocation: string = window.location.pathname.slice(1) ? window.location.pathname.slice(1) : 'main';
         this.router.navigate(currentLocation);
         const refreshToken: string | null = localStorage.getItem('refreshToken');
-        console.log('@basketId', this.state.basketId, cartID);
         if (refreshToken) {
             const authClient = new SdkAuth({
                 host: process.env.CTP_AUTH_URL,

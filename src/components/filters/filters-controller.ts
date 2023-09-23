@@ -47,7 +47,6 @@ export class FiltersController {
         const map: Map<string, string | boolean> = new Map();
         const filtersArray: string[] = [];
         e.preventDefault();
-        console.log(this.filters.element);
         const inputsCheck: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=checkbox]');
         const inputsRange: NodeListOf<HTMLInputElement> | undefined =

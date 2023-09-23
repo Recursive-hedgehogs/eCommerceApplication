@@ -41,10 +41,10 @@ export class RegistrationPageController {
         const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
             document.getElementById('input-country-ship')
         );
-        countrySelect.addEventListener('change', function () {
+        countrySelect.addEventListener('change', function (): void {
             postalCodeInput.value = '';
         });
-        countryShipSelect.addEventListener('change', function () {
+        countryShipSelect.addEventListener('change', function (): void {
             postalCodeShipInput.value = '';
         });
         switch (target.id) {
@@ -83,7 +83,7 @@ export class RegistrationPageController {
     };
 
     private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
-        target.addEventListener('keypress', (event) => {
+        target.addEventListener('keypress', (event: KeyboardEvent): void => {
             if (country.value === 'Poland') {
                 this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
             } else if (country.value === 'Germany') {
@@ -102,7 +102,6 @@ export class RegistrationPageController {
                 ?.get(ROUTE.REGISTRATION)
                 ?.querySelector('.billing-address');
             shippingContainer?.classList.toggle('hidden');
-
             const shippingAddress: NodeListOf<HTMLInputElement> | undefined =
                 shippingContainer?.querySelectorAll('.shipping');
             shippingAddress?.forEach((el: HTMLInputElement): boolean => (el.required = false));
@@ -187,7 +186,6 @@ export class RegistrationPageController {
             ) {
                 return;
             }
-
             apiCustomer
                 .createCustomer(customerData)
                 .then((): void => {

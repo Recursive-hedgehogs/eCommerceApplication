@@ -174,7 +174,6 @@ export default class ProductPage {
         const style: CSSStyleDeclaration = getComputedStyle(element);
         const backgroundImage: string = style.getPropertyValue('background-image');
         const match: RegExpMatchArray | null = backgroundImage.match(/url\("(.+)"\)/);
-
         return match ? match[1] : undefined;
     }
 
