@@ -5,9 +5,9 @@ import BasketPage from './basket-page';
 import { ApiBasket } from '../../api/api-basket/api-basket';
 
 export class BasketPageController {
-    private basketPage: BasketPage;
+    public basketPage: BasketPage;
     private app: App;
-    private router: Router;
+    public router: Router;
     private apiBasket: ApiBasket;
 
     constructor() {
@@ -23,7 +23,7 @@ export class BasketPageController {
         this.basketPage.element.addEventListener('submit', this.basketPage.onSubmitPromo);
     }
 
-    private onClick = (e: Event): void => {
+    public onClick = (e: Event): void => {
         if (e.target instanceof HTMLElement && e.target.dataset.link === ROUTE.NOT_FOUND) {
             this.router.navigate(ROUTE.CATALOG);
         }

@@ -21,6 +21,8 @@ import {
     validatePassword,
 } from '../utils/validations';
 import { Message } from '../components/message/message';
+import { BasketPageController } from '../pages/basket-page/basket-page-controller';
+
 config();
 
 test('Husky is configured in package.json', () => {
@@ -282,5 +284,111 @@ describe('message-tests', () => {
     });
     it('should have correct message', () => {
         expect(message.element?.innerHTML).toBe(messageText);
+    });
+});
+
+describe('BasketPageController', () => {
+    let basketPageController: BasketPageController;
+
+    beforeEach(() => {
+        basketPageController = new BasketPageController();
+    });
+
+    it('should create an instance of BasketPageController', () => {
+        expect(basketPageController).toBeInstanceOf(BasketPageController);
+    });
+
+    it('should handle click on clear cart button', () => {
+        const clearCartButton = document.createElement('button');
+        clearCartButton.id = 'clear-cart';
+        document.body.appendChild(clearCartButton);
+
+        const clearBasketMock = jest.spyOn(basketPageController.basketPage, 'clearBasket');
+
+        basketPageController.onClick({
+            target: clearCartButton,
+            bubbles: false,
+            cancelBubble: false,
+            cancelable: false,
+            composed: false,
+            currentTarget: null,
+            defaultPrevented: false,
+            eventPhase: 0,
+            isTrusted: false,
+            returnValue: false,
+            srcElement: null,
+            timeStamp: 0,
+            type: '',
+            composedPath: function (): EventTarget[] {
+                throw new Error('Function not implemented.');
+            },
+            initEvent: function (type: string, bubbles?: boolean | undefined, cancelable?: boolean | undefined): void {
+                throw new Error('Function not implemented.');
+            },
+            preventDefault: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopImmediatePropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopPropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            NONE: 0,
+            CAPTURING_PHASE: 1,
+            AT_TARGET: 2,
+            BUBBLING_PHASE: 3,
+        });
+
+        expect(clearBasketMock).toHaveBeenCalled();
+
+        document.body.removeChild(clearCartButton);
+    });
+
+    it('should handle click on not found link', () => {
+        const notFoundLink = document.createElement('a');
+        notFoundLink.dataset.link = ROUTE.NOT_FOUND;
+        document.body.appendChild(notFoundLink);
+
+        const onClickMock = jest.spyOn(basketPageController, 'onClick');
+
+        basketPageController.onClick({
+            target: notFoundLink,
+            bubbles: false,
+            cancelBubble: false,
+            cancelable: false,
+            composed: false,
+            currentTarget: null,
+            defaultPrevented: false,
+            eventPhase: 0,
+            isTrusted: false,
+            returnValue: false,
+            srcElement: null,
+            timeStamp: 0,
+            type: '',
+            composedPath: function (): EventTarget[] {
+                throw new Error('Function not implemented.');
+            },
+            initEvent: function (type: string, bubbles?: boolean | undefined, cancelable?: boolean | undefined): void {
+                throw new Error('Function not implemented.');
+            },
+            preventDefault: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopImmediatePropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            stopPropagation: function (): void {
+                throw new Error('Function not implemented.');
+            },
+            NONE: 0,
+            CAPTURING_PHASE: 1,
+            AT_TARGET: 2,
+            BUBBLING_PHASE: 3,
+        });
+
+        expect(onClickMock).toHaveBeenCalled();
+
+        document.body.removeChild(notFoundLink);
     });
 });
