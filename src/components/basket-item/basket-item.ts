@@ -58,7 +58,7 @@ export class BasketItem {
             : this.data.price.value.centAmount / 100;
         basketItemPrice.innerText = `Price: ${price} €`;
         basketItemCount.innerText = `${this.data.quantity}`;
-        basketItemTotalPrice.innerText = `Summa: ${Math.round(this.data.quantity * price * 10) / 10} €`;
+        basketItemTotalPrice.innerText = `Total: ${Math.round(this.data.quantity * price * 10) / 10} €`;
     }
 
     public get element(): HTMLElement {
