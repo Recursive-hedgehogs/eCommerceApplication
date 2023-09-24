@@ -5,6 +5,7 @@
   box-shadow: 2px 2px 2px var(--bs-primary);
   width: 100%;
   cursor: pointer;
+  transform: scale(1);
   transition: background-color 0.4s;
 
   @media (min-width: 500px) {
@@ -60,4 +61,8 @@
 
 .product-price {
   color: var(--bs-secondary-text-emphasis);
+}
+
+.product-add-to-cart:hover {
+  box-shadow: 2px 2px 2px var(--bs-black);
 }

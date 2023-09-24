@@ -1,18 +1,19 @@
 import ElementCreator from '../../utils/template-creation';
-import template from './product-card.html';
 import './product-card.scss';
 import { DiscountedPrice, Price, ProductProjection } from '@commercetools/platform-sdk';
 
 export class ProductCard {
-    private readonly _element: HTMLElement | null = null;
+    private readonly _element: HTMLElement;
     private readonly productName: HTMLElement;
     private readonly productImage: HTMLElement;
     private readonly productDescription: HTMLElement;
-    public productId: string;
-    public productKey: string | undefined;
     private readonly productPrice: HTMLElement;
     private readonly productDefaultPrice: HTMLElement;
+    private _inCart = false;
     public readonly prices: Price[] | undefined;
+    public productId: string;
+    public productKey: string | undefined;
+    public productAddToCart: HTMLButtonElement;
 
     constructor(data: ProductProjection) {
         this.prices = data.masterVariant.prices;
@@ -20,8 +21,7 @@ export class ProductCard {
         this.productKey = data.key;
         this._element = new ElementCreator({
             tag: 'div',
-            classNames: ['product'],
-            innerHTML: template,
+            classNames: ['product', 'd-flex', 'flex-column'],
         }).getElement();
         this.productName = new ElementCreator({
             tag: 'h5',
@@ -59,17 +59,29 @@ export class ProductCard {
             this.productDefaultPrice.innerText = '';
             this.productPrice.classList.remove('text-decoration-line-through');
         }
-
+        this.productAddToCart = new ElementCreator({
+            tag: 'button',
+            classNames: ['product-add-to-cart', 'btn', 'btn-secondary', 'text-primary'],
+            innerHTML: 'Add to Cart',
+        }).getElement() as HTMLButtonElement;
+        this.productAddToCart.id = 'add-product-to-cart';
         this._element.append(
             this.productName,
             this.productImage,
             this.productDescription,
             this.productPrice,
-            this.productDefaultPrice
+            this.productDefaultPrice,
+            this.productAddToCart
         );
     }
 
-    public get element(): HTMLElement | null {
+    public get element(): HTMLElement {
         return this._element;
+    }
+
+    public set inCart(status: boolean) {
+        this.productAddToCart.innerText = status ? 'In Cart' : 'Add To Cart';
+        this.productAddToCart.disabled = status;
+        this._inCart = status;
     }
 }

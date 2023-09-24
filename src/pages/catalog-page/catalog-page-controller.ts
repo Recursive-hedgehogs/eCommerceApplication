@@ -1,9 +1,12 @@
 import App from '../../app/app';
 import CatalogPage from './catalog-page';
+import { Router } from '../../router/router';
+import { ROUTE } from '../../constants/enums/enum';
 
 export class CatalogPageController {
     private app: App;
     private catalogPage: CatalogPage;
+    private router: Router = new Router();
 
     constructor() {
         this.app = new App();
@@ -13,6 +16,7 @@ export class CatalogPageController {
 
     private addListeners(): void {
         this.catalogPage.getElement().addEventListener('submit', this.onSearchSubmit);
+        this.catalogPage.getElement().addEventListener('changePage', (e: Event) => this.onPageChange(e));
     }
 
     private onSearchSubmit = (e: Event): void => {
@@ -24,4 +28,8 @@ export class CatalogPageController {
             this.app.catalogPage.updateContent({ search });
         }
     };
+
+    private onPageChange(e: Event): void {
+        this.router.navigate(`${ROUTE.CATALOG}/${(e as CustomEvent).detail}`);
+    }
 }

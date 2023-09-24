@@ -1,9 +1,12 @@
 import { Filters } from './filters';
 import CatalogPage from '../../pages/catalog-page/catalog-page';
+import { Router } from '../../router/router';
+import { ROUTE } from '../../constants/enums/enum';
 
 export class FiltersController {
     private filters: Filters;
     private catalogPage: CatalogPage;
+    private router: Router = new Router();
 
     constructor(filters: Filters, catalogPage: CatalogPage) {
         this.filters = filters;
@@ -44,13 +47,11 @@ export class FiltersController {
         const map: Map<string, string | boolean> = new Map();
         const filtersArray: string[] = [];
         e.preventDefault();
-        console.log(this.filters.element);
         const inputsCheck: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=checkbox]');
         const inputsRange: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=range]');
         inputsCheck?.forEach((el: HTMLInputElement): void => {
-            // const close = this.filters.element?.querySelector('.close') as HTMLElement;
             if (el.name && el.checked) {
                 filtersArray.push(el.name);
                 map.set(el.name, el.checked);
@@ -69,22 +70,23 @@ export class FiltersController {
             filterResult.innerHTML = filtersArray.join(' ');
         }
         const filter: string[] = this.filters.convertToFilter(map);
-        this.catalogPage.updateContent({ filter });
+        this.router.navigate(`${ROUTE.CATALOG}/1`);
+        this.catalogPage.updateContent({ filter }, 1);
     };
 
     public onClick = (e: Event): void => {
         const inputsCheck: NodeListOf<HTMLInputElement> | undefined =
             this.filters.element?.querySelectorAll('input[type=checkbox]');
-        const minInput = this.filters.element?.querySelector('#customRangeMin');
-        const maxInput = this.filters.element?.querySelector('#customRangeMax');
-        const minResult = this.filters.element?.querySelector('.min-result') as HTMLDivElement;
-        const maxResult = this.filters.element?.querySelector('.max-result') as HTMLDivElement;
+        const minInput: HTMLInputElement = this.filters.element?.querySelector('#customRangeMin') as HTMLInputElement;
+        const maxInput: HTMLInputElement = this.filters.element?.querySelector('#customRangeMax') as HTMLInputElement;
+        const minResult: HTMLDivElement = this.filters.element?.querySelector('.min-result') as HTMLDivElement;
+        const maxResult: HTMLDivElement = this.filters.element?.querySelector('.max-result') as HTMLDivElement;
         const target: HTMLButtonElement = e.target as HTMLButtonElement;
         if (target.id === 'filters-reset') {
-            this.catalogPage.updateContent({});
+            this.router.navigate(`${ROUTE.CATALOG}/1`);
             const filterResult: HTMLElement = document.querySelector('.filters-result') as HTMLElement;
             filterResult.innerHTML = '';
-            inputsCheck?.forEach((el) => (el.checked = false));
+            inputsCheck?.forEach((el: HTMLInputElement): boolean => (el.checked = false));
             if (minInput && maxInput) {
                 (<HTMLInputElement>minInput).min = '0';
                 (<HTMLInputElement>minInput).max = '100';

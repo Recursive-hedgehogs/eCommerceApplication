@@ -33,6 +33,8 @@ class View implements IView {
         const catalogPage: HTMLElement = this.app.catalogPage.getElement();
         const productPage: HTMLElement = this.app.productPage.getElement();
         const notFoundPage: HTMLElement = this.app.notFoundPage.getElement();
+        const aboutUsPage: HTMLElement = this.app.aboutUsPage.getElement();
+        const basketPage: HTMLElement = this.app.basketPage.element;
         this._pages = new Map();
         this._pages.set(ROUTE.MAIN, mainPage);
         this._pages.set(ROUTE.USER, userPage);
@@ -40,7 +42,9 @@ class View implements IView {
         this._pages.set(ROUTE.REGISTRATION, registrPage);
         this._pages.set(ROUTE.PRODUCT, productPage);
         this._pages.set(ROUTE.CATALOG, catalogPage);
+        this._pages.set(ROUTE.BASKET, basketPage);
         this._pages.set(ROUTE.NOT_FOUND, notFoundPage);
+        this._pages.set(ROUTE.ABOUT, aboutUsPage);
     }
 
     public showMessage(text: string, color?: string): void {

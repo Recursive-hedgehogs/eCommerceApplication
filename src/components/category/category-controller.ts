@@ -11,11 +11,11 @@ export class CategoryController {
         this.addListeners();
     }
 
-    private addListeners() {
+    private addListeners(): void {
         this.categoryComponent.categoryButton.addEventListener('click', this.onCategoryClick);
     }
 
-    onCategoryClick = () => {
+    onCategoryClick = (): void => {
         const filter: string[] = [`categories.id:"${this.categoryComponent.category.id}"`];
         this.app.catalogPage.updateContent({ filter });
     };

@@ -4,10 +4,10 @@ import { CategoryController } from './category-controller';
 import './category.scss';
 
 export class CategoryComponent {
-    private readonly _element: HTMLElement;
     public categoryButton!: HTMLElement;
     public category: Category;
     private readonly categories: Category[];
+    private readonly _element: HTMLElement;
     constructor(category: Category, categories: Category[]) {
         this.category = category;
         this.categories = categories;
@@ -22,7 +22,7 @@ export class CategoryComponent {
         return this._element;
     }
 
-    private createCategory() {
+    private createCategory(): void {
         this.categoryButton = new ElementCreator({
             tag: 'button',
             classNames: ['btn', 'btn-secondary'],

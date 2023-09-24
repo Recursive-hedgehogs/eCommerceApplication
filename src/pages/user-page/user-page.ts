@@ -1,6 +1,6 @@
 import template from './user-page.html';
 import { apiCustomer } from '../../api/api-customer';
-import { Address, Customer } from '@commercetools/platform-sdk';
+import { Address, ClientResponse, Customer } from '@commercetools/platform-sdk';
 import addressTemplate from './address-template.html';
 import ElementCreator from '../../utils/template-creation';
 import './user-page.scss';
@@ -25,8 +25,8 @@ export default class UserPage {
     }
 
     public setUserData(id: string, callback?: () => void): Promise<void> {
-        return new Promise((resolve) => {
-            apiCustomer.getUser(id)?.then((res) => {
+        return new Promise((resolve): void => {
+            apiCustomer.getUser(id)?.then((res: ClientResponse<Customer>): void => {
                 this.userData = res.body;
                 if (callback) {
                     callback();
@@ -36,22 +36,22 @@ export default class UserPage {
         });
     }
 
-    public showAddresses() {
+    public showAddresses(): void {
         const billingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.billing-addresses');
         const shippingContainer: HTMLInputElement = <HTMLInputElement>this.element.querySelector('.shipping-addresses');
         billingContainer.innerHTML = '';
         shippingContainer.innerHTML = '';
         const billingAddressIds: string[] | undefined = this.userData?.billingAddressIds;
         const shippingAddressIds: string[] | undefined = this.userData?.shippingAddressIds;
-        const addresses = this.userData?.addresses;
-        const billingAddresses = addresses?.filter((address) => {
+        const addresses: Address[] | undefined = this.userData?.addresses;
+        const billingAddresses: Address[] | undefined = addresses?.filter((address: Address) => {
             return address.id !== undefined && billingAddressIds?.includes(address.id);
         });
-        const shippingAddresses = addresses?.filter((address) => {
+        const shippingAddresses: Address[] | undefined = addresses?.filter((address: Address) => {
             return address.id !== undefined && shippingAddressIds?.includes(address.id);
         });
-        billingAddresses?.forEach((address) => {
-            const newAddress = new ElementCreator({
+        billingAddresses?.forEach((address: Address): void => {
+            const newAddress: HTMLElement = new ElementCreator({
                 tag: 'section',
                 classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
                 innerHTML: addressTemplate,
@@ -59,8 +59,8 @@ export default class UserPage {
             billingContainer.appendChild(newAddress);
             this.fillAddressFields(address, newAddress, true);
         });
-        shippingAddresses?.forEach((address) => {
-            const newAddress = new ElementCreator({
+        shippingAddresses?.forEach((address: Address): void => {
+            const newAddress: HTMLElement = new ElementCreator({
                 tag: 'section',
                 classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
                 innerHTML: addressTemplate,
@@ -95,18 +95,16 @@ export default class UserPage {
         addressID.value = address.id || '';
         const city: HTMLInputElement = <HTMLInputElement>container.querySelector(`#input-city`);
         city.value = address.city || '';
-        const inputFields = container.querySelectorAll('input');
+        const inputFields: NodeListOf<HTMLInputElement> = container.querySelectorAll('input');
         const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
         selectField.value = address.country === 'PL' ? 'Poland' : 'Germany';
         this.changeDisabled(inputFields, selectField);
         const checkbox: HTMLInputElement = <HTMLInputElement>container.querySelector('.form-check-input');
         const label: HTMLInputElement = <HTMLInputElement>container.querySelector('.form-check-label');
-
         //check if address set as the default
-        const isDefault = isBilling
+        const isDefault: boolean = isBilling
             ? this.userData?.defaultBillingAddressId === address.id
             : this.userData?.defaultShippingAddressId === address.id;
-
         checkbox.checked = isDefault;
         if (label) {
             label.textContent = isDefault ? 'This address set as the default' : 'Set the address as the default';
@@ -114,12 +112,12 @@ export default class UserPage {
     }
 
     public openFieldstoEdit(container: HTMLElement): void {
-        const cancelButton = container.querySelector('.btn-cancel');
-        const saveButton = container.querySelector('.btn-save');
-        const saveMainButton = container.querySelector('.btn-save-main');
-        const editButton = container.querySelector('.btn-edit');
-        const deleteButton = container.querySelector('.btn-delete');
-        const inputFields = container.querySelectorAll('input');
+        const cancelButton: Element | null = container.querySelector('.btn-cancel');
+        const saveButton: Element | null = container.querySelector('.btn-save');
+        const saveMainButton: Element | null = container.querySelector('.btn-save-main');
+        const editButton: Element | null = container.querySelector('.btn-edit');
+        const deleteButton: Element | null = container.querySelector('.btn-delete');
+        const inputFields: NodeListOf<HTMLInputElement> = container.querySelectorAll('input');
         const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
         this.changeDisabled(inputFields, selectField);
         cancelButton?.classList.remove('hidden');
@@ -130,13 +128,13 @@ export default class UserPage {
     }
 
     public closeFieldstoEdit(container: HTMLElement): void {
-        const cancelButton = container.querySelector('.btn-cancel');
-        const saveButton = container.querySelector('.btn-save');
-        const saveNewButton = container.querySelector('.btn-save-new');
-        const resetNewButton = container.querySelector('.btn-reset-new');
-        const editButton = container.querySelector('.btn-edit');
-        const deleteButton = container.querySelector('.btn-delete');
-        const inputFields = container.querySelectorAll('input');
+        const cancelButton: Element | null = container.querySelector('.btn-cancel');
+        const saveButton: Element | null = container.querySelector('.btn-save');
+        const saveNewButton: Element | null = container.querySelector('.btn-save-new');
+        const resetNewButton: Element | null = container.querySelector('.btn-reset-new');
+        const editButton: Element | null = container.querySelector('.btn-edit');
+        const deleteButton: Element | null = container.querySelector('.btn-delete');
+        const inputFields: NodeListOf<HTMLInputElement> = container.querySelectorAll('input');
         const selectField: HTMLSelectElement = <HTMLSelectElement>container.querySelector('select');
         this.changeDisabled(inputFields, selectField);
         cancelButton?.classList.add('hidden');
@@ -147,17 +145,17 @@ export default class UserPage {
         deleteButton?.classList.remove('hidden');
         const invalidInputs: NodeListOf<HTMLElement> = container.querySelectorAll('.is-invalid');
         const invalidFeedbacks: NodeListOf<HTMLElement> = container.querySelectorAll('.invalid-feedback');
-        [...invalidInputs].forEach((el) => {
+        [...invalidInputs].forEach((el: HTMLElement): void => {
             el.classList.remove('is-invalid');
         });
-        [...invalidFeedbacks].forEach((el) => {
+        [...invalidFeedbacks].forEach((el: HTMLElement): void => {
             if (el.parentElement) el.parentElement.removeChild(el);
         });
     }
 
     public showNewAddress(parentContainer: HTMLElement): void {
         const addressesCont: HTMLElement = <HTMLElement>parentContainer.querySelector('.addresses-container');
-        const newAddress = new ElementCreator({
+        const newAddress: HTMLElement = new ElementCreator({
             tag: 'section',
             classNames: ['card', 'border-secondary', 'mb-3', 'mt-2'],
             innerHTML: addressTemplate,
@@ -207,16 +205,6 @@ export default class UserPage {
             el.value,
         ]);
 
-        return Object.fromEntries(addressArray);
-    }
-
-    public prepareNewAddressData(addressSelector: string): Record<string, string> {
-        const addressFields: string[] = ['country', 'city', 'streetName', 'postalCode'];
-        const addressElements: NodeListOf<HTMLInputElement> = this.element.querySelectorAll(addressSelector);
-        const addressArray: string[][] = [...addressElements].map((el: HTMLInputElement, i: number) => [
-            addressFields[i],
-            el.value,
-        ]);
         return Object.fromEntries(addressArray);
     }
 }

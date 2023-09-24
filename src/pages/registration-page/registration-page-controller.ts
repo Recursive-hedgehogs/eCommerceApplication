@@ -10,7 +10,6 @@ import {
 } from '../../utils/validations';
 import { apiCustomer } from '../../api/api-customer';
 import { Router } from '../../router/router';
-import { ClientResponse, Customer, CustomerSignInResult } from '@commercetools/platform-sdk';
 
 export class RegistrationPageController {
     private app: App;
@@ -42,10 +41,10 @@ export class RegistrationPageController {
         const countryShipSelect: HTMLSelectElement | null = <HTMLSelectElement>(
             document.getElementById('input-country-ship')
         );
-        countrySelect.addEventListener('change', function () {
+        countrySelect.addEventListener('change', function (): void {
             postalCodeInput.value = '';
         });
-        countryShipSelect.addEventListener('change', function () {
+        countryShipSelect.addEventListener('change', function (): void {
             postalCodeShipInput.value = '';
         });
         switch (target.id) {
@@ -84,7 +83,7 @@ export class RegistrationPageController {
     };
 
     private checkCountry(target: HTMLInputElement, country: HTMLSelectElement): void {
-        target.addEventListener('keypress', (event) => {
+        target.addEventListener('keypress', (event: KeyboardEvent): void => {
             if (country.value === 'Poland') {
                 this.app?.registrationPage.formatPostalCode(event, target, '-', 6);
             } else if (country.value === 'Germany') {
@@ -103,7 +102,6 @@ export class RegistrationPageController {
                 ?.get(ROUTE.REGISTRATION)
                 ?.querySelector('.billing-address');
             shippingContainer?.classList.toggle('hidden');
-
             const shippingAddress: NodeListOf<HTMLInputElement> | undefined =
                 shippingContainer?.querySelectorAll('.shipping');
             shippingAddress?.forEach((el: HTMLInputElement): boolean => (el.required = false));
@@ -188,11 +186,10 @@ export class RegistrationPageController {
             ) {
                 return;
             }
-
             apiCustomer
                 .createCustomer(customerData)
                 .then((): void => {
-                    this.onLoginSubmit(e);
+                    this.app.onLogin(e);
                 })
                 .then((): void => {
                     this.app?.showMessage('Your account has been created');
@@ -221,50 +218,6 @@ export class RegistrationPageController {
                 this.registrationPage.element.querySelector('#input-registr-password')
             );
             this.app?.changePasswordVisibility(passwordInput, target);
-        }
-    };
-
-    private onLoginSubmit = (e: SubmitEvent): void => {
-        const target: EventTarget | null = e.target;
-        if (target instanceof HTMLFormElement) {
-            e.preventDefault();
-            const inputEmail: NodeListOf<HTMLElement> = target.querySelectorAll('.form-control');
-            const fail: NodeListOf<HTMLElement> = target.querySelectorAll('.invalid-feedback');
-            const loginBtn: HTMLElement | null = document.getElementById('login-btn');
-            const logoutBtn: HTMLElement | null = document.getElementById('logout-btn');
-            const profileBtn: HTMLElement | null = document.getElementById('profile-btn');
-            const registrBtn: HTMLElement | null = document.getElementById('registration-btn');
-            const fields: NodeListOf<HTMLInputElement> = target.querySelectorAll('.form-item input');
-            const fieldNames: string[] = ['email', 'password'];
-            const pairs: string[][] = [...fields].map((el: HTMLInputElement, i: number) => [fieldNames[i], el.value]);
-            const customerData = Object.fromEntries(pairs);
-            if (validateEmail(customerData.email) || validatePassword(customerData.password)) {
-                return;
-            }
-            apiCustomer
-                .signIn(customerData)
-                .then((resp: ClientResponse<CustomerSignInResult>) => {
-                    const customer: Customer = resp.body.customer;
-                    this.app?.userPage.setUserData(customer.id);
-                    return apiCustomer.createEmailToken({ id: customer.id, ttlMinutes: 2 });
-                })
-                .then((): void => {
-                    this.app?.showMessage('You are logged in');
-                    this.app?.setAuthenticationStatus(true); // set authentication state
-                    this.router.navigate(ROUTE.MAIN); //add redirection to MAIN page
-                    logoutBtn?.classList.remove('hidden');
-                    profileBtn?.classList.remove('hidden');
-                    loginBtn?.classList.add('hidden');
-                    registrBtn?.classList.add('hidden');
-                })
-                .catch((): void => {
-                    inputEmail?.forEach((el: Element): void => {
-                        el.classList.add('is-invalid');
-                    });
-                    fail?.forEach((el: HTMLElement): void => {
-                        el.innerText = 'Incorrect email or password - please try again.';
-                    });
-                });
         }
     };
 }
