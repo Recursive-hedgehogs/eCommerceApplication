@@ -1,0 +1,37 @@
+<div class="wrapper-modal">
+    <div class="container">
+        <div class="modal-content mt-3">
+            <div class="modal-header header-bg-color">
+                <h5 class="modal-title">Log in</h5>
+            </div>
+            <form class="modal-form full-width" name="modal-form">
+                <div class="modal-body">
+                    <div class="email form-item mt-2">
+                        <label class="labels">Email</label>
+                        <input id="input-login-email" type="email" class="form-control" placeholder="Enter your e-mail"
+                            required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="password form-item mt-2">
+                        <div class="labels">Password</div>
+                        <div class="input-group">
+                            <input id="input-login-password" type="password" class="form-control"
+                                placeholder="Enter your password" required>
+                            <div class="input-group-text">
+                                <span id="password-icon" class="password-icon-container password-icon fas fa-eye-slash">
+                                </span>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="warning-text mt-2">Don't have account?</div>
+                <div data-link="registration" id="btn-link-register" class="register-link btn-link">Please, sign up
+                </div>
+                <div class="btn-modal-container">
+                    <button id="btn-sign-in" type="submit" class="btn btn-primary btn-modal">Sign in</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

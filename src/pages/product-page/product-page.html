@@ -1,0 +1,31 @@
+<div class="d-flex flex-column gap-2 flex-md-row product-page-inner">
+    <swiper-container id="product-image-container" class="product-image-container" init="false"></swiper-container>
+    <div class="product-information flex-grow-1 row-gap-3">
+        <h4 class="product-name"></h4>
+        <div class="d-flex flex-row column-gap-2">
+            <h5></h5>
+            <h5 class="product-description text-primary"></h5>
+        </div>
+        <div class="product-price-container d-flex flex-row column-gap-2">
+            <p class="product-price text-secondary"></p>
+            <p class="product-price-discount text-warning"></p>
+        </div>
+        <p class="product-full-description"></p>
+        <p class="product-publish"></p>
+        <div class="btn-modal-container">
+            <button id="btn-add" type="submit" class="btn btn-success btn-modal hidden"><i class="fas fa-cart-plus"></i>
+                Add to cart
+            </button>
+            <button id="btn-remove" type="submit" class="btn btn-warning btn-modal hidden"><i class="fas fa-trash"></i>
+                Remove from cart
+            </button>
+        </div>
+    </div>
+</div>
+<div id="product-modal" class="modal">
+    <div class="modal-content new-modal">
+        <swiper-container id="product-modal-image-container" init="false"></swiper-container>
+        <button id="btn-close" class="close btn">&times;</button>
+    </div>
+</div>
+
